@@ -4,7 +4,8 @@
  * @module @/components/ui
  */
 
-export { Button, buttonVariants } from './button/button';
+export { Button } from './button/button';
+export { buttonVariants } from './button/button.variants'
 export type { ButtonProps } from './button/button';
 
 export {
@@ -17,7 +18,7 @@ export {
 } from './card/card';
 
 export { Input } from './input/input';
-export type { InputProps } from './input/input';
+export type { InputProps } from './input/input.types';
 
 export { Label } from './label/label';
 

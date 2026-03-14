@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Input } from './input';
-import { Label } from './label';
+import {Label} from "@/components/ui";
 
 const meta = {
   title: 'UI/Input',

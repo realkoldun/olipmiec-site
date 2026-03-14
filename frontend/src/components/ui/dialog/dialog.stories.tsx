@@ -1,5 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import {
   Dialog,
   DialogContent,
@@ -9,9 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './dialog';
-import { Button } from './button';
-import { Input } from './input';
-import { Label } from './label';
+import {Button, Input, Label} from "@/components/ui";
+
 
 const meta = {
   title: 'UI/Dialog',
@@ -163,7 +161,7 @@ export const InfoDialog: Story = {
           </div>
           <div>
             <h4 className="font-medium">Место проведения</h4>
-            <p className="text-sm text-muted-foreground">Стадион "Олимпиец", поле №2</p>
+            <p className="text-sm text-muted-foreground">Стадион &quot;Олимпиец&quot;, поле №2</p>
           </div>
           <div>
             <h4 className="font-medium">Возрастные группы</h4>
