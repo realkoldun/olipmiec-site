@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from '@storybook/test';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -56,12 +57,15 @@ type Story = StoryObj<typeof meta>;
 // Базовый диалог
 export const Default: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleClick = (action: string) => () => {
       alert(`Нажата кнопка: ${action}`);
+      setOpen(false);
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="outline">Открыть диалог</Button>
         </DialogTrigger>
@@ -90,12 +94,15 @@ export const Default: Story = {
 // Диалог подтверждения
 export const Confirmation: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleDelete = () => {
       alert('Элемент удалён!');
+      setOpen(false);
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="destructive">Удалить</Button>
         </DialogTrigger>
@@ -121,13 +128,16 @@ export const Confirmation: Story = {
 // Диалог с формой
 export const WithForm: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       alert('Форма отправлена!');
+      setOpen(false);
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button>Записаться в секцию</Button>
         </DialogTrigger>
@@ -169,12 +179,15 @@ export const WithForm: Story = {
 // Диалог с информацией
 export const InfoDialog: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleRegister = () => {
       alert('Переход к регистрации...');
+      setOpen(false);
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="ghost">ℹ️ О секции</Button>
         </DialogTrigger>
@@ -218,12 +231,15 @@ export const InfoDialog: Story = {
 // Большой диалог с прокруткой
 export const LargeDialog: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleAgree = () => {
       alert('Вы согласились с правилами!');
+      setOpen(false); // Закрываем диалог
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button>Большой диалог</Button>
         </DialogTrigger>
@@ -260,12 +276,15 @@ export const LargeDialog: Story = {
 // Диалог без заголовка
 export const NoHeader: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleOk = () => {
       alert('OK нажат!');
+      setOpen(false);
     };
 
     return (
-      <Dialog>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button variant="outline">Простой диалог</Button>
         </DialogTrigger>
@@ -287,17 +306,21 @@ export const NoHeader: Story = {
 // Диалог для доступности (увеличенный текст)
 export const AccessibilityLarge: Story = {
   render: () => {
+    const [open, setOpen] = useState(false);
+
     const handleOk = () => {
       alert('OK нажат!');
+      setOpen(false);
     };
 
     const handleCancel = () => {
       alert('Отмена!');
+      setOpen(false);
     };
 
     return (
       <div className="text-accessibility-large">
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="text-lg h-12">Открыть диалог (крупный)</Button>
           </DialogTrigger>
