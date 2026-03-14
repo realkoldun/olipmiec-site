@@ -4,8 +4,8 @@
  * @module @/components/ui
  */
 
-export { Button, buttonVariants } from './button';
-export type { ButtonProps } from './button';
+export { Button, buttonVariants } from './button/button';
+export type { ButtonProps } from './button/button';
 
 export {
   Card,
@@ -14,12 +14,12 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-} from './card';
+} from './card/card';
 
-export { Input } from './input';
-export type { InputProps } from './input';
+export { Input } from './input/input';
+export type { InputProps } from './input/input';
 
-export { Label } from './label';
+export { Label } from './label/label';
 
 export {
   Select,
@@ -32,7 +32,7 @@ export {
   SelectSeparator,
   SelectScrollUpButton,
   SelectScrollDownButton,
-} from './select';
+} from './select/select';
 
 export {
   Dialog,
@@ -45,4 +45,4 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-} from './dialog';
+} from './dialog/dialog';
