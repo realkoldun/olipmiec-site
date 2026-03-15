@@ -17,12 +17,16 @@ export function TextResizer({ className }: TextResizerProps) {
 
   // Уменьшение размера
   const handleDecrease = () => {
-    setFontSize(Math.max(12, fontSize - 2));
+    const newSize = Math.max(12, fontSize - 2);
+    console.log('[TextResizer] Decrease:', fontSize, '->', newSize);
+    setFontSize(newSize);
   };
 
   // Увеличение размера
   const handleIncrease = () => {
-    setFontSize(Math.min(24, fontSize + 2));
+    const newSize = Math.min(24, fontSize + 2);
+    console.log('[TextResizer] Increase:', fontSize, '->', newSize);
+    setFontSize(newSize);
   };
 
   // Сброс к значению по умолчанию
