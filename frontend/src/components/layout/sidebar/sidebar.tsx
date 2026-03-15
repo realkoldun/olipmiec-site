@@ -98,7 +98,7 @@ export function Sidebar({
                 {hasChildren && (
                   <ul
                     className={cn(
-                      'flex flex-col gap-1 ml-6 pl-4 border-l border-border mt-1',
+                      'flex flex-col gap-1 ml-8 pl-6 border-l border-border mt-1',
                       isCollapsed && 'hidden'
                     )}
                   >
@@ -110,7 +110,8 @@ export function Sidebar({
                           className={cn(
                             'flex items-center justify-between px-2 py-1.5 rounded-md',
                             'text-sm text-muted-foreground hover:text-foreground',
-                            'transition-colors'
+                            'transition-colors',
+                            'pl-4'
                           )}
                         >
                           <span className="truncate">{child.label}</span>
