@@ -18,7 +18,6 @@ export function TextResizer({ className }: TextResizerProps) {
 
   // Применение размера шрифта при изменении (дублируется с Provider для Storybook)
   useEffect(() => {
-    console.log('[TextResizer] Applying fontSize:', fontSize);
     const body = document.body;
     
     // Применяем к body с !important
@@ -29,22 +28,16 @@ export function TextResizer({ className }: TextResizerProps) {
     textElements.forEach(el => {
       (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
     });
-    
-    console.log('[TextResizer] Applied to', textElements.length, 'elements');
   }, [fontSize]);
 
   // Уменьшение размера
   const handleDecrease = () => {
-    const newSize = Math.max(12, fontSize - 2);
-    console.log('[TextResizer] Decrease:', fontSize, '->', newSize);
-    setFontSize(newSize);
+    setFontSize(Math.max(12, fontSize - 2));
   };
 
   // Увеличение размера
   const handleIncrease = () => {
-    const newSize = Math.min(24, fontSize + 2);
-    console.log('[TextResizer] Increase:', fontSize, '->', newSize);
-    setFontSize(newSize);
+    setFontSize(Math.min(24, fontSize + 2));
   };
 
   // Сброс к значению по умолчанию

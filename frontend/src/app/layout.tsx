@@ -43,8 +43,6 @@ function ApplyAccessibilitySettings() {
         const fontSize = settings.state?.fontSize || 16;
         const contrast = settings.state?.contrast || 'normal';
         
-        console.log('[Layout] Applying settings:', { fontSize, contrast });
-        
         // Применяем шрифт
         document.body.style.setProperty('font-size', `${fontSize}px`, 'important');
         const textElements = document.body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
@@ -57,7 +55,7 @@ function ApplyAccessibilitySettings() {
         document.body.classList.add(`contrast-${contrast}`);
       }
     } catch (e) {
-      console.error('[Layout] Error applying settings:', e);
+      // Игнорируем ошибки
     }
   }, []);
   

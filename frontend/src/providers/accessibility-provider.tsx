@@ -14,8 +14,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const applySettings = () => {
       const body = document.body;
-      
-      console.log('[Provider] Applying fontSize:', fontSize);
 
       // Контраст - используем классы на body
       body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
@@ -28,8 +26,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       textElements.forEach(el => {
         (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
       });
-      
-      console.log('[Provider] Applied to', textElements.length, 'elements');
       
       // Масштаб страницы
       document.documentElement.style.setProperty('--user-zoom', zoom.toString());
