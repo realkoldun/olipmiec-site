@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
+import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 export interface MobileNavProps {
   open: boolean;
@@ -16,6 +17,7 @@ export interface MobileNavProps {
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const { fontSize } = useAccessibilityStore();
 
   // Закрытие по ESC и при изменении размера экрана
   useEffect(() => {
@@ -34,7 +36,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       document.addEventListener('keydown', handleEsc);
       document.body.style.overflow = 'hidden';
       window.addEventListener('resize', handleResize);
-      
+
       // Анимация открытия
       requestAnimationFrame(() => {
         setIsVisible(true);
@@ -49,6 +51,16 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       window.removeEventListener('resize', handleResize);
     };
   }, [open, onClose]);
+
+  // Применение размера шрифта при открытии меню
+  useEffect(() => {
+    if (open && fontSize) {
+      const menuElements = document.querySelectorAll('.mobile-nav, .mobile-nav *');
+      menuElements.forEach(el => {
+        (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
+      });
+    }
+  }, [open, fontSize]);
 
   // Обработчик закрытия с анимацией
   const handleClose = () => {
@@ -79,7 +91,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     >
       <div
         className={cn(
-          'fixed inset-y-0 right-0 z-50 w-full max-w-xs',
+          'mobile-nav fixed inset-y-0 right-0 z-50 w-full max-w-xs',
           'flex flex-col bg-background shadow-xl',
           'transition-transform duration-300 ease-out',
           isVisible && !isClosing ? 'translate-x-0' : 'translate-x-full'
