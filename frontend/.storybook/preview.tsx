@@ -53,7 +53,7 @@ const preview: Preview = {
       applyContrast(currentContrast);
       
       // Подписываемся на изменения store
-      const unsubscribe = useAccessibilityStore.subscribe(
+      useAccessibilityStore.subscribe(
         (state) => state.contrast,
         (contrast) => {
           console.log('[Storybook] Contrast subscription:', contrast);
@@ -61,10 +61,11 @@ const preview: Preview = {
         }
       );
       
-      // Очистка при размонтировании
-      return () => {
-        unsubscribe();
-      };
+      return (
+        <div className="story-wrapper" style={{ minHeight: '100vh' }}>
+          <Story />
+        </div>
+      );
     },
   ],
 };
