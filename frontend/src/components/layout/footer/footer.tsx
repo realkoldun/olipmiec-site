@@ -38,10 +38,10 @@ export function Footer({ className }: FooterProps) {
             </div>
 
             {/* Навигация */}
-            <div className="grid grid-cols-2 gap-6 lg:col-span-2">
+            <div className="grid grid-cols-3 gap-6 lg:col-span-2">
               {footerSections.map((section) => (
                 <div key={section.title} className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-foreground">{section.title}</h3>
+                  <h3 className="text-base font-bold text-foreground">{section.title}</h3>
                   <ul className="flex flex-col gap-2">
                     {section.links.map((link) => (
                       <li key={link.href}>
