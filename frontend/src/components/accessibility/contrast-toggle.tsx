@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 import { Monitor, Sun, Moon } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { Button } from '@/components/ui/button/button';
 
 export interface ContrastToggleProps {
   className?: string;

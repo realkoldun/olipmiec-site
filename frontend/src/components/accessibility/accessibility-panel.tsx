@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Monitor, RotateCcw } from 'lucide-react';
+import { X, Monitor } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
 import { TextResizer } from './text-resizer';
