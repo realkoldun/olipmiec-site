@@ -19,8 +19,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     body.classList.add(`contrast-${contrast}`);
     
     // Размер шрифта для body
-    body.style.setProperty('--user-font-size', `${fontSize}px`);
-    body.style.fontSize = `var(--user-font-size, ${fontSize}px)`;
+    body.style.setProperty('--user-font-size', `${fontSize}px`, 'important');
     
     // Масштаб текста - применяем ко всем элементам
     body.style.setProperty('--user-font-scale', fontScale.toString());
