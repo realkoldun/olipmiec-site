@@ -87,11 +87,11 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       {showWarning && (
         <div
           className={cn(
-            'absolute bottom-full right-0 mb-2 p-3 rounded-lg shadow-lg',
+            'absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 rounded-lg shadow-lg',
             'bg-destructive text-destructive-foreground',
             'text-sm font-medium',
             'animate-in fade-in slide-in-from-bottom-2',
-            'max-w-[250px] z-50'
+            'w-[250px] z-50'
           )}
           role="alert"
         >
