@@ -31,6 +31,17 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     };
   }, [open, onClose]);
 
+  // Обработчик закрытия меню
+  const handleClose = () => {
+    onClose();
+  };
+
+  // Обработчик клика на ссылку
+  const handleLinkClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    onClose();
+  };
+
   if (!open) return null;
 
   return (
@@ -49,7 +60,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             <span className="text-foreground">Олимпиец</span>
           </span>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Закрыть меню"
           >
@@ -67,10 +78,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
               >
                 <a
                   href={item.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onClose();
-                  }}
+                  onClick={handleLinkClick(item.href)}
                   className="flex flex-col gap-1 p-4 text-foreground hover:bg-accent/50 transition-colors"
                 >
                   <span className="text-base font-medium">{item.label}</span>

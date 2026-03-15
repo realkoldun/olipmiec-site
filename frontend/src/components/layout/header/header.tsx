@@ -26,6 +26,31 @@ export function Header({
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
+  // Обработчик открытия/закрытия поиска
+  const toggleSearch = () => {
+    setSearchOpen((prev) => !prev);
+  };
+
+  // Обработчик закрытия поиска
+  const closeSearch = () => {
+    setSearchOpen(false);
+  };
+
+  // Обработчик открытия мобильного меню
+  const openMobileNav = () => {
+    setMobileNavOpen(true);
+  };
+
+  // Обработчик закрытия мобильного меню
+  const closeMobileNav = () => {
+    setMobileNavOpen(false);
+  };
+
+  // Обработчик клика на ссылку навигации
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <>
       <header
@@ -36,7 +61,7 @@ export function Header({
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
           {/* Логотип */}
-          <a href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
+          <a href="/" onClick={handleNavClick} className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
             <span className="text-2xl">🏆</span>
             <span className="flex flex-col">
               <span className="text-lg font-bold leading-none">Олимпиец</span>
@@ -51,9 +76,9 @@ export function Header({
                 <li key={item.href} className="relative">
                   <a
                     href={item.href}
+                    onClick={handleNavClick}
                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
                     title={item.description}
-                    onClick={(e) => e.preventDefault()}
                   >
                     {item.label}
                   </a>
@@ -69,7 +94,7 @@ export function Header({
               <>
                 <button
                   className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={() => setSearchOpen(!searchOpen)}
+                  onClick={toggleSearch}
                   aria-label="Открыть поиск"
                 >
                   <Search className="h-5 w-5" />
@@ -81,7 +106,7 @@ export function Header({
                       placeholder="Поиск..."
                       className="flex-1 h-10 px-3 text-sm outline-none"
                       autoFocus
-                      onBlur={() => setSearchOpen(false)}
+                      onBlur={closeSearch}
                     />
                   </div>
                 )}
@@ -102,7 +127,7 @@ export function Header({
             {/* Мобильное меню */}
             <button
               className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden"
-              onClick={() => setMobileNavOpen(true)}
+              onClick={openMobileNav}
               aria-label="Открыть меню"
             >
               <Menu className="h-5 w-5" />
@@ -112,7 +137,7 @@ export function Header({
       </header>
 
       {/* Мобильная навигация */}
-      <MobileNav open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+      <MobileNav open={mobileNavOpen} onClose={closeMobileNav} />
     </>
   );
 }

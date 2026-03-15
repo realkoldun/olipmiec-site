@@ -11,6 +11,11 @@ export interface FooterProps {
 export function Footer({ className }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
+  // Обработчик клика на ссылку
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+  };
+
   return (
     <footer className={className}>
       <div className="border-t bg-muted/50 mt-auto">
@@ -19,7 +24,7 @@ export function Footer({ className }: FooterProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Логотип и описание */}
             <div className="flex flex-col gap-4">
-              <a href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
+              <a href="/" onClick={handleLinkClick} className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
                 <span className="text-2xl">🏆</span>
                 <span className="flex flex-col">
                   <span className="text-lg font-bold leading-none">Олимпиец</span>
@@ -42,7 +47,7 @@ export function Footer({ className }: FooterProps) {
                       <li key={link.href}>
                         <a
                           href={link.href}
-                          onClick={(e) => e.preventDefault()}
+                          onClick={handleLinkClick}
                           className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block hover:translate-x-1 transform"
                         >
                           {link.label}
@@ -100,14 +105,14 @@ export function Footer({ className }: FooterProps) {
             <div className="flex items-center gap-4">
               <a
                 href="/privacy"
-                onClick={(e) => e.preventDefault()}
+                onClick={handleLinkClick}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Политика конфиденциальности
               </a>
               <a
                 href="/terms"
-                onClick={(e) => e.preventDefault()}
+                onClick={handleLinkClick}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Условия использования
