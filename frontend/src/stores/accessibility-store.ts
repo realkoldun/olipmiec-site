@@ -42,7 +42,7 @@ export interface AccessibilityState {
 /**
  * Значения по умолчанию
  */
-const defaultState: Omit<AccessibilityState, keyof AccessibilityActions> = {
+const defaultState: Omit<AccessibilityState, AccessibilityActions> = {
   fontSize: 16,
   fontScale: 1,
   contrast: 'normal',

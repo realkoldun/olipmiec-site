@@ -10,19 +10,13 @@ import { useAccessibilityStore } from '@/stores/accessibility-store';
 export function AccessibilityProvider({ children }: { children: React.ReactNode }) {
   const { contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom } = useAccessibilityStore();
 
-  console.log('[AccessibilityProvider] contrast:', contrast);
-
   // Применение настроек доступности
   useEffect(() => {
     const body = document.body;
     
-    console.log('[AccessibilityProvider] Applying contrast:', contrast);
-    
     // Контраст - используем классы на body
     body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
     body.classList.add(`contrast-${contrast}`);
-    
-    console.log('[AccessibilityProvider] Body classes:', body.classList);
     
     // Размер шрифта для body
     body.style.setProperty('--user-font-size', `${fontSize}px`);

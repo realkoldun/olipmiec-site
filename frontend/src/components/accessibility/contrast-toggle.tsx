@@ -53,19 +53,11 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
     },
   ];
 
-  // Обработчик переключения контраста
-  const handleContrastChange = (value: 'normal' | 'high' | 'dark') => {
-    console.log('[ContrastToggle] Changing contrast to:', value);
-    setContrast(value);
-  };
-
   // Применение контраста при изменении
   useEffect(() => {
-    console.log('[ContrastToggle] useEffect - contrast:', contrast);
     const body = document.body;
     body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
     body.classList.add(`contrast-${contrast}`);
-    console.log('[ContrastToggle] Body classes:', body.classList);
   }, [contrast]);
 
   return (
@@ -83,7 +75,7 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
           return (
             <button
               key={mode.value}
-              onClick={() => handleContrastChange(mode.value as 'normal' | 'high' | 'dark')}
+              onClick={() => setContrast(mode.value as 'normal' | 'high' | 'dark')}
               className={cn(
                 'flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
                 isActive

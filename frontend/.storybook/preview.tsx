@@ -38,27 +38,21 @@ const preview: Preview = {
   decorators: [
     // Декоратор для применения настроек доступности
     (Story) => {
-      // Функция применения контраста
+      // Применяем контраст из store
       const applyContrast = (contrast: string) => {
-        console.log('[Storybook] Applying contrast:', contrast);
         const body = document.body;
         body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
         body.classList.add(`contrast-${contrast}`);
-        console.log('[Storybook] Body classes:', body.classList);
       };
       
-      // Получаем текущий контраст из store
+      // Получаем текущий контраст и применяем
       const currentContrast = useAccessibilityStore.getState().contrast;
-      console.log('[Storybook] Initial contrast:', currentContrast);
       applyContrast(currentContrast);
       
       // Подписываемся на изменения store
       useAccessibilityStore.subscribe(
         (state) => state.contrast,
-        (contrast) => {
-          console.log('[Storybook] Contrast subscription:', contrast);
-          applyContrast(contrast);
-        }
+        (contrast) => applyContrast(contrast)
       );
       
       return (

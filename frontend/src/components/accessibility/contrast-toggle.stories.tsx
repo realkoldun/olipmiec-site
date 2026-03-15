@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useEffect } from 'react';
 import { ContrastToggle } from './contrast-toggle';
 
 const meta = {
@@ -33,34 +32,6 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-  decorators: [
-    (Story) => {
-      // Применяем контраст к body через классы
-      useEffect(() => {
-        const handleContrastChange = () => {
-          const stored = localStorage.getItem('accessibility-settings');
-          if (stored) {
-            const settings = JSON.parse(stored);
-            const contrast = settings.state?.contrast || 'normal';
-            const body = document.body;
-            body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
-            body.classList.add(`contrast-${contrast}`);
-          }
-        };
-        
-        handleContrastChange();
-        window.addEventListener('storage', handleContrastChange);
-        
-        return () => window.removeEventListener('storage', handleContrastChange);
-      }, []);
-      
-      return (
-        <div className="p-4 w-full max-w-md">
-          <Story />
-        </div>
-      );
-    },
-  ],
 } satisfies Meta<typeof ContrastToggle>;
 
 export default meta;
