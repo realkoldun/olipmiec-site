@@ -14,20 +14,28 @@ export interface MobileNavProps {
  * MobileNav — мобильное навигационное меню (бургер)
  */
 export function MobileNav({ open, onClose }: MobileNavProps) {
-  // Закрытие по ESC
+  // Закрытие по ESC и при изменении размера экрана
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
 
+    const handleResize = () => {
+      if (window.innerWidth >= 768 && open) {
+        onClose();
+      }
+    };
+
     if (open) {
       document.addEventListener('keydown', handleEsc);
       document.body.style.overflow = 'hidden';
+      window.addEventListener('resize', handleResize);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = '';
+      window.removeEventListener('resize', handleResize);
     };
   }, [open, onClose]);
 
@@ -45,12 +53,12 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 animate-in fade-in">
+    <div className="fixed inset-0 z-50 bg-black/80 animate-in fade-in duration-300">
       <div
         className={cn(
           'fixed inset-y-0 right-0 z-50 w-full max-w-xs',
           'flex flex-col bg-background shadow-xl',
-          'animate-in slide-in-from-right duration-300'
+          'animate-in slide-in-from-right duration-300 ease-out'
         )}
       >
         {/* Header мобильного меню */}
@@ -74,7 +82,8 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             {mainNavigation.map((item, index) => (
               <li
                 key={item.href}
-                className="border-b border-border/50"
+                className="border-b border-border/50 opacity-0 animate-in fade-in slide-in-from-right-4 duration-300 fill-mode-forwards"
+                style={{ animationDelay: `${100 + index * 50}ms` }}
               >
                 <a
                   href={item.href}
