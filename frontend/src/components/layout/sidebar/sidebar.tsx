@@ -49,7 +49,7 @@ export function Sidebar({
         <h2 className="text-sm font-semibold mb-4 px-2">{title}</h2>
       )}
 
-      <nav className="overflow-y-auto">
+      <nav className="overflow-y-auto scrollbar-hide">
         <ul className="flex flex-col gap-1 p-2">
           {items.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
@@ -96,34 +96,33 @@ export function Sidebar({
 
                 {/* Дочерние элементы */}
                 {hasChildren && (
-                  <ul
+                  <div
                     className={cn(
-                      'flex flex-col gap-1 ml-8 pl-6 border-l border-border mt-1',
+                      'flex flex-col gap-1 mt-1',
                       isCollapsed && 'hidden'
                     )}
                   >
                     {item.children!.map((child) => (
-                      <li key={child.href} className="relative">
-                        <a
-                          href={child.href}
-                          onClick={handleLinkClick}
-                          className={cn(
-                            'flex items-center justify-between px-2 py-1.5 rounded-md',
-                            'text-sm text-muted-foreground hover:text-foreground',
-                            'transition-colors',
-                            'pl-4'
-                          )}
-                        >
-                          <span className="truncate">{child.label}</span>
-                          {child.badge && (
-                            <span className="inline-flex items-center justify-center h-4 min-w-4 px-1 text-xs font-medium text-muted-foreground">
-                              {child.badge}
-                            </span>
-                          )}
-                        </a>
-                      </li>
+                      <a
+                        key={child.href}
+                        href={child.href}
+                        onClick={handleLinkClick}
+                        className={cn(
+                          'flex items-center justify-between gap-3 px-4 py-1.5 rounded-md ml-6',
+                          'text-sm text-muted-foreground hover:text-foreground',
+                          'transition-colors',
+                          'before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-border'
+                        )}
+                      >
+                        <span className="truncate">{child.label}</span>
+                        {child.badge && (
+                          <span className="inline-flex items-center justify-center h-4 min-w-4 px-1 text-xs font-medium text-muted-foreground">
+                            {child.badge}
+                          </span>
+                        )}
+                      </a>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </li>
             );
