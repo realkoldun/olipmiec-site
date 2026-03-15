@@ -108,10 +108,10 @@
   }
 }
 
-/* Режимы контраста - применяются к body через классы */
+/* Режимы контраста - применяются через классы на body */
 @layer base {
-  body[data-contrast="high"],
-  body[data-contrast="high"] * {
+  body.contrast-high,
+  body.contrast-high * {
     --background: 0 0% 100% !important;
     --foreground: 0 0% 0% !important;
     --card: 0 0% 100% !important;
@@ -136,8 +136,8 @@
     border-color: hsl(var(--border)) !important;
   }
 
-  body[data-contrast="dark"],
-  body[data-contrast="dark"] * {
+  body.contrast-dark,
+  body.contrast-dark * {
     --background: 0 0% 10% !important;
     --foreground: 0 0% 95% !important;
     --card: 0 0% 10% !important;

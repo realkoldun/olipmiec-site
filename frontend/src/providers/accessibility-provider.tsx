@@ -14,12 +14,9 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     const body = document.body;
     
-    // Контраст - используем data-атрибут на body
-    if (contrast === 'normal') {
-      body.removeAttribute('data-contrast');
-    } else {
-      body.setAttribute('data-contrast', contrast);
-    }
+    // Контраст - используем классы на body
+    body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
+    body.classList.add(`contrast-${contrast}`);
     
     // Размер шрифта для body
     body.style.setProperty('--user-font-size', `${fontSize}px`);

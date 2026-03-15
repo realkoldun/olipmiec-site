@@ -35,18 +35,16 @@ const meta = {
   tags: ['autodocs'],
   decorators: [
     (Story) => {
-      // Применяем контраст к body
+      // Применяем контраст к body через классы
       useEffect(() => {
         const handleContrastChange = () => {
           const stored = localStorage.getItem('accessibility-settings');
           if (stored) {
             const settings = JSON.parse(stored);
             const contrast = settings.state?.contrast || 'normal';
-            if (contrast === 'normal') {
-              document.body.removeAttribute('data-contrast');
-            } else {
-              document.body.setAttribute('data-contrast', contrast);
-            }
+            const body = document.body;
+            body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
+            body.classList.add(`contrast-${contrast}`);
           }
         };
         

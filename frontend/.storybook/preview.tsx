@@ -39,11 +39,9 @@ const preview: Preview = {
     (Story) => {
       // Функция применения контраста
       const applyContrast = (contrast: string) => {
-        if (contrast === 'normal') {
-          document.body.removeAttribute('data-contrast');
-        } else {
-          document.body.setAttribute('data-contrast', contrast);
-        }
+        const body = document.body;
+        body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
+        body.classList.add(`contrast-${contrast}`);
       };
       
       // Применяем текущие настройки при монтировании
