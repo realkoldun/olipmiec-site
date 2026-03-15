@@ -194,12 +194,17 @@
     font-feature-settings: "rlig" 1, "calt" 1;
     /* Применение пользовательского размера шрифта */
     font-size: var(--user-font-size, 16px);
+  }
+
+  /* Применение масштаба страницы */
+  html {
     zoom: var(--user-zoom, 1);
   }
 
   /* Применение масштаба текста ко всем элементам */
-  html[data-font-scale] {
-    font-size: calc(1rem * var(--user-font-scale, 1));
+  html[data-font-scale] body,
+  html[data-font-scale] body * {
+    font-size: calc(var(--user-font-size, 16px) * var(--user-font-scale, 1)) !important;
   }
 
   /* Плавные переходы для темизации */
