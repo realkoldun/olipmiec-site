@@ -70,7 +70,7 @@ export function Header({
           </a>
 
           {/* Десктопная навигация */}
-          <nav className="hidden md:block">
+          <nav className="hidden lg:block">
             <ul className="flex items-center gap-6">
               {mainNavigation.map((item) => (
                 <li key={item.href} className="relative">
@@ -126,7 +126,7 @@ export function Header({
 
             {/* Мобильное меню */}
             <button
-              className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden"
+              className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:hidden"
               onClick={openMobileNav}
               aria-label="Открыть меню"
             >
