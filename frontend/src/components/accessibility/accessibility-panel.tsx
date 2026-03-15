@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Plus, Minus, Monitor } from 'lucide-react';
+import { X, Monitor } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
+import { TextResizer } from './text-resizer';
 
 export interface AccessibilityPanelProps {
   className?: string;
@@ -109,31 +110,7 @@ export function AccessibilityPanel({
             {/* Контент */}
             <div className="flex flex-col gap-4 p-4">
               {/* Размер текста */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Monitor className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-sm font-medium">Размер текста</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-9 w-9"
-                    aria-label="Уменьшить"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <div className="flex-1 text-center text-sm">Нормальный</div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-9 w-9"
-                    aria-label="Увеличить"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
+              <TextResizer />
 
               {/* Контраст */}
               <div className="flex flex-col gap-2">
