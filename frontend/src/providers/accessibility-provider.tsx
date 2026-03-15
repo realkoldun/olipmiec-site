@@ -12,27 +12,29 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
   // Применение настроек доступности
   useEffect(() => {
-    const root = document.documentElement;
+    const body = document.body;
     
-    // Контраст - используем data-атрибут
-    root.setAttribute('data-contrast', contrast);
+    // Контраст - используем data-атрибут на body
+    body.setAttribute('data-contrast', contrast);
     
-    // Размер шрифта
-    root.style.setProperty('--user-font-size', `${fontSize}px`);
+    // Размер шрифта для body
+    body.style.setProperty('--user-font-size', `${fontSize}px`);
+    body.style.fontSize = `var(--user-font-size, ${fontSize}px)`;
     
-    // Масштаб текста
-    root.style.setProperty('--user-font-scale', fontScale.toString());
+    // Масштаб текста - применяем ко всем элементам
+    body.style.setProperty('--user-font-scale', fontScale.toString());
     
     // Масштаб страницы
-    root.style.setProperty('--user-zoom', zoom.toString());
+    document.documentElement.style.setProperty('--user-zoom', zoom.toString());
+    document.documentElement.style.zoom = zoom.toString();
     
     // Лупа
     if (magnifierEnabled) {
-      root.classList.add('magnifier-enabled');
+      document.documentElement.classList.add('magnifier-enabled');
     } else {
-      root.classList.remove('magnifier-enabled');
+      document.documentElement.classList.remove('magnifier-enabled');
     }
-    root.style.setProperty('--magnifier-zoom', magnifierZoom.toString());
+    document.documentElement.style.setProperty('--magnifier-zoom', magnifierZoom.toString());
   }, [contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom]);
 
   return <>{children}</>;

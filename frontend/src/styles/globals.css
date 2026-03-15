@@ -106,9 +106,12 @@
     --card-foreground: 0 0% 100%;
     --border: 0 0% 100%;
   }
+}
 
-  /* Режимы контраста - переопределяют все предыдущие значения */
-  html[data-contrast="high"] {
+/* Режимы контраста - применяются к body через классы */
+@layer base {
+  body[data-contrast="high"],
+  body[data-contrast="high"] * {
     --background: 0 0% 100% !important;
     --foreground: 0 0% 0% !important;
     --card: 0 0% 100% !important;
@@ -128,9 +131,13 @@
     --border: 0 0% 0% !important;
     --input: 0 0% 0% !important;
     --ring: 0 0% 0% !important;
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
   }
 
-  html[data-contrast="dark"] {
+  body[data-contrast="dark"],
+  body[data-contrast="dark"] * {
     --background: 0 0% 10% !important;
     --foreground: 0 0% 95% !important;
     --card: 0 0% 10% !important;
@@ -150,10 +157,9 @@
     --border: 0 0% 30% !important;
     --input: 0 0% 20% !important;
     --ring: 224 76% 50% !important;
-  }
-
-  html[data-contrast="normal"] {
-    /* Сброс к значениям по умолчанию */
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
   }
 }
 

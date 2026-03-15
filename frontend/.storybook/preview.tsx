@@ -39,7 +39,7 @@ const preview: Preview = {
     (Story) => {
       // Функция применения контраста
       const applyContrast = (contrast: string) => {
-        document.documentElement.setAttribute('data-contrast', contrast);
+        document.body.setAttribute('data-contrast', contrast);
       };
       
       // Применяем текущие настройки при монтировании
