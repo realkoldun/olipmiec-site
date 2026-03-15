@@ -49,7 +49,7 @@ export function Sidebar({
         <h2 className="text-sm font-semibold mb-4 px-2">{title}</h2>
       )}
 
-      <nav className="overflow-y-auto scrollbar-hide">
+      <nav className="h-full overflow-y-auto scrollbar-hide">
         <ul className="flex flex-col gap-1 p-2">
           {items.map((item) => {
             const hasChildren = item.children && item.children.length > 0;
@@ -108,15 +108,17 @@ export function Sidebar({
                         href={child.href}
                         onClick={handleLinkClick}
                         className={cn(
-                          'flex items-center justify-between gap-3 px-4 py-1.5 rounded-md ml-6',
+                          'flex items-center gap-3 px-4 py-1.5 rounded-md ml-6 relative',
                           'text-sm text-muted-foreground hover:text-foreground',
-                          'transition-colors',
-                          'before:absolute before:left-0 before:top-0 before:bottom-0 before:w-px before:bg-border'
+                          'transition-colors'
                         )}
                       >
-                        <span className="truncate">{child.label}</span>
+                        {/* Вертикальная линия */}
+                        <span className="absolute left-0 top-0 bottom-0 w-px bg-border" />
+                        
+                        <span className="flex-1 truncate">{child.label}</span>
                         {child.badge && (
-                          <span className="inline-flex items-center justify-center h-4 min-w-4 px-1 text-xs font-medium text-muted-foreground">
+                          <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full text-xs font-medium text-muted-foreground">
                             {child.badge}
                           </span>
                         )}
