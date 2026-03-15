@@ -49,6 +49,11 @@
     
     /* Radius */
     --radius: 0.5rem;
+    
+    /* Пользовательские настройки доступности */
+    --user-font-size: 16px;
+    --user-font-scale: 1;
+    --user-zoom: 1;
   }
 
   /* Тёмная тема */
@@ -102,53 +107,53 @@
     --border: 0 0% 100%;
   }
 
-  /* Режимы контраста */
-  .contrast-normal {
-    /* Значения по умолчанию */
+  /* Режимы контраста - переопределяют все предыдущие значения */
+  html[data-contrast="high"] {
+    --background: 0 0% 100% !important;
+    --foreground: 0 0% 0% !important;
+    --card: 0 0% 100% !important;
+    --card-foreground: 0 0% 0% !important;
+    --popover: 0 0% 100% !important;
+    --popover-foreground: 0 0% 0% !important;
+    --primary: 0 0% 0% !important;
+    --primary-foreground: 0 0% 100% !important;
+    --secondary: 0 0% 0% !important;
+    --secondary-foreground: 0 0% 100% !important;
+    --accent: 0 0% 0% !important;
+    --accent-foreground: 0 0% 100% !important;
+    --muted: 0 0% 80% !important;
+    --muted-foreground: 0 0% 0% !important;
+    --destructive: 0 100% 50% !important;
+    --destructive-foreground: 0 0% 100% !important;
+    --border: 0 0% 0% !important;
+    --input: 0 0% 0% !important;
+    --ring: 0 0% 0% !important;
   }
 
-  .contrast-high {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 0%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 0 0% 0%;
-    --accent-foreground: 0 0% 100%;
-    --muted: 0 0% 80%;
-    --muted-foreground: 0 0% 0%;
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-    --ring: 0 0% 0%;
+  html[data-contrast="dark"] {
+    --background: 0 0% 10% !important;
+    --foreground: 0 0% 95% !important;
+    --card: 0 0% 10% !important;
+    --card-foreground: 0 0% 95% !important;
+    --popover: 0 0% 10% !important;
+    --popover-foreground: 0 0% 95% !important;
+    --primary: 217 91% 60% !important;
+    --primary-foreground: 222 47% 11% !important;
+    --secondary: 142 71% 45% !important;
+    --secondary-foreground: 0 0% 100% !important;
+    --accent: 38 92% 50% !important;
+    --accent-foreground: 0 0% 100% !important;
+    --muted: 217 33% 20% !important;
+    --muted-foreground: 215 20% 70% !important;
+    --destructive: 0 63% 40% !important;
+    --destructive-foreground: 0 0% 100% !important;
+    --border: 0 0% 30% !important;
+    --input: 0 0% 20% !important;
+    --ring: 224 76% 50% !important;
   }
 
-  .contrast-dark {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 142 71% 45%;
-    --secondary-foreground: 0 0% 100%;
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
-    --muted: 217 33% 20%;
-    --muted-foreground: 215 20% 70%;
-    --destructive: 0 63% 40%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 30%;
-    --input: 0 0% 20%;
-    --ring: 224 76% 50%;
+  html[data-contrast="normal"] {
+    /* Сброс к значениям по умолчанию */
   }
 }
 
@@ -187,6 +192,14 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Применение пользовательского размера шрифта */
+    font-size: var(--user-font-size, 16px);
+    zoom: var(--user-zoom, 1);
+  }
+
+  /* Применение масштаба текста ко всем элементам */
+  html[data-font-scale] {
+    font-size: calc(1rem * var(--user-font-scale, 1));
   }
 
   /* Плавные переходы для темизации */
