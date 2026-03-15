@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 import { Monitor, Sun, Moon } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -57,6 +58,15 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
     console.log('[ContrastToggle] Changing contrast to:', value);
     setContrast(value);
   };
+
+  // Применение контраста при изменении
+  useEffect(() => {
+    console.log('[ContrastToggle] useEffect - contrast:', contrast);
+    const body = document.body;
+    body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
+    body.classList.add(`contrast-${contrast}`);
+    console.log('[ContrastToggle] Body classes:', body.classList);
+  }, [contrast]);
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>
