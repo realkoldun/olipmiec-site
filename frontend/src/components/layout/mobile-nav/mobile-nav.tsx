@@ -41,14 +41,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       requestAnimationFrame(() => {
         setIsVisible(true);
       });
-    } else {
-      setIsVisible(false);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = '';
       window.removeEventListener('resize', handleResize);
+      setIsVisible(false);
     };
   }, [open, onClose]);
 
@@ -73,7 +72,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   };
 
   // Обработчик клика на ссылку
-  const handleLinkClick = (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = () => (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     onClose();
   };

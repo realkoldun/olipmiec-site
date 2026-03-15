@@ -14,7 +14,7 @@ export interface TextResizerProps {
  * TextResizer — компонент изменения размера текста
  */
 export function TextResizer({ className }: TextResizerProps) {
-  const { fontSize, fontScale, setFontSize, setFontScale, reset } = useAccessibilityStore();
+  const { fontSize, setFontSize } = useAccessibilityStore();
 
   // Применение размера шрифта при изменении (дублируется с Provider для Storybook)
   useEffect(() => {

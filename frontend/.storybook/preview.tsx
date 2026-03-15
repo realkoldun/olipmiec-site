@@ -59,7 +59,7 @@ const preview: Preview = {
             document.body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
             document.body.classList.add(`contrast-${contrast}`);
           }
-        } catch (e) {
+        } catch {
           // Игнорируем ошибки
         }
       }, []);

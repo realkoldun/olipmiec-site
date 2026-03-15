@@ -20,9 +20,14 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
 
   // Инициализация темы при монтировании
   useEffect(() => {
-    setIsMounted(true);
     const isDarkMode = document.documentElement.classList.contains('dark');
-    setIsDark(isDarkMode);
+    if (isDarkMode) {
+      setIsDark(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
   }, []);
 
   // Переключение темы
@@ -53,7 +58,6 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
-      setIsDark(true);
       document.documentElement.classList.add('dark');
     }
   }, [isMounted]);
