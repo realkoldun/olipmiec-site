@@ -21,13 +21,13 @@ export function TextResizer({ className }: TextResizerProps) {
     console.log('[TextResizer] Applying fontSize:', fontSize);
     const body = document.body;
     
-    // Применяем к body
-    body.style.fontSize = `${fontSize}px`;
+    // Применяем к body с !important
+    body.style.setProperty('font-size', `${fontSize}px`, 'important');
     
-    // Применяем ко всем текстовым элементам
+    // Применяем ко всем текстовым элементам с !important
     const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
     textElements.forEach(el => {
-      (el as HTMLElement).style.fontSize = `${fontSize}px`;
+      (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
     });
     
     console.log('[TextResizer] Applied to', textElements.length, 'elements');
