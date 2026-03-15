@@ -99,20 +99,6 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
               >
                 {mode.label}
               </span>
-
-              {/* Превью */}
-              <div
-                className={cn(
-                  'w-full h-8 rounded border',
-                  mode.preview.bg,
-                  mode.preview.text,
-                  mode.preview.border
-                )}
-              >
-                <div className="p-1 text-[8px] leading-tight">
-                  Aa
-                </div>
-              </div>
             </button>
           );
         })}

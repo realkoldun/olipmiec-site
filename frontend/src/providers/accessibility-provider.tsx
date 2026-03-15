@@ -20,13 +20,12 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
     body.classList.add(`contrast-${contrast}`);
 
-    // Размер шрифта - применяем напрямую к body
-    body.style.fontSize = `${fontSize}px`;
+    // Размер шрифта - применяем напрямую к body и всем элементам
+    body.style.setProperty('font-size', `${fontSize}px`, 'important');
     
-    // Применяем ко всем текстовым элементам
-    const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div');
+    const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
     textElements.forEach(el => {
-      (el as HTMLElement).style.fontSize = `${fontSize}px`;
+      (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
     });
     
     console.log('[Provider] Applied to', textElements.length, 'elements');
