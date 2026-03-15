@@ -58,7 +58,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         </div>
 
         {/* Навигация */}
-        <nav className="flex-1 overflow-y-auto py-4">
+        <nav className="flex-1 overflow-y-auto py-4 scrollbar-hide">
           <ul className="flex flex-col">
             {mainNavigation.map((item, index) => (
               <li

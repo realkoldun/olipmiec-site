@@ -130,6 +130,16 @@
     --border: 0 0% 100%;
   }
 
+  /* Скрытие скроллбара с сохранением прокрутки */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
   /* Скрытие для скринридеров */
   .sr-only {
     position: absolute;
