@@ -9,83 +9,82 @@ const meta = {
     docs: {
       description: {
         component: `
-**AccessibilityPanel** — плавающая панель настроек доступности.
+**AccessibilityPanel** — панель настроек доступности.
 
 ## Особенности
-- Плавающая кнопка в правом нижнем углу
-- Открывается/закрывается по клику
+- Открывается по кнопке в Header
+- Закрытие по ESC или клику вне панели
 - Настройки размера текста
 - Настройки контраста
 - Сброс настроек
 - Сохранение в localStorage
+- Адаптивная (мобильная версия)
+- Тёмная тема
 
 ## Использование
-Добавить в корень приложения (после Header):
+В Header:
 \`\`\`tsx
-<AccessibilityPanel />
+<Header showAccessibilityPanel={true} />
+\`\`\`
+
+В Storybook (с плавающей кнопкой):
+\`\`\`tsx
+<AccessibilityPanel showFloatingButton={true} />
 \`\`\`
         `,
       },
     },
   },
   tags: ['autodocs'],
+  argTypes: {
+    showFloatingButton: {
+      control: 'boolean',
+      description: 'Показывать плавающую кнопку (для Storybook)',
+    },
+  },
 } satisfies Meta<typeof AccessibilityPanel>;
 
 export default meta;
 type Story = StoryObj<typeof AccessibilityPanel>;
 
-// Стандартная панель
+// С плавающей кнопкой (для демонстрации)
 export const Default: Story = {
-  render: () => (
-    <div style={{ minHeight: '100vh', padding: '20px' }}>
-      <h1>Контент страницы</h1>
-      <p>Нажмите на кнопку доступности в правом нижнем углу</p>
-      <AccessibilityPanel />
-    </div>
-  ),
-};
-
-// Открытая панель
-export const Open: Story = {
-  render: () => (
-    <div style={{ minHeight: '100vh', padding: '20px' }}>
-      <h1>Контент страницы</h1>
-      <p>Панель открыта</p>
-      <AccessibilityPanel />
-    </div>
-  ),
-  parameters: {
-    a11y: {
-      config: {
-        rules: [
-          {
-            id: 'color-contrast',
-            enabled: false,
-          },
-        ],
-      },
-    },
+  args: {
+    showFloatingButton: true,
   },
+  render: (args) => (
+    <div style={{ minHeight: '100vh', padding: '20px' }}>
+      <h1>Контент страницы</h1>
+      <p>Нажмите на кнопку в правом нижнем углу или на иконку ♿ в Header</p>
+      <AccessibilityPanel {...args} />
+    </div>
+  ),
 };
 
 // Тёмная тема
 export const DarkTheme: Story = {
-  render: () => (
+  args: {
+    showFloatingButton: true,
+  },
+  render: (args) => (
     <div className="dark" style={{ minHeight: '100vh', padding: '20px' }}>
       <h1>Контент страницы</h1>
       <p>Тёмная тема + доступность</p>
-      <AccessibilityPanel />
+      <AccessibilityPanel {...args} />
     </div>
   ),
 };
 
 // Мобильная версия
 export const Mobile: Story = {
-  render: () => (
+  args: {
+    showFloatingButton: true,
+  },
+  render: (args) => (
     <div style={{ minHeight: '100vh', padding: '10px' }}>
       <h1>Контент</h1>
-      <p>Мобильная версия</p>
-      <AccessibilityPanel />
+      <p>Мобильная версия — панель на всю ширину</p>
+      <AccessibilityPanel {...args} />
     </div>
   ),
   parameters: {
@@ -93,4 +92,59 @@ export const Mobile: Story = {
       defaultViewport: 'mobile1',
     },
   },
+};
+
+// Планшет
+export const Tablet: Story = {
+  args: {
+    showFloatingButton: true,
+  },
+  render: (args) => (
+    <div style={{ minHeight: '100vh', padding: '20px' }}>
+      <h1>Контент</h1>
+      <AccessibilityPanel {...args} />
+    </div>
+  ),
+  parameters: {
+    viewport: {
+      defaultViewport: 'ipad',
+    },
+  },
+};
+
+// С интеграцией в Header
+export const WithHeader: Story = {
+  render: () => (
+    <div style={{ minHeight: '100vh' }}>
+      {/* Имитация Header */}
+      <header style={{
+        borderBottom: '1px solid',
+        padding: '1rem 2rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}>
+        <span>🏆 Олимпиец</span>
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-accessibility-panel'))}
+          style={{
+            padding: '0.5rem',
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+          }}
+          aria-label="Настройки доступности"
+        >
+          ♿
+        </button>
+      </header>
+      
+      <main style={{ padding: '2rem' }}>
+        <h1>Контент страницы</h1>
+        <p>Нажмите на ♿ в правом верхнем углу</p>
+      </main>
+      
+      <AccessibilityPanel />
+    </div>
+  ),
 };
