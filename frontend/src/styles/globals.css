@@ -108,59 +108,57 @@
   }
 }
 
-/* Режимы контраста - применяются через классы на body */
-@layer base {
-  body.contrast-high,
-  body.contrast-high * {
-    --background: 0 0% 100% !important;
-    --foreground: 0 0% 0% !important;
-    --card: 0 0% 100% !important;
-    --card-foreground: 0 0% 0% !important;
-    --popover: 0 0% 100% !important;
-    --popover-foreground: 0 0% 0% !important;
-    --primary: 0 0% 0% !important;
-    --primary-foreground: 0 0% 100% !important;
-    --secondary: 0 0% 0% !important;
-    --secondary-foreground: 0 0% 100% !important;
-    --accent: 0 0% 0% !important;
-    --accent-foreground: 0 0% 100% !important;
-    --muted: 0 0% 80% !important;
-    --muted-foreground: 0 0% 0% !important;
-    --destructive: 0 100% 50% !important;
-    --destructive-foreground: 0 0% 100% !important;
-    --border: 0 0% 0% !important;
-    --input: 0 0% 0% !important;
-    --ring: 0 0% 0% !important;
-    background-color: hsl(var(--background)) !important;
-    color: hsl(var(--foreground)) !important;
-    border-color: hsl(var(--border)) !important;
-  }
+/* Режимы контраста - ВЫСОКИЙ ПРИОРИТЕТ (вне @layer) */
+body.contrast-high,
+body.contrast-high * {
+  --background: 0 0% 100% !important;
+  --foreground: 0 0% 0% !important;
+  --card: 0 0% 100% !important;
+  --card-foreground: 0 0% 0% !important;
+  --popover: 0 0% 100% !important;
+  --popover-foreground: 0 0% 0% !important;
+  --primary: 0 0% 0% !important;
+  --primary-foreground: 0 0% 100% !important;
+  --secondary: 0 0% 0% !important;
+  --secondary-foreground: 0 0% 100% !important;
+  --accent: 0 0% 0% !important;
+  --accent-foreground: 0 0% 100% !important;
+  --muted: 0 0% 80% !important;
+  --muted-foreground: 0 0% 0% !important;
+  --destructive: 0 100% 50% !important;
+  --destructive-foreground: 0 0% 100% !important;
+  --border: 0 0% 0% !important;
+  --input: 0 0% 0% !important;
+  --ring: 0 0% 0% !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
 
-  body.contrast-dark,
-  body.contrast-dark * {
-    --background: 0 0% 10% !important;
-    --foreground: 0 0% 95% !important;
-    --card: 0 0% 10% !important;
-    --card-foreground: 0 0% 95% !important;
-    --popover: 0 0% 10% !important;
-    --popover-foreground: 0 0% 95% !important;
-    --primary: 217 91% 60% !important;
-    --primary-foreground: 222 47% 11% !important;
-    --secondary: 142 71% 45% !important;
-    --secondary-foreground: 0 0% 100% !important;
-    --accent: 38 92% 50% !important;
-    --accent-foreground: 0 0% 100% !important;
-    --muted: 217 33% 20% !important;
-    --muted-foreground: 215 20% 70% !important;
-    --destructive: 0 63% 40% !important;
-    --destructive-foreground: 0 0% 100% !important;
-    --border: 0 0% 30% !important;
-    --input: 0 0% 20% !important;
-    --ring: 224 76% 50% !important;
-    background-color: hsl(var(--background)) !important;
-    color: hsl(var(--foreground)) !important;
-    border-color: hsl(var(--border)) !important;
-  }
+body.contrast-dark,
+body.contrast-dark * {
+  --background: 0 0% 10% !important;
+  --foreground: 0 0% 95% !important;
+  --card: 0 0% 10% !important;
+  --card-foreground: 0 0% 95% !important;
+  --popover: 0 0% 10% !important;
+  --popover-foreground: 0 0% 95% !important;
+  --primary: 217 91% 60% !important;
+  --primary-foreground: 222 47% 11% !important;
+  --secondary: 142 71% 45% !important;
+  --secondary-foreground: 0 0% 100% !important;
+  --accent: 38 92% 50% !important;
+  --accent-foreground: 0 0% 100% !important;
+  --muted: 217 33% 20% !important;
+  --muted-foreground: 215 20% 70% !important;
+  --destructive: 0 63% 40% !important;
+  --destructive-foreground: 0 0% 100% !important;
+  --border: 0 0% 30% !important;
+  --input: 0 0% 20% !important;
+  --ring: 224 76% 50% !important;
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
 }
 
 @theme inline {

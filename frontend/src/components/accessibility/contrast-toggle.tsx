@@ -52,6 +52,12 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
     },
   ];
 
+  // Обработчик переключения контраста
+  const handleContrastChange = (value: 'normal' | 'high' | 'dark') => {
+    console.log('[ContrastToggle] Changing contrast to:', value);
+    setContrast(value);
+  };
+
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       <div className="flex items-center gap-2">
@@ -67,7 +73,7 @@ export function ContrastToggle({ className }: ContrastToggleProps) {
           return (
             <button
               key={mode.value}
-              onClick={() => setContrast(mode.value as 'normal' | 'high' | 'dark')}
+              onClick={() => handleContrastChange(mode.value as 'normal' | 'high' | 'dark')}
               className={cn(
                 'flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
                 isActive
