@@ -44,7 +44,7 @@ export function Sidebar({
   };
 
   return (
-    <aside className={cn('w-64 border-r bg-background', className)}>
+    <aside className={cn('w-64 border-r border-border bg-background', className)}>
       {title && (
         <h2 className="text-sm font-semibold mb-4 px-2">{title}</h2>
       )}
@@ -88,7 +88,7 @@ export function Sidebar({
                   )}
 
                   {item.badge && (
-                    <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+                    <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full text-xs font-medium text-muted-foreground">
                       {item.badge}
                     </span>
                   )}
@@ -98,7 +98,7 @@ export function Sidebar({
                 {hasChildren && (
                   <ul
                     className={cn(
-                      'flex flex-col gap-1 ml-4 pl-4 border-l mt-1',
+                      'flex flex-col gap-1 ml-6 pl-4 border-l border-border mt-1',
                       isCollapsed && 'hidden'
                     )}
                   >
@@ -115,7 +115,7 @@ export function Sidebar({
                         >
                           <span className="truncate">{child.label}</span>
                           {child.badge && (
-                            <span className="inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
+                            <span className="inline-flex items-center justify-center h-4 min-w-4 px-1 text-xs font-medium text-muted-foreground">
                               {child.badge}
                             </span>
                           )}
