@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 import { Minus, Plus, RotateCcw } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -14,6 +15,23 @@ export interface TextResizerProps {
  */
 export function TextResizer({ className }: TextResizerProps) {
   const { fontSize, fontScale, setFontSize, setFontScale, reset } = useAccessibilityStore();
+
+  // Применение размера шрифта при изменении
+  useEffect(() => {
+    console.log('[TextResizer] Applying fontSize:', fontSize);
+    const body = document.body;
+    
+    // Применяем к body
+    body.style.fontSize = `${fontSize}px`;
+    
+    // Применяем ко всем текстовым элементам
+    const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
+    textElements.forEach(el => {
+      (el as HTMLElement).style.fontSize = `${fontSize}px`;
+    });
+    
+    console.log('[TextResizer] Applied to', textElements.length, 'elements');
+  }, [fontSize]);
 
   // Уменьшение размера
   const handleDecrease = () => {
