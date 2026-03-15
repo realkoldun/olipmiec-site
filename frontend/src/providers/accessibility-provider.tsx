@@ -15,7 +15,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     const body = document.body;
     
     // Контраст - используем data-атрибут на body
-    body.setAttribute('data-contrast', contrast);
+    if (contrast === 'normal') {
+      body.removeAttribute('data-contrast');
+    } else {
+      body.setAttribute('data-contrast', contrast);
+    }
     
     // Размер шрифта для body
     body.style.setProperty('--user-font-size', `${fontSize}px`);

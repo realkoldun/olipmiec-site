@@ -42,7 +42,11 @@ const meta = {
           if (stored) {
             const settings = JSON.parse(stored);
             const contrast = settings.state?.contrast || 'normal';
-            document.body.setAttribute('data-contrast', contrast);
+            if (contrast === 'normal') {
+              document.body.removeAttribute('data-contrast');
+            } else {
+              document.body.setAttribute('data-contrast', contrast);
+            }
           }
         };
         
