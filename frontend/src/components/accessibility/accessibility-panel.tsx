@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Monitor } from 'lucide-react';
+import { X, Monitor, RotateCcw } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
 import { TextResizer } from './text-resizer';
+import { ContrastToggle } from './contrast-toggle';
+import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 export interface AccessibilityPanelProps {
   className?: string;
@@ -49,6 +51,12 @@ export function AccessibilityPanel({
     
     return () => document.removeEventListener('keydown', handleEsc);
   }, [isOpen]);
+
+  // Сброс всех настроек
+  const { reset } = useAccessibilityStore();
+  const handleResetAll = () => {
+    reset();
+  };
 
   return (
     <>
@@ -113,24 +121,16 @@ export function AccessibilityPanel({
               <TextResizer />
 
               {/* Контраст */}
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Monitor className="h-5 w-5 text-muted-foreground" />
-                  <span className="text-sm font-medium">Контраст</span>
-                </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Обычный
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    Высокий
-                  </Button>
-                </div>
-              </div>
+              <ContrastToggle />
 
               {/* Сброс настроек */}
-              <Button variant="outline" size="sm" className="w-full">
-                Сбросить настройки
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={handleResetAll}
+              >
+                Сбросить все настройки
               </Button>
             </div>
           </div>
