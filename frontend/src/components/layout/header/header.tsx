@@ -59,7 +59,7 @@ export function Header({
           fixed && 'fixed'
         )}
       >
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-[1400px]">
           {/* Логотип */}
           <a href="/" onClick={handleNavClick} className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
             <span className="text-2xl">🏆</span>
