@@ -6,6 +6,7 @@ import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
 import { MobileNav } from '../mobile-nav/mobile-nav';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { AccessibilityPanel } from '@/components/accessibility/accessibility-panel';
 
 export interface HeaderProps {
   /** Показывать поиск */
@@ -14,6 +15,8 @@ export interface HeaderProps {
   showAccessibility?: boolean;
   /** Показывать переключатель темы */
   showThemeToggle?: boolean;
+  /** Показывать панель доступности */
+  showAccessibilityPanel?: boolean;
   /** Фиксированный header */
   fixed?: boolean;
 }
@@ -25,6 +28,7 @@ export function Header({
   showSearch = true,
   showAccessibility = true,
   showThemeToggle = true,
+  showAccessibilityPanel = true,
   fixed = true,
 }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -123,6 +127,11 @@ export function Header({
                 className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 aria-label="Настройки доступности"
                 title="Настройки доступности"
+                onClick={() => {
+                  // Открываем панель доступности при клике
+                  const event = new CustomEvent('open-accessibility-panel');
+                  window.dispatchEvent(event);
+                }}
               >
                 <Accessibility className="h-5 w-5" />
               </button>
@@ -145,6 +154,9 @@ export function Header({
 
       {/* Мобильная навигация */}
       <MobileNav open={mobileNavOpen} onClose={closeMobileNav} />
+      
+      {/* Панель доступности */}
+      {showAccessibilityPanel && <AccessibilityPanel />}
     </>
   );
 }

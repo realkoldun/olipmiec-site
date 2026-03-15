@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Accessibility, X, Plus, Minus, Monitor } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
@@ -14,6 +14,13 @@ export interface AccessibilityPanelProps {
  */
 export function AccessibilityPanel({ className }: AccessibilityPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Обработчик открытия панели из Header
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('open-accessibility-panel', handleOpen);
+    return () => window.removeEventListener('open-accessibility-panel', handleOpen);
+  }, []);
 
   return (
     <>
