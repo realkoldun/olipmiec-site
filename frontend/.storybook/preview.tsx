@@ -67,44 +67,27 @@ const preview: Preview = {
       }, []);
       
       // Подписываемся на изменения store
-      const unsubscribe = useAccessibilityStore.subscribe((state) => {
-        const fontSize = state.fontSize;
-        const contrast = state.contrast;
-        
-        console.log('[Storybook] Store changed:', { fontSize, contrast });
-        
-        // Применяем шрифт
-        document.body.style.setProperty('font-size', `${fontSize}px`, 'important');
-        const textElements = document.body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
-        textElements.forEach(el => {
-          (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
+      useEffect(() => {
+        const unsubscribe = useAccessibilityStore.subscribe((state) => {
+          const fontSize = state.fontSize;
+          const contrast = state.contrast;
+          
+          console.log('[Storybook] Store changed:', { fontSize, contrast });
+          
+          // Применяем шрифт
+          document.body.style.setProperty('font-size', `${fontSize}px`, 'important');
+          const textElements = document.body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
+          textElements.forEach(el => {
+            (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
+          });
+          
+          // Применяем контраст
+          document.body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
+          document.body.classList.add(`contrast-${contrast}`);
         });
         
-        // Применяем контраст
-        document.body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
-        document.body.classList.add(`contrast-${contrast}`);
-      });
-      
-      return () => unsubscribe();
-    },
-    // Декоратор для применения настроек доступности
-    (Story) => {
-      // Применяем контраст из store
-      const applyContrast = (contrast: string) => {
-        const body = document.body;
-        body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
-        body.classList.add(`contrast-${contrast}`);
-      };
-      
-      // Получаем текущий контраст и применяем
-      const currentContrast = useAccessibilityStore.getState().contrast;
-      applyContrast(currentContrast);
-      
-      // Подписываемся на изменения store
-      useAccessibilityStore.subscribe(
-        (state) => state.contrast,
-        (contrast) => applyContrast(contrast)
-      );
+        return () => unsubscribe();
+      }, []);
       
       return (
         <div className="story-wrapper" style={{ minHeight: '100vh' }}>
