@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 /**
@@ -9,9 +9,17 @@ import { useAccessibilityStore } from '@/stores/accessibility-store';
  */
 export function AccessibilityProvider({ children }: { children: React.ReactNode }) {
   const { contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom } = useAccessibilityStore();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Ждём загрузки настроек из localStorage
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   // Применение настроек доступности
   useEffect(() => {
+    if (!isLoaded) return;
+    
     const body = document.body;
     
     console.log('[Provider] Applying fontSize:', fontSize);
@@ -41,7 +49,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       document.documentElement.classList.remove('magnifier-enabled');
     }
     document.documentElement.style.setProperty('--magnifier-zoom', magnifierZoom.toString());
-  }, [contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom]);
+  }, [isLoaded, contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom]);
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return <>{children}</>;
 }
