@@ -63,8 +63,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             {mainNavigation.map((item, index) => (
               <li
                 key={item.href}
-                className="border-b border-border/50 opacity-0 animate-in fade-in slide-in-from-right-4 fill-mode-forwards"
-                style={{ animationDelay: `${index * 50}ms` }}
+                className="border-b border-border/50"
               >
                 <a
                   href={item.href}
@@ -85,16 +84,6 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             ))}
           </ul>
         </nav>
-
-        {/* Footer мобильного меню */}
-        <div className="border-t p-4">
-          <button
-            onClick={onClose}
-            className="w-full inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            Закрыть
-          </button>
-        </div>
       </div>
     </div>
   );
