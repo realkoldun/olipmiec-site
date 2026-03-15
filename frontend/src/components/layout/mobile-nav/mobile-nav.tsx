@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
@@ -14,6 +14,8 @@ export interface MobileNavProps {
  * MobileNav — мобильное навигационное меню (бургер)
  */
 export function MobileNav({ open, onClose }: MobileNavProps) {
+  const [isClosing, setIsClosing] = useState(false);
+
   // Закрытие по ESC и при изменении размера экрана
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -39,9 +41,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     };
   }, [open, onClose]);
 
-  // Обработчик закрытия меню
+  // Обработчик закрытия с анимацией
   const handleClose = () => {
-    onClose();
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 300);
   };
 
   // Обработчик клика на ссылку
@@ -50,15 +56,22 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
     onClose();
   };
 
-  if (!open) return null;
+  // Если меню закрыто и идёт анимация закрытия, не рендерим
+  if (!open && !isClosing) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 animate-in fade-in duration-300">
+    <div
+      className={cn(
+        'fixed inset-0 z-50 bg-black/80 transition-opacity duration-300',
+        isClosing ? 'opacity-0' : 'opacity-100'
+      )}
+    >
       <div
         className={cn(
           'fixed inset-y-0 right-0 z-50 w-full max-w-xs',
           'flex flex-col bg-background shadow-xl',
-          'animate-in slide-in-from-right duration-300 ease-out'
+          'transition-transform duration-300 ease-out',
+          isClosing ? 'translate-x-full' : 'translate-x-0'
         )}
       >
         {/* Header мобильного меню */}
@@ -79,11 +92,10 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         {/* Навигация */}
         <nav className="flex-1 overflow-y-auto py-4 scrollbar-hide">
           <ul className="flex flex-col">
-            {mainNavigation.map((item, index) => (
+            {mainNavigation.map((item) => (
               <li
                 key={item.href}
-                className="border-b border-border/50 opacity-0 animate-in fade-in slide-in-from-right-4 duration-300 fill-mode-forwards"
-                style={{ animationDelay: `${100 + index * 50}ms` }}
+                className="border-b border-border/50"
               >
                 <a
                   href={item.href}
