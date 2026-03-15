@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/nextjs-vite';
+import type { Preview } from '@storybook/react';
 import '../src/styles/globals.css';
 
 const preview: Preview = {
@@ -11,9 +11,6 @@ const preview: Preview = {
     },
 
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
       test: 'todo',
     },
 
@@ -30,9 +27,53 @@ const preview: Preview = {
         },
       ],
     },
+
+    layout: 'fullscreen',
   },
 
   tags: ['autodocs'],
+
+  // Глобальные декораторы
+  decorators: [
+    // Декоратор для применения настроек доступности
+    (Story) => {
+      // Функция применения контраста
+      const applyContrast = (contrast: string) => {
+        document.documentElement.setAttribute('data-contrast', contrast);
+      };
+      
+      // Применяем текущие настройки при монтировании
+      try {
+        const stored = localStorage.getItem('accessibility-settings');
+        if (stored) {
+          const settings = JSON.parse(stored);
+          if (settings.state?.contrast) {
+            applyContrast(settings.state.contrast);
+          }
+        }
+      } catch (e) {
+        // Игнорируем ошибки
+      }
+      
+      // Слушаем изменения настроек
+      const handleStorageChange = (e: StorageEvent) => {
+        if (e.key === 'accessibility-settings') {
+          const settings = JSON.parse(e.newValue || '{}');
+          if (settings.state?.contrast) {
+            applyContrast(settings.state.contrast);
+          }
+        }
+      };
+      
+      window.addEventListener('storage', handleStorageChange);
+      
+      return (
+        <div className="story-wrapper" style={{ minHeight: '100vh' }}>
+          <Story />
+        </div>
+      );
+    },
+  ],
 };
 
 export default preview;
