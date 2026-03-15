@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/react';
+import { useAccessibilityStore } from '../src/stores/accessibility-store';
 import '../src/styles/globals.css';
 
 const preview: Preview = {
@@ -39,41 +40,31 @@ const preview: Preview = {
     (Story) => {
       // Функция применения контраста
       const applyContrast = (contrast: string) => {
+        console.log('[Storybook] Applying contrast:', contrast);
         const body = document.body;
         body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
         body.classList.add(`contrast-${contrast}`);
+        console.log('[Storybook] Body classes:', body.classList);
       };
       
-      // Применяем текущие настройки при монтировании
-      try {
-        const stored = localStorage.getItem('accessibility-settings');
-        if (stored) {
-          const settings = JSON.parse(stored);
-          if (settings.state?.contrast) {
-            applyContrast(settings.state.contrast);
-          }
+      // Получаем текущий контраст из store
+      const currentContrast = useAccessibilityStore.getState().contrast;
+      console.log('[Storybook] Initial contrast:', currentContrast);
+      applyContrast(currentContrast);
+      
+      // Подписываемся на изменения store
+      const unsubscribe = useAccessibilityStore.subscribe(
+        (state) => state.contrast,
+        (contrast) => {
+          console.log('[Storybook] Contrast subscription:', contrast);
+          applyContrast(contrast);
         }
-      } catch (e) {
-        // Игнорируем ошибки
-      }
-      
-      // Слушаем изменения настроек
-      const handleStorageChange = (e: StorageEvent) => {
-        if (e.key === 'accessibility-settings') {
-          const settings = JSON.parse(e.newValue || '{}');
-          if (settings.state?.contrast) {
-            applyContrast(settings.state.contrast);
-          }
-        }
-      };
-      
-      window.addEventListener('storage', handleStorageChange);
-      
-      return (
-        <div className="story-wrapper" style={{ minHeight: '100vh' }}>
-          <Story />
-        </div>
       );
+      
+      // Очистка при размонтировании
+      return () => {
+        unsubscribe();
+      };
     },
   ],
 };
