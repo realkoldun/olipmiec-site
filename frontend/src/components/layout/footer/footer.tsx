@@ -18,7 +18,7 @@ export function Footer({ className }: FooterProps) {
 
   return (
     <footer className={className}>
-      <div className="border-t bg-muted/50 mt-auto">
+      <div className="border-t bg-muted/30 mt-auto">
         <div className="container mx-auto px-4 md:px-6 py-12 max-w-[1400px]">
           {/* Основная секция */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">

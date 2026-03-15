@@ -5,12 +5,15 @@ import { Menu, Search, Accessibility } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
 import { MobileNav } from '../mobile-nav/mobile-nav';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 export interface HeaderProps {
   /** Показывать поиск */
   showSearch?: boolean;
   /** Показывать кнопку доступности */
   showAccessibility?: boolean;
+  /** Показывать переключатель темы */
+  showThemeToggle?: boolean;
   /** Фиксированный header */
   fixed?: boolean;
 }
@@ -21,6 +24,7 @@ export interface HeaderProps {
 export function Header({
   showSearch = true,
   showAccessibility = true,
+  showThemeToggle = true,
   fixed = true,
 }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -123,6 +127,9 @@ export function Header({
                 <Accessibility className="h-5 w-5" />
               </button>
             )}
+
+            {/* Переключатель темы */}
+            {showThemeToggle && <ThemeToggle />}
 
             {/* Мобильное меню */}
             <button

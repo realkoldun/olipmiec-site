@@ -8,50 +8,92 @@
 /* Дефолтные CSS переменные (светлая тема) */
 @layer base {
   :root {
+    /* Фон и текст */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
+    
+    /* Карточки */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
+    
+    /* Popover */
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
+    
+    /* Primary - синий (основной бренд) */
     --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
+    
+    /* Secondary - зелёный (спорт) */
     --secondary: 142 71% 45%;
     --secondary-foreground: 0 0% 100%;
+    
+    /* Accent - оранжевый (энергия) */
     --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
+    
+    /* Muted */
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
+    
+    /* Destructive */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
+    
+    /* Border и Input */
     --border: 214 32% 91%;
     --input: 214 32% 91%;
+    
+    /* Ring для focus */
     --ring: 221 83% 53%;
+    
+    /* Radius */
     --radius: 0.5rem;
   }
 
+  /* Тёмная тема */
   .dark {
+    /* Фон и текст */
     --background: 222 47% 11%;
     --foreground: 210 40% 98%;
+    
+    /* Карточки */
     --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
+    
+    /* Popover */
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
+    
+    /* Primary - светлее для тёмной темы */
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
+    
+    /* Secondary */
     --secondary: 142 71% 45%;
     --secondary-foreground: 222 47% 11%;
+    
+    /* Accent */
     --accent: 38 92% 50%;
     --accent-foreground: 222 47% 11%;
+    
+    /* Muted */
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
+    
+    /* Destructive */
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
+    
+    /* Border и Input */
     --border: 217 33% 17%;
     --input: 217 33% 17%;
+    
+    /* Ring */
     --ring: 224 76% 48%;
   }
 
+  /* Высокий контраст */
   .high-contrast {
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;

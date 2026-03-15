@@ -15,13 +15,14 @@ const meta = {
 - Адаптивная навигация (бургер-меню для мобильных)
 - Поиск с открытием по клику
 - Кнопка настроек доступности
+- Переключатель светлой/тёмной темы
 - Фиксированное позиционирование
 - Логотип с названием школы
 
 ## Структура
 - Логотип (слева)
 - Навигация (центр)
-- Действия: поиск, доступность, мобильное меню (справа)
+- Действия: поиск, доступность, тема, мобильное меню (справа)
         `,
       },
     },
@@ -35,6 +36,10 @@ const meta = {
     showAccessibility: {
       control: 'boolean',
       description: 'Показывать кнопку доступности',
+    },
+    showThemeToggle: {
+      control: 'boolean',
+      description: 'Показывать переключатель темы',
     },
     fixed: {
       control: 'boolean',
@@ -110,6 +115,7 @@ export const Tablet: Story = {
   args: {
     showSearch: true,
     showAccessibility: true,
+    showThemeToggle: true,
     fixed: true,
   },
   parameters: {
@@ -117,4 +123,21 @@ export const Tablet: Story = {
       defaultViewport: 'ipad',
     },
   },
+};
+
+// Тёмная тема
+export const DarkTheme: Story = {
+  args: {
+    showSearch: true,
+    showAccessibility: true,
+    showThemeToggle: true,
+    fixed: true,
+  },
+  decorators: [
+    (Story) => (
+      <div className="dark">
+        <Story />
+      </div>
+    ),
+  ],
 };
