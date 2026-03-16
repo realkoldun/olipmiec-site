@@ -6,6 +6,7 @@ import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
 import { TextResizer } from './text-resizer';
 import { ContrastToggle } from './contrast-toggle';
+import { VoiceReader } from './voice-reader';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 export interface AccessibilityPanelProps {
@@ -122,6 +123,12 @@ export function AccessibilityPanel({
 
               {/* Контраст */}
               <ContrastToggle />
+
+              {/* Озвучка текста */}
+              <VoiceReader
+                text="Пример текста для озвучки. Настройте скорость и выберите подходящий голос."
+                showAdvancedSettings={true}
+              />
 
               {/* Сброс настроек */}
               <Button

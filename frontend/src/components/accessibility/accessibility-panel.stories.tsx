@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { AccessibilityPanel } from './accessibility-panel';
+import { userEvent, within } from '@storybook/test';
+import { expect } from '@storybook/test';
 
 const meta = {
   title: 'Accessibility/Panel',
@@ -16,6 +18,7 @@ const meta = {
 - Закрытие по ESC или клику вне панели
 - Настройки размера текста
 - Настройки контраста
+- **Озвучка текста** (Web Speech API)
 - Сброс настроек
 - Сохранение в localStorage
 - Адаптивная (мобильная версия)
@@ -147,4 +150,85 @@ export const WithHeader: Story = {
       <AccessibilityPanel />
     </div>
   ),
+};
+
+// Интерактивный тест: Озвучка текста
+export const TestVoiceReader: Story = {
+  args: {
+    showFloatingButton: true,
+  },
+  render: (args) => (
+    <div style={{ minHeight: '100vh', padding: '20px' }}>
+      <h1>Тест озвучки текста</h1>
+      <p>Откройте панель доступности и проверьте работу озвучки</p>
+      <AccessibilityPanel {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Находим плавающую кнопку и кликаем
+    const floatingButton = canvas.getByRole('button', { name: /настройки доступности/i });
+    await userEvent.click(floatingButton);
+    
+    // Ждем открытия панели
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Находим кнопку начала озвучки в панели
+    const playButton = canvas.getByRole('button', { name: /начать озвучку/i });
+    await expect(playButton).toBeInTheDocument();
+    
+    // Кликаем по кнопке озвучки
+    await userEvent.click(playButton);
+    
+    // Ждем начала озвучки
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Проверяем, что кнопка изменилась на "остановить"
+    const stopButton = canvas.getByRole('button', { name: /остановить озвучку/i });
+    await expect(stopButton).toBeInTheDocument();
+    
+    // Останавливаем
+    await userEvent.click(stopButton);
+  },
+};
+
+// Интерактивный тест: Настройки озвучки
+export const TestVoiceSettings: Story = {
+  args: {
+    showFloatingButton: true,
+  },
+  render: (args) => (
+    <div style={{ minHeight: '100vh', padding: '20px' }}>
+      <h1>Тест настроек озвучки</h1>
+      <p>Проверка изменения скорости речи</p>
+      <AccessibilityPanel {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Открываем панель
+    const floatingButton = canvas.getByRole('button', { name: /настройки доступности/i });
+    await userEvent.click(floatingButton);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Находим кнопку настроек озвучки
+    const settingsButton = canvas.getByRole('button', { name: /настройки озвучки/i });
+    await userEvent.click(settingsButton);
+    
+    // Ждем открытия настроек
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    // Находим ползунок скорости
+    const rateSlider = canvas.getByRole('slider', { name: /скорость речи/i });
+    await expect(rateSlider).toBeInTheDocument();
+    
+    // Изменяем скорость
+    const initialValue = rateSlider.getAttribute('value');
+    await userEvent.type(rateSlider, '{ArrowRight}');
+    
+    // Проверяем, что значение изменилось
+    await expect(rateSlider).toHaveValue(String(parseFloat(initialValue || '1') + 0.1));
+  },
 };
