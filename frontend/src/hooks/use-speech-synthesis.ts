@@ -136,12 +136,17 @@ export function useSpeechSynthesis(): SpeechSynthesisResult {
       return;
     }
 
-    // Останавливаем текущую озвучку
-    window.speechSynthesis.cancel();
+    // Если уже говорит и текст тот же, не делаем ничего
+    if (isSpeaking) {
+      // Если текст изменился, останавливаем и начинаем новый
+      if (!isPaused) {
+        window.speechSynthesis.cancel();
+      }
+    }
 
     // Создаем новое высказывание
     const utterance = new SpeechSynthesisUtterance(text);
-    
+
     // Применяем опции
     if (options) {
       if (options.rate !== undefined) utterance.rate = options.rate;
@@ -154,7 +159,7 @@ export function useSpeechSynthesis(): SpeechSynthesisResult {
     utterance.rate = options?.rate ?? rate;
     utterance.pitch = options?.pitch ?? pitch;
     utterance.volume = options?.volume ?? volume;
-    
+
     // Применяем голос
     if (options?.voiceName) {
       const voice = voices.find(v => v.name === options.voiceName);
@@ -179,14 +184,21 @@ export function useSpeechSynthesis(): SpeechSynthesisResult {
     };
 
     utterance.onerror = (event) => {
-      console.error('Ошибка синтеза речи:', event);
+      // Игнорируем ошибку 'interrupted' — это нормальное поведение при остановке
+      if (event.error === 'interrupted') {
+        setIsSpeaking(false);
+        setIsPaused(false);
+        return;
+      }
+      
+      console.error('Ошибка синтеза речи:', event.error);
       setIsSpeaking(false);
       setIsPaused(false);
     };
 
     utteranceRef.current = utterance;
     window.speechSynthesis.speak(utterance);
-  }, [isSupported, currentVoice, voices, rate, pitch, volume]);
+  }, [isSupported, currentVoice, voices, rate, pitch, volume, isSpeaking, isPaused]);
 
   /**
    * Остановить озвучку
