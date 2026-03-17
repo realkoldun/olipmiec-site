@@ -180,26 +180,29 @@ export function TextWithSummarizer({
 
   // Определяем какой текст показывать
   const displayText = isSummarized && summarizedText ? summarizedText : text;
-  const shouldShow = text.length >= minLength && isAvailable && !isSummarized;
+  
+  // Показываем кнопку, если текст длинный и сервис доступен
+  // Скрываем только во время сокращения
+  const shouldShow = text.length >= minLength && isAvailable;
 
   // Обработчик клика
   const handleClick = useCallback(() => {
     if (!text || isSummarizing) return;
 
-    if (result) {
+    if (result?.summarizedText) {
       // Если результат уже есть, применяем его
       onResult?.(result.summarizedText);
       setIsSummarized(true);
-      reset();
     } else {
       // Иначе запускаем сокращение
+      setIsSummarized(false);
       summarize(text, options);
     }
-  }, [text, isSummarizing, result, options, onResult, reset, summarize]);
+  }, [text, isSummarizing, result, options, onResult, summarize]);
 
   // Эффект для автоматического обновления при получении результата
   useEffect(() => {
-    if (result && !isSummarized) {
+    if (result?.summarizedText && !isSummarized) {
       onResult?.(result.summarizedText);
       setIsSummarized(true);
     }
@@ -215,7 +218,7 @@ export function TextWithSummarizer({
   if (!shouldShow && !isSummarizing) {
     return (
       <div className={cn('relative', className)}>
-        <p className="whitespace-pre-wrap">{text}</p>
+        <p className="whitespace-pre-wrap">{displayText}</p>
       </div>
     );
   }
@@ -283,6 +286,19 @@ export function TextWithSummarizer({
           className="mt-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           Показать оригинал
+        </button>
+      )}
+
+      {/* Кнопка сброса результата */}
+      {isSummarized && (
+        <button
+          onClick={() => {
+            setIsSummarized(false);
+            reset();
+          }}
+          className="mt-2 text-xs text-primary hover:underline transition-colors"
+        >
+          Сбросить результат
         </button>
       )}
     </div>
