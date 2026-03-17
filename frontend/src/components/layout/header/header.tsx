@@ -6,7 +6,7 @@ import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
 import { MobileNav } from '../mobile-nav/mobile-nav';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { AccessibilityPanel } from '@/components/accessibility/accessibility-panel';
+import { AccessibilityPanel } from '@/components/accessibility';
 
 export interface HeaderProps {
   /** Показывать поиск */

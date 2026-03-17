@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { X, Monitor } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from '@/components/ui/button/button';
-import { TextResizer } from './text-resizer';
-import { ContrastToggle } from './contrast-toggle';
-import { VoiceReader } from './voice-reader';
+import { TextResizer } from '../text-resizer/text-resizer';
+import { ContrastToggle } from '../contrast-toggle/contrast-toggle';
+import { VoiceReader } from '../voice-reader/voice-reader';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 export interface AccessibilityPanelProps {
