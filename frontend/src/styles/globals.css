@@ -259,6 +259,20 @@ body.contrast-dark * {
     --border: 0 0% 100%;
   }
 
+  /* Shimmer эффект для скелетона */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite linear;
+  }
+
   /* Скрытие скроллбара с сохранением прокрутки */
   .scrollbar-hide {
     -ms-overflow-style: none !important; /* IE and Edge */
