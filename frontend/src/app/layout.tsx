@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import { useEffect } from 'react';
 import '@/styles/globals.css';
 import { AccessibilityProvider } from '@/providers/accessibility-provider';
+import { SearchProvider } from '@/providers/search-provider';
 
 const inter = Inter({
   subsets: ['cyrillic', 'latin'],
@@ -24,7 +25,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <ApplyAccessibilitySettings />
         <AccessibilityProvider>
-          {children}
+          <SearchProvider>
+            {children}
+          </SearchProvider>
         </AccessibilityProvider>
       </body>
     </html>

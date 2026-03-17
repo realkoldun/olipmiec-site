@@ -7,6 +7,8 @@ import { mainNavigation } from '../navigation';
 import { MobileNav } from '../mobile-nav/mobile-nav';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { AccessibilityPanel } from '@/components/accessibility';
+import { SearchModal } from '@/components/search';
+import { useSearch } from '@/hooks/use-search';
 
 export interface HeaderProps {
   /** Показывать поиск */
@@ -31,18 +33,8 @@ export function Header({
   showAccessibilityPanel = true,
   fixed = true,
 }: HeaderProps) {
-  const [searchOpen, setSearchOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  // Обработчик открытия/закрытия поиска
-  const toggleSearch = () => {
-    setSearchOpen((prev) => !prev);
-  };
-
-  // Обработчик закрытия поиска
-  const closeSearch = () => {
-    setSearchOpen(false);
-  };
+  const { isSearchOpen, openSearch, closeSearch } = useSearch();
 
   // Обработчик открытия мобильного меню
   const openMobileNav = () => {
@@ -99,26 +91,13 @@ export function Header({
           <div className="flex items-center gap-2">
             {/* Поиск */}
             {showSearch && (
-              <>
-                <button
-                  className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  onClick={toggleSearch}
-                  aria-label="Открыть поиск"
-                >
-                  <Search className="h-5 w-5" />
-                </button>
-                {searchOpen && (
-                  <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-full max-w-md flex items-center gap-2 rounded-md border bg-background p-2 shadow-lg animate-in fade-in slide-in-from-top-2">
-                    <input
-                      type="search"
-                      placeholder="Поиск..."
-                      className="flex-1 h-10 px-3 text-sm outline-none"
-                      autoFocus
-                      onBlur={closeSearch}
-                    />
-                  </div>
-                )}
-              </>
+              <button
+                className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                onClick={openSearch}
+                aria-label="Открыть поиск"
+              >
+                <Search className="h-5 w-5" />
+              </button>
             )}
 
             {/* Доступность */}
@@ -154,9 +133,12 @@ export function Header({
 
       {/* Мобильная навигация */}
       <MobileNav open={mobileNavOpen} onClose={closeMobileNav} />
-      
+
       {/* Панель доступности */}
       {showAccessibilityPanel && <AccessibilityPanel />}
+
+      {/* Модальное окно поиска */}
+      <SearchModal isOpen={isSearchOpen} onClose={closeSearch} />
     </>
   );
 }
