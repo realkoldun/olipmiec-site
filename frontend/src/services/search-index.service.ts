@@ -9,7 +9,7 @@ import type {
 
 /**
  * Сервис для индексации и поиска
- * 
+ *
  * В будущем можно заменить на вызов API бэкенда:
  * - Изменить на вызов /api/search
  * - Индексация будет на стороне сервера
@@ -29,7 +29,10 @@ export class SearchIndexService implements SearchService {
    * Индексировать множество элементов
    */
   indexMany(items: SearchIndexItem[]): void {
-    items.forEach((item) => this.index(item));
+    items.forEach((item) => {
+      const key = `${item.type}:${item.id}`;
+      this.index.set(key, item);
+    });
   }
 
   /**
