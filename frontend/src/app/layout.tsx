@@ -37,7 +37,7 @@ export default function RootLayout({
 // Компонент для применения настроек доступности
 function ApplyAccessibilitySettings() {
   'use client';
-  
+
   useEffect(() => {
     try {
       const stored = localStorage.getItem('accessibility-settings');
