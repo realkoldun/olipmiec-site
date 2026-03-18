@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams, usePathname, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Calendar, User, Eye, ArrowLeft } from 'lucide-react';
 import { getNewsById } from '@/mocks/news.mock';
 import { Button } from '@/components/ui/button/button';
@@ -92,12 +93,16 @@ export default function NewsDetailPage() {
         {/* Изображение */}
         {news.image && (
           <figure className="mb-8">
-            <img
-              src={news.image}
-              alt={news.title}
-              className="w-full rounded-lg object-cover"
-              style={{ aspectRatio: '16/9' }}
-            />
+            <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+              <Image
+                src={news.image}
+                alt={news.title}
+                fill
+                sizes="(max-width: 1400px) 100vw, 1200px"
+                className="rounded-lg object-cover"
+                priority
+              />
+            </div>
             {news.excerpt && (
               <figcaption className="mt-2 text-center text-sm text-muted-foreground">
                 {news.excerpt}

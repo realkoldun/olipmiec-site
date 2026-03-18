@@ -2,6 +2,7 @@
 
 import type { NewsItem } from '@/types/news';
 import { Calendar, User, Eye } from 'lucide-react';
+import Image from 'next/image';
 import { cn } from '@/utils/cn';
 
 export interface NewsCardProps {
@@ -70,10 +71,12 @@ export function NewsCard({
       {/* Изображение */}
       {showImage && news.image && (
         <div className="relative aspect-video overflow-hidden bg-muted">
-          <img
+          <Image
             src={news.image}
             alt={news.title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
           {/* Категория */}
