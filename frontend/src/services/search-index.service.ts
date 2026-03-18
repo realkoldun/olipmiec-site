@@ -145,6 +145,7 @@ export class SearchIndexService implements SearchService {
     item: SearchIndexItem,
     queryWords: string[]
   ): SearchResult | { relevance: 0 } {
+    const normalizedQuery = queryWords.join(' ');
     const normalizedTitle = normalizeText(item.title);
     const normalizedContent = normalizeText(item.content);
     const normalizedTags = item.tags.map(normalizeText);
