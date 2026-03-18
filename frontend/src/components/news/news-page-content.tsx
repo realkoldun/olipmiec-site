@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NewsList } from '@/components/news/news-list';
 import { getNews } from '@/mocks/news.mock';
+import { Header } from '@/components/layout/header/header';
+import { Footer } from '@/components/layout/footer/footer';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { Button } from '@/components/ui/button/button';
 
@@ -26,7 +28,11 @@ export function NewsPageContent() {
   const itemsPerPage = 6;
 
   // Получение новостей
-  const { items: news, total, totalPages } = getNews({
+  const {
+    items: news,
+    total,
+    totalPages,
+  } = getNews({
     page: currentPage,
     limit: itemsPerPage,
     category: selectedCategory,
@@ -59,6 +65,11 @@ export function NewsPageContent() {
   ];
 
   return (
+    <div className="flex min-h-screen flex-col">
+      {/* Header */}
+      <Header />
+
+      {/* Основной контент */}
       <main className="flex-1">
         <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
           {/* Хлебные крошки */}
@@ -67,9 +78,7 @@ export function NewsPageContent() {
           {/* Заголовок */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Новости</h1>
-            <p className="text-muted-foreground">
-              Последние события и объявления школы
-            </p>
+            <p className="text-muted-foreground">Последние события и объявления школы</p>
           </div>
 
           {/* Фильтры по категории */}
@@ -90,9 +99,7 @@ export function NewsPageContent() {
           </div>
 
           {/* Счетчик */}
-          <div className="mb-4 text-sm text-muted-foreground">
-            Найдено: {total} новостей
-          </div>
+          <div className="mb-4 text-sm text-muted-foreground">Найдено: {total} новостей</div>
 
           {/* Список новостей */}
           <NewsList
@@ -105,5 +112,9 @@ export function NewsPageContent() {
           />
         </div>
       </main>
+
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }
