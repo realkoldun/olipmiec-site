@@ -71,19 +71,6 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
 
   const searchResults = results as SearchResponse | null;
 
-  // Пустой результат
-  if (!searchResults || searchResults.total === 0) {
-    return (
-      <div className={cn('p-8 text-center', className)}>
-        <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
-        <h3 className="mt-4 text-lg font-semibold">Ничего не найдено</h3>
-        <p className="mt-2 text-muted-foreground">
-          Попробуйте изменить поисковый запрос
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className={cn('space-y-4', className)}>
       {/* Фильтры по типу */}
@@ -107,43 +94,72 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
         })}
       </div>
 
-      {/* Статистика */}
-      <div className="text-sm text-muted-foreground">
-        Найдено: {searchResults.total} результатов за {searchResults.processingTime} мс
-      </div>
+      {/* Загрузка */}
+      {status === 'searching' && (
+        <SearchResultsSkeleton />
+      )}
+
+      {/* Ошибка */}
+      {status === 'error' && (
+        <div className={cn('p-8 text-center', className)}>
+          <AlertCircle className="mx-auto h-12 w-12 text-destructive" />
+          <h3 className="mt-4 text-lg font-semibold">Ошибка поиска</h3>
+          <p className="mt-2 text-muted-foreground">{error}</p>
+        </div>
+      )}
+
+      {/* Пустой результат */}
+      {(!searchResults || searchResults.total === 0) && status !== 'searching' && status !== 'error' && (
+        <div className={cn('p-8 text-center', className)}>
+          <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
+          <h3 className="mt-4 text-lg font-semibold">Ничего не найдено</h3>
+          <p className="mt-2 text-muted-foreground">
+            Попробуйте изменить поисковый запрос или выбрать другую категорию
+          </p>
+        </div>
+      )}
 
       {/* Результаты */}
-      <div className="space-y-3">
-        {searchResults.results.map((result) => (
-          <SearchResultItem
-            key={result.item.id}
-            result={result}
-            onClick={() => onItemClick?.(result.item.url)}
-          />
-        ))}
-      </div>
+      {searchResults && searchResults.total > 0 && status !== 'searching' && status !== 'error' && (
+        <>
+          {/* Статистика */}
+          <div className="text-sm text-muted-foreground">
+            Найдено: {searchResults.total} результатов за {searchResults.processingTime} мс
+          </div>
 
-      {/* Пагинация */}
-      {searchResults.totalPages > 1 && (
-        <div className="flex justify-center gap-2 pt-4">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={searchResults.page === 1}
-          >
-            Предыдущая
-          </Button>
-          <span className="flex items-center px-4 text-sm">
-            Страница {searchResults.page} из {searchResults.totalPages}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={searchResults.page === searchResults.totalPages}
-          >
-            Следующая
-          </Button>
-        </div>
+          <div className="space-y-3">
+            {searchResults.results.map((result) => (
+              <SearchResultItem
+                key={result.item.id}
+                result={result}
+                onClick={() => onItemClick?.(result.item.url)}
+              />
+            ))}
+          </div>
+
+          {/* Пагинация */}
+          {searchResults.totalPages > 1 && (
+            <div className="flex justify-center gap-2 pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={searchResults.page === 1}
+              >
+                Предыдущая
+              </Button>
+              <span className="flex items-center px-4 text-sm">
+                Страница {searchResults.page} из {searchResults.totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={searchResults.page === searchResults.totalPages}
+              >
+                Следующая
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
