@@ -2,10 +2,12 @@ import type { EventItem } from '@/types/event';
 
 /**
  * Генерация URL тестового изображения
- * Использует picsum.photos для случайных изображений
+ * Использует placehold.co для заглушек с текстом
+ * Работает в Беларуси без ограничений
  */
-function getTestImage(width: number, height: number, seed: string): string {
-  return `https://picsum.photos/seed/${seed}/${width}/${height}`;
+function getTestImage(width: number, height: number, text: string): string {
+  const encodedText = encodeURIComponent(text);
+  return `https://placehold.co/${width}x${height}/10b981/ffffff?text=${encodedText}&font=roboto`;
 }
 
 /**
@@ -28,7 +30,7 @@ export const mockEvents: EventItem[] = [
 Вход свободный!
     `.trim(),
     excerpt: 'Областные соревнования по легкой атлетике среди юношей и девушек',
-    image: getTestImage(800, 450, 'athletics-competition'),
+    image: getTestImage(800, 450, 'Легкая атлетика'),
     startDate: '2025-04-15',
     endDate: '2025-04-17',
     startTime: '10:00',
@@ -60,7 +62,7 @@ export const mockEvents: EventItem[] = [
 Приходите, будем рады видеть вас!
     `.trim(),
     excerpt: 'Приглашаем на День открытых дверей!',
-    image: getTestImage(800, 450, 'open-door-event'),
+    image: getTestImage(800, 450, 'День открытых дверей'),
     startDate: '2025-03-25',
     startTime: '10:00',
     location: 'СДЮШОР "Олимпиец", ул. Спортивная 1',
@@ -87,7 +89,7 @@ export const mockEvents: EventItem[] = [
 Победители награждаются кубками и медалями!
     `.trim(),
     excerpt: 'Городской турнир по футболу среди детских команд',
-    image: getTestImage(800, 450, 'football-tournament'),
+    image: getTestImage(800, 450, 'Футбольный турнир'),
     startDate: '2025-05-01',
     endDate: '2025-05-03',
     startTime: '09:00',
@@ -117,7 +119,7 @@ export const mockEvents: EventItem[] = [
 Тренер: Елена Сидорова, КМС по плаванию
     `.trim(),
     excerpt: 'Учебно-тренировочный сбор для спортсменов-разрядников',
-    image: getTestImage(800, 450, 'swimming-training'),
+    image: getTestImage(800, 450, 'Плавание'),
     startDate: '2025-06-01',
     endDate: '2025-06-14',
     startTime: '08:00',
@@ -147,7 +149,7 @@ export const mockEvents: EventItem[] = [
 Приходите всей семьей!
     `.trim(),
     excerpt: 'Семейный спортивный праздник',
-    image: getTestImage(800, 450, 'family-sport-holiday'),
+    image: getTestImage(800, 450, 'Семейный праздник'),
     startDate: '2025-06-08',
     startTime: '12:00',
     location: 'Спортзал "Олимпиец"',
@@ -177,7 +179,7 @@ export const mockEvents: EventItem[] = [
 Тренеры: игроки БК "Витебск"
     `.trim(),
     excerpt: 'Мастер-класс от игроков БК "Витебск"',
-    image: getTestImage(800, 450, 'basketball-masterclass'),
+    image: getTestImage(800, 450, 'Баскетбол'),
     startDate: '2025-04-20',
     startTime: '14:00',
     location: 'Баскетбольный зал "Олимпиец"',
