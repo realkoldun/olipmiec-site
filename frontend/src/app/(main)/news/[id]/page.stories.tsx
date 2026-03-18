@@ -63,9 +63,6 @@ export const SportNews: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'news-1' },
-  },
 };
 
 // Объявление
@@ -76,9 +73,6 @@ export const AnnouncementNews: Story = {
         pathname: '/news/news-2',
       },
     },
-  },
-  args: {
-    params: { id: 'news-2' },
   },
 };
 
@@ -91,9 +85,6 @@ export const EventNews: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'news-3' },
-  },
 };
 
 // Плавание (рекорд)
@@ -105,9 +96,6 @@ export const SwimmingNews: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'news-4' },
-  },
 };
 
 // Баскетбол
@@ -118,9 +106,6 @@ export const BasketballNews: Story = {
         pathname: '/news/news-6',
       },
     },
-  },
-  args: {
-    params: { id: 'news-6' },
   },
 };
 
@@ -228,9 +213,6 @@ export const NotFound: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'non-existent' },
-  },
 };
 
 // Новость с большим количеством тегов
@@ -241,9 +223,6 @@ export const ManyTags: Story = {
         pathname: '/news/news-1',
       },
     },
-  },
-  args: {
-    params: { id: 'news-1' },
   },
 };
 
@@ -256,9 +235,6 @@ export const WithoutImage: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'news-5' },
-  },
 };
 
 // Длинный текст новости
@@ -270,9 +246,6 @@ export const LongContent: Story = {
       },
     },
   },
-  args: {
-    params: { id: 'news-1' },
-  },
 };
 
 // Все метаданные
@@ -282,11 +255,6 @@ export const WithAllMeta: Story = {
       navigation: {
         pathname: '/news/news-1',
       },
-    },
-  },
-  args: {
-    params: { 
-      id: 'news-1',
     },
   },
 };
