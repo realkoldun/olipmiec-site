@@ -4,6 +4,8 @@ import { SearchProvider } from '@/providers/search-provider';
 import { searchIndexService } from '@/services/search-index.service';
 import { mockNews, mockSections, mockTrainers, mockDocuments } from '@/mocks/search.mock';
 import type { ReactElement } from 'react';
+import { useEffect } from 'react';
+import { useSearch } from '@/hooks/use-search';
 
 const meta = {
   title: 'Search/SearchResults',
@@ -38,31 +40,50 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof SearchResults>;
 
-// Декоратор с провайдером и инициализацией данных
-const withProviderAndData = (Story: () => ReactElement) => {
-  return (
-    <SearchProvider>
-      <div style={{ maxWidth: '800px', width: '100%' }}>
-        <Story />
-      </div>
-    </SearchProvider>
-  );
-};
+// Компонент для инициализации данных и выполнения поиска
+function SearchResultsWithQuery({
+  query,
+  onItemClick,
+}: {
+  query?: string;
+  onItemClick?: (url: string) => void;
+}) {
+  const { search } = useSearch();
 
-// Инициализация данных
-const initializeData = () => {
-  const allItems = [...mockNews, ...mockSections, ...mockTrainers, ...mockDocuments];
-  searchIndexService.indexMany(allItems);
-};
+  useEffect(() => {
+    // Инициализация данных
+    const allItems = [...mockNews, ...mockSections, ...mockTrainers, ...mockDocuments];
+    searchIndexService.indexMany(allItems);
+
+    // Выполнение поиска если есть запрос
+    if (query) {
+      search(query);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  return <SearchResults onItemClick={onItemClick || (() => {})} />;
+}
+
+// Декоратор с провайдером
+const withProvider = (Story: () => ReactElement) => (
+  <SearchProvider>
+    <div style={{ maxWidth: '800px', width: '100%' }}>
+      <Story />
+    </div>
+  </SearchProvider>
+);
 
 // Пустое состояние (нет запроса)
 export const Empty: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery />,
 };
 
 // Состояние загрузки
 export const Loading: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery />,
   parameters: {
     nextjs: {
       navigation: {
@@ -72,24 +93,28 @@ export const Loading: Story = {
   },
 };
 
-// С результатами поиска
+// С результатами поиска (футбол)
 export const WithResults: Story = {
-  decorators: [withProviderAndData],
-  parameters: {
-    nextjs: {
-      navigation: {
-        search: '?query=футбол&status=success',
-      },
-    },
-  },
-  play: async () => {
-    initializeData();
-  },
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="футбол" />,
+};
+
+// С результатами поиска (спорт)
+export const WithResultsSport: Story = {
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="спорт" />,
+};
+
+// С результатами поиска (школа)
+export const WithResultsSchool: Story = {
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="школа" />,
 };
 
 // С ошибкой
 export const Error: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery />,
   parameters: {
     nextjs: {
       navigation: {
@@ -99,78 +124,61 @@ export const Error: Story = {
   },
 };
 
-// Много результатов (с пагинацией)
+// С результатами и пагинацией (общий запрос)
 export const WithPagination: Story = {
-  decorators: [withProviderAndData],
-  parameters: {
-    nextjs: {
-      navigation: {
-        search: '?query=спорт&page=1&totalPages=5',
-      },
-    },
-  },
-  play: async () => {
-    initializeData();
-  },
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="олимпиец" />,
 };
 
 // Фильтр по типу: Новости
 export const FilterNews: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="победа" />,
   parameters: {
     nextjs: {
       navigation: {
-        search: '?query=победа&type=news',
+        search: '?type=news',
       },
     },
-  },
-  play: async () => {
-    initializeData();
   },
 };
 
 // Фильтр по типу: Секции
 export const FilterSections: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="плавание" />,
   parameters: {
     nextjs: {
       navigation: {
-        search: '?query=плавание&type=section',
+        search: '?type=section',
       },
     },
-  },
-  play: async () => {
-    initializeData();
   },
 };
 
 // Фильтр по типу: Тренеры
 export const FilterTrainers: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="тренер" />,
   parameters: {
     nextjs: {
       navigation: {
-        search: '?query=тренер&type=trainer',
+        search: '?type=trainer',
       },
     },
-  },
-  play: async () => {
-    initializeData();
   },
 };
 
 // Фильтр по типу: Документы
 export const FilterDocuments: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="положение" />,
   parameters: {
     nextjs: {
       navigation: {
-        search: '?query=положение&type=document',
+        search: '?type=document',
       },
     },
-  },
-  play: async () => {
-    initializeData();
   },
 };
 
@@ -185,39 +193,23 @@ export const Dark: Story = {
       </SearchProvider>
     ),
   ],
-  parameters: {
-    nextjs: {
-      navigation: {
-        search: '?query=футбол',
-      },
-    },
-  },
-  play: async () => {
-    initializeData();
-  },
+  render: () => <SearchResultsWithQuery query="футбол" />,
 };
 
 // Мобильная версия
 export const Mobile: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
+  render: () => <SearchResultsWithQuery query="секция" />,
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',
     },
-    nextjs: {
-      navigation: {
-        search: '?query=спорт',
-      },
-    },
-  },
-  play: async () => {
-    initializeData();
   },
 };
 
 // Skeleton загрузка
 export const Skeleton: Story = {
-  decorators: [withProviderAndData],
+  decorators: [withProvider],
   render: () => (
     <div style={{ maxWidth: '800px', width: '100%' }}>
       <div className="space-y-4">

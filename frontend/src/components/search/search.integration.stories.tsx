@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { SearchBar } from '../search-bar/search-bar';
-import { SearchResults } from '../search-results/search-results';
-import { SearchHighlight } from '../search-highlight/search-highlight';
 import { SearchProvider } from '@/providers/search-provider';
 import { useSearch } from '@/hooks/use-search';
 import { searchIndexService } from '@/services/search-index.service';
 import { mockNews, mockSections, mockTrainers, mockDocuments } from '@/mocks/search.mock';
 import type { ReactElement } from 'react';
+import { SearchResults } from './search-results/search-results';
+import {SearchBar} from "@/components/search/search-bar/search-bar";
+import {SearchHighlight} from "@/components/search/search-highlight/search-highlight";
 
 const meta = {
   title: 'Search/Integration',
