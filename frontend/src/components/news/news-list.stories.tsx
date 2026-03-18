@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { NewsList } from './news-list';
 import { mockNews } from '@/mocks/news.mock';
+import { within, userEvent, expect } from '@storybook/test';
 
 const meta = {
   title: 'News/NewsList',
@@ -193,4 +194,84 @@ export const TestPagination: Story = {
     // Кликаем
     await userEvent.click(page2Button);
   },
+};
+
+// Все новости (8 штук, 2 страницы)
+export const AllNews: Story = {
+  args: {
+    news: mockNews,
+    page: 1,
+    totalPages: 2,
+    itemsPerPage: 6,
+    onNewsClick: () => {},
+    onPageChange: () => {},
+  },
+};
+
+// Вторая страница
+export const PageTwo: Story = {
+  args: {
+    news: mockNews.slice(6, 8),
+    page: 2,
+    totalPages: 2,
+    onNewsClick: () => {},
+    onPageChange: () => {},
+  },
+};
+
+// Разные категории
+export const MixedCategories: Story = {
+  args: {
+    news: mockNews.slice(0, 9),
+    onNewsClick: () => {},
+  },
+};
+
+// Интерактивный тест: Проверка количества новостей
+export const TestNewsCount: Story = {
+  args: {
+    news: mockNews.slice(0, 6),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Проверяем количество карточек
+    const cards = canvas.getAllByRole('button');
+    await expect(cards.length).toBe(6);
+  },
+};
+
+// Интерактивный тест: Проверка пагинации
+export const TestPaginationExists: Story = {
+  args: {
+    news: mockNews.slice(0, 6),
+    page: 1,
+    totalPages: 3,
+    onNewsClick: () => {},
+    onPageChange: () => {},
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Проверяем наличие пагинации
+    const nextPageButton = canvas.getByRole('button', { name: 'Следующая страница' });
+    await expect(nextPageButton).toBeInTheDocument();
+  },
+};
+
+// Счетчик новостей
+export const WithCount: Story = {
+  args: {
+    news: mockNews.slice(0, 6),
+  },
+  decorators: [
+    (Story) => (
+      <div>
+        <div style={{ marginBottom: '16px', color: '#666' }}>
+          Найдено: 8 новостей
+        </div>
+        <Story />
+      </div>
+    ),
+  ],
 };

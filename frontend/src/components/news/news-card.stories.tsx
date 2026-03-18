@@ -3,6 +3,7 @@ import { NewsCard } from './news-card';
 import { userEvent, within } from '@storybook/test';
 import { expect } from '@storybook/test';
 import type { NewsItem } from '@/types/news';
+import { mockNews } from '@/mocks/news.mock';
 
 const meta = {
   title: 'News/NewsCard',
@@ -206,5 +207,62 @@ export const ManyTags: Story = {
       ...sampleNews,
       tags: ['тег1', 'тег2', 'тег3', 'тег4', 'тег5', 'тег6'],
     },
+  },
+};
+
+// Все новости из моковых данных
+export const AllMockNews: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+      {mockNews.map((news) => (
+        <NewsCard key={news.id} news={news} />
+      ))}
+    </div>
+  ),
+};
+
+// Интерактивный тест: Проверка заголовка
+export const TestTitle: Story = {
+  args: {
+    news: sampleNews,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Проверяем заголовок
+    const title = canvas.getByText(sampleNews.title);
+    await expect(title).toBeInTheDocument();
+  },
+};
+
+// Интерактивный тест: Проверка тегов
+export const TestTags: Story = {
+  args: {
+    news: sampleNews,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Проверяем наличие тегов
+    const tags = canvas.getAllByRole('status');
+    expect(tags.length).toBeGreaterThan(0);
+  },
+};
+
+// Интерактивный тест: Проверка мета-информации
+export const TestMeta: Story = {
+  args: {
+    news: sampleNews,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // Проверяем дату
+    const dateElement = canvas.getByText(/март 2025/i);
+    await expect(dateElement).toBeInTheDocument();
+    
+    // Проверяем просмотры
+    const viewsElement = canvas.getByText('1250');
+    await expect(viewsElement).toBeInTheDocument();
   },
 };
