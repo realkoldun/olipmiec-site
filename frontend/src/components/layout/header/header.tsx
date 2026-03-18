@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, Search, Accessibility } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -33,8 +34,15 @@ export function Header({
   showAccessibilityPanel = true,
   fixed = true,
 }: HeaderProps) {
+  const router = useRouter();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { isSearchOpen, openSearch, closeSearch } = useSearch();
+
+  // Обработчик клика на ссылку навигации
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    router.push(href);
+  };
 
   // Обработчик открытия мобильного меню
   const openMobileNav = () => {
@@ -44,11 +52,6 @@ export function Header({
   // Обработчик закрытия мобильного меню
   const closeMobileNav = () => {
     setMobileNavOpen(false);
-  };
-
-  // Обработчик клика на ссылку навигации
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
   };
 
   return (
@@ -61,7 +64,11 @@ export function Header({
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-[1400px]">
           {/* Логотип */}
-          <a href="/" onClick={handleNavClick} className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
+          <a
+            href="/"
+            onClick={(e) => handleNavClick(e, '/')}
+            className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
+          >
             <span className="text-2xl">🏆</span>
             <span className="flex flex-col">
               <span className="text-lg font-bold leading-none">Олимпиец</span>
@@ -76,7 +83,7 @@ export function Header({
                 <li key={item.href} className="relative">
                   <a
                     href={item.href}
-                    onClick={handleNavClick}
+                    onClick={(e) => handleNavClick(e, item.href)}
                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
                     title={item.description}
                   >
