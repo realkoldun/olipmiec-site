@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { Calendar, User, Eye, ArrowLeft } from 'lucide-react';
 import { getNewsById } from '@/mocks/news.mock';
 import { Button } from '@/components/ui/button/button';
@@ -17,8 +17,11 @@ import { cn } from '@/utils/cn';
  */
 export default function NewsDetailPage() {
   const params = useParams();
+  const pathname = usePathname();
   const router = useRouter();
-  const newsId = params.id as string;
+  
+  // Получаем ID из params или из pathname (для Storybook)
+  const newsId = params?.id || pathname?.split('/').pop() || '';
 
   // Получение новости
   const news = getNewsById(newsId);
