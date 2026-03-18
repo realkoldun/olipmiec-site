@@ -1,0 +1,34 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": true,
+  "quoteProps": "as-needed",
+  "trailingComma": "es5",
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "requirePragma": false,
+  "insertPragma": false,
+  "proseWrap": "always",
+  "experimentalTernaries": false,
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "lf",
+  "printWidth": 120,
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "angular",
+        "htmlWhitespaceSensitivity": "ignore",
+        "proseWrap": "never"
+      }
+    },
+    {
+      "files": ["tsconfig.*"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ]
+}

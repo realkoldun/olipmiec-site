@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NewsList } from '@/components/news/news-list';
 import { getNews } from '@/mocks/news.mock';
-import { Header } from '@/components/layout/header/header';
-import { Footer } from '@/components/layout/footer/footer';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { Button } from '@/components/ui/button/button';
 
@@ -61,11 +59,6 @@ export function NewsPageContent() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <Header />
-
-      {/* Основной контент */}
       <main className="flex-1">
         <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
           {/* Хлебные крошки */}
@@ -112,9 +105,5 @@ export function NewsPageContent() {
           />
         </div>
       </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
   );
 }
