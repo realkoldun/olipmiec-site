@@ -6,9 +6,9 @@ import type { EventItem } from '@/types/event';
  * Работает в Беларуси без ограничений
  */
 function getTestImage(width: number, height: number, text: string): string {
-  // Кодируем текст для URL
-  const encodedText = encodeURIComponent(text);
-  return `https://placehold.co/${width}x${height}/10b981/ffffff?text=${encodedText}`;
+  // Используем URL без пробелов
+  const safeText = text.replace(/\s+/g, '-');
+  return `https://placehold.co/${width}x${height}/10b981/ffffff?text=${safeText}`;
 }
 
 /**

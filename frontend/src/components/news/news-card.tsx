@@ -78,6 +78,7 @@ export function NewsCard({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
+            unoptimized
           />
           {/* Категория */}
           {news.category && (

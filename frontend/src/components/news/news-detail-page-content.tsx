@@ -128,6 +128,7 @@ export function NewsDetailPageContent() {
                     sizes="(max-width: 1400px) 100vw, 1200px"
                     className="rounded-lg object-cover"
                     priority
+                    unoptimized
                   />
                 </div>
                 {news.excerpt && (
