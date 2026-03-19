@@ -1,59 +1,30 @@
 import type { SearchIndexItem } from '@/types/search';
 import { searchIndexService } from '@/services/search-index.service';
+import { mockNews as newsMock } from './news.mock';
+import { mockSections } from './sections.mock';
+import { mockTrainers } from './trainers.mock';
+import { mockDocuments } from './documents.mock';
+
+/**
+ * Конвертация новостей из news.mock в формат SearchIndexItem
+ */
+function convertNewsToSearchItems() {
+  return newsMock.map((news) => ({
+    id: news.id,
+    type: 'news' as const,
+    title: news.title,
+    content: news.content,
+    tags: news.tags,
+    url: `/news/${news.id}`,
+    createdAt: news.createdAt,
+    excerpt: news.excerpt || news.content.slice(0, 100),
+  }));
+}
 
 /**
  * Моковые данные для поиска
  */
-
-// Новости
-export const mockNews: SearchIndexItem[] = [
-  {
-    id: 'news-1',
-    type: 'news',
-    title: 'Победа на областных соревнованиях по легкой атлетике',
-    content: `
-Витебские спортсмены завоевали 5 золотых медалей на республиканских 
-соревнованиях по легкой атлетике, которые проходили в Минске с 15 по 
-17 марта 2025 года. Среди победителей — воспитанники СДЮШОР 
-«Олимпиец»: Иван Петров (бег на 100 метров), Анна Сидорова (прыжки в 
-высоту), эстафетная команда 4×100 метров.
-    `.trim(),
-    tags: ['соревнования', 'легкая атлетика', 'победа', 'медали'],
-    url: '/news/1',
-    createdAt: '2025-03-18',
-    excerpt: 'Витебские спортсмены завоевали 5 золотых медалей...',
-  },
-  {
-    id: 'news-2',
-    type: 'news',
-    title: 'Открыта запись в футбольную секцию для детей 7-10 лет',
-    content: `
-СДЮШОР «Олимпиец» объявляет набор детей в возрасте от 7 до 10 лет 
-в футбольную секцию. Занятия проходят три раза в неделю на современном 
-стадионе с искусственным покрытием. Тренер — Сергей Козлов, 
-мастер спорта по футболу.
-    `.trim(),
-    tags: ['футбол', 'секция', 'набор', 'дети'],
-    url: '/news/2',
-    createdAt: '2025-03-15',
-    excerpt: 'Объявлен набор детей в футбольную секцию...',
-  },
-  {
-    id: 'news-3',
-    type: 'news',
-    title: 'День открытых дверей состоится 25 марта',
-    content: `
-Приглашаем всех желающих посетить День открытых дверей в 
-СДЮШОР «Олимпиец». Вы сможете познакомиться с тренерами, 
-посетить тренировки, узнать о расписании занятий и условиях 
-поступления в школу.
-    `.trim(),
-    tags: ['день открытых дверей', 'мероприятие', 'тренировки'],
-    url: '/news/3',
-    createdAt: '2025-03-10',
-    excerpt: 'День открытых дверей 25 марта...',
-  },
-];
+const mockNews = convertNewsToSearchItems();
 
 // Секции
 export const mockSections: SearchIndexItem[] = [
