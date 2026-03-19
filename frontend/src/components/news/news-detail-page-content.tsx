@@ -69,7 +69,7 @@ export function NewsDetailPageContent() {
       <Header />
 
       {/* Основной контент */}
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
           {/* Хлебные крошки */}
           <Breadcrumbs items={breadcrumbItems} className="mb-6" />

@@ -25,7 +25,7 @@ export function NotFoundPage() {
       <Header />
 
       {/* Основной контент */}
-      <main className="flex-1">
+      <main className="flex-1 pt-16">
         <div className="container mx-auto flex flex-col items-center justify-center px-4 py-16 md:px-6 md:py-24 max-w-[1400px]">
           {/* Иконка ошибки */}
           <div className="mb-8 rounded-full bg-muted p-6">
