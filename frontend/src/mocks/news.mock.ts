@@ -35,7 +35,7 @@ export const mockNews: NewsItem[] = [
 только тренеров, но и всей команды поддержки», — сказал он.
     `.trim(),
     excerpt: 'Витебские спортсмены завоевали 5 золотых медалей на республиканских соревнованиях...',
-    image: getTestImage(800, 450, 'Легкая атлетика'),
+    image: getTestImage(800, 450, 'Athletics'),
     author: 'Сергей Иванов',
     createdAt: '2025-03-18',
     tags: ['соревнования', 'легкая атлетика', 'победа', 'медали'],
@@ -63,7 +63,7 @@ export const mockNews: NewsItem[] = [
 Первое занятие — бесплатное!
     `.trim(),
     excerpt: 'Объявлен набор детей в футбольную секцию. Первое занятие бесплатно!',
-    image: getTestImage(800, 450, 'Футбол'),
+    image: getTestImage(800, 450, 'Football'),
     author: 'Мария Петрова',
     createdAt: '2025-03-15',
     tags: ['футбол', 'секция', 'набор', 'дети'],
@@ -90,7 +90,7 @@ export const mockNews: NewsItem[] = [
 Место: ул. Спортивная, 1
     `.trim(),
     excerpt: '25 марта приглашаем на День открытых дверей!',
-    image: getTestImage(800, 450, 'День открытых дверей'),
+    image: getTestImage(800, 450, 'Open Day'),
     author: 'Администрация',
     createdAt: '2025-03-10',
     tags: ['день открытых дверей', 'мероприятие', 'тренировки'],
@@ -114,7 +114,7 @@ export const mockNews: NewsItem[] = [
 Показала результат 3:45.20, превзойдя предыдущий рекорд на 2 секунды.
     `.trim(),
     excerpt: 'Пловцы школы установили новый рекорд в эстафете!',
-    image: getTestImage(800, 450, 'Плавание'),
+    image: getTestImage(800, 450, 'Swimming'),
     author: 'Елена Сидорова',
     createdAt: '2025-03-08',
     tags: ['плавание', 'рекорд', 'чемпионат', 'эстафета'],
@@ -137,7 +137,7 @@ export const mockNews: NewsItem[] = [
 С 10 мая занятия возобновляются по обычному расписанию.
     `.trim(),
     excerpt: 'Внимание! Изменение расписания на майские праздники.',
-    image: getTestImage(800, 450, 'Расписание'),
+    image: getTestImage(800, 450, 'Schedule'),
     author: 'Администрация',
     createdAt: '2025-03-05',
     tags: ['расписание', 'праздники', 'объявление'],
@@ -158,7 +158,7 @@ export const mockNews: NewsItem[] = [
 Александр Васильев (24 очка).
     `.trim(),
     excerpt: 'Баскетболисты «Олимпийца» — чемпионы города!',
-    image: getTestImage(800, 450, 'Баскетбол'),
+    image: getTestImage(800, 450, 'Basketball'),
     author: 'Дмитрий Иванов',
     createdAt: '2025-03-01',
     tags: ['баскетбол', 'турнир', 'победа', 'юниоры'],
@@ -181,7 +181,7 @@ export const mockNews: NewsItem[] = [
 программы развития спорта.
     `.trim(),
     excerpt: 'В тренажерном зале появилось новое оборудование!',
-    image: getTestImage(800, 450, 'Тренажерный зал'),
+    image: getTestImage(800, 450, 'Gym'),
     author: 'Администрация',
     createdAt: '2025-02-28',
     tags: ['оборудование', 'тренажерный зал', 'развитие'],
@@ -200,7 +200,7 @@ export const mockNews: NewsItem[] = [
 отличного настроения и весеннего тепла!
     `.trim(),
     excerpt: 'Поздравление с 8 Марта!',
-    image: getTestImage(800, 450, '8 Марта'),
+    image: getTestImage(800, 450, 'Women Day'),
     author: 'Администрация',
     createdAt: '2025-02-25',
     tags: ['праздник', 'поздравление', '8 марта'],

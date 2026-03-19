@@ -31,7 +31,7 @@ export const mockEvents: EventItem[] = [
 Вход свободный!
     `.trim(),
     excerpt: 'Областные соревнования по легкой атлетике среди юношей и девушек',
-    image: getTestImage(800, 450, 'Легкая атлетика'),
+    image: getTestImage(800, 450, 'Athletics'),
     startDate: '2025-04-15',
     endDate: '2025-04-17',
     startTime: '10:00',
@@ -63,7 +63,7 @@ export const mockEvents: EventItem[] = [
 Приходите, будем рады видеть вас!
     `.trim(),
     excerpt: 'Приглашаем на День открытых дверей!',
-    image: getTestImage(800, 450, 'День открытых дверей'),
+    image: getTestImage(800, 450, 'Open Day'),
     startDate: '2025-03-25',
     startTime: '10:00',
     location: 'СДЮШОР "Олимпиец", ул. Спортивная 1',
@@ -90,7 +90,7 @@ export const mockEvents: EventItem[] = [
 Победители награждаются кубками и медалями!
     `.trim(),
     excerpt: 'Городской турнир по футболу среди детских команд',
-    image: getTestImage(800, 450, 'Футбольный турнир'),
+    image: getTestImage(800, 450, 'Football Tournament'),
     startDate: '2025-05-01',
     endDate: '2025-05-03',
     startTime: '09:00',
@@ -120,7 +120,7 @@ export const mockEvents: EventItem[] = [
 Тренер: Елена Сидорова, КМС по плаванию
     `.trim(),
     excerpt: 'Учебно-тренировочный сбор для спортсменов-разрядников',
-    image: getTestImage(800, 450, 'Плавание'),
+    image: getTestImage(800, 450, 'Swimming'),
     startDate: '2025-06-01',
     endDate: '2025-06-14',
     startTime: '08:00',
@@ -150,7 +150,7 @@ export const mockEvents: EventItem[] = [
 Приходите всей семьей!
     `.trim(),
     excerpt: 'Семейный спортивный праздник',
-    image: getTestImage(800, 450, 'Семейный праздник'),
+    image: getTestImage(800, 450, 'Family Holiday'),
     startDate: '2025-06-08',
     startTime: '12:00',
     location: 'Спортзал "Олимпиец"',
@@ -180,7 +180,7 @@ export const mockEvents: EventItem[] = [
 Тренеры: игроки БК "Витебск"
     `.trim(),
     excerpt: 'Мастер-класс от игроков БК "Витебск"',
-    image: getTestImage(800, 450, 'Баскетбол'),
+    image: getTestImage(800, 450, 'Basketball'),
     startDate: '2025-04-20',
     startTime: '14:00',
     location: 'Баскетбольный зал "Олимпиец"',
