@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { footerSections, contactInfo } from '../navigation';
 
@@ -11,11 +12,6 @@ export interface FooterProps {
 export function Footer({ className }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
-  // Обработчик клика на ссылку
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-  };
-
   return (
     <footer className={className}>
       <div className="border-t bg-muted/30 mt-auto">
@@ -24,13 +20,13 @@ export function Footer({ className }: FooterProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             {/* Логотип и описание */}
             <div className="flex flex-col gap-4">
-              <a href="/" onClick={handleLinkClick} className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
+              <Link href="/" className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity">
                 <span className="text-2xl">🏆</span>
                 <span className="flex flex-col">
                   <span className="text-lg font-bold leading-none">Олимпиец</span>
                   <span className="text-xs text-muted-foreground leading-none mt-0.5">СДЮШОР</span>
                 </span>
-              </a>
+              </Link>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Спортивная школа олимпийского резерва.
                 Воспитываем чемпионов с {currentYear - 50} года.
@@ -45,13 +41,12 @@ export function Footer({ className }: FooterProps) {
                   <ul className="flex flex-col gap-2">
                     {section.links.map((link) => (
                       <li key={link.href}>
-                        <a
+                        <Link
                           href={link.href}
-                          onClick={handleLinkClick}
                           className="text-sm text-muted-foreground hover:text-foreground transition-colors inline-block hover:translate-x-1 transform"
                         >
                           {link.label}
-                        </a>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -103,20 +98,18 @@ export function Footer({ className }: FooterProps) {
               © {currentYear} СДЮШОР «Олимпиец», г. Витебск. Все права защищены.
             </p>
             <div className="flex items-center gap-4">
-              <a
+              <Link
                 href="/privacy"
-                onClick={handleLinkClick}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Политика конфиденциальности
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/terms"
-                onClick={handleLinkClick}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Условия использования
-              </a>
+              </Link>
             </div>
           </div>
         </div>

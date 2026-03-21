@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import type { MouseEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { mainNavigation } from '../navigation';
-import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 export interface MobileNavProps {
   open: boolean;
@@ -15,9 +16,11 @@ export interface MobileNavProps {
  * MobileNav — мобильное навигационное меню (бургер)
  */
 export function MobileNav({ open, onClose }: MobileNavProps) {
+  const router = useRouter();
   const [isClosing, setIsClosing] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const { fontSize } = useAccessibilityStore();
+  const firstLinkRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Закрытие по ESC и при изменении размера экрана
   useEffect(() => {
@@ -32,34 +35,57 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
       }
     };
 
+    // Trap focus внутри меню
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (!open || e.key !== 'Tab') return;
+
+      const focusableElements = document.querySelectorAll(
+        '.mobile-nav button, .mobile-nav a, .mobile-nav [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey) {
+        // Shift + Tab
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // Tab
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
     if (open) {
       document.addEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleTabKey);
+      // Блокируем прокрутку основной страницы, но не внутри меню
+      document.documentElement.style.overflow = 'hidden';
       window.addEventListener('resize', handleResize);
 
       // Анимация открытия
       requestAnimationFrame(() => {
         setIsVisible(true);
       });
+
+      // Фокус на навигационный контейнер для включения прокрутки
+      setTimeout(() => {
+        firstLinkRef.current?.focus();
+      }, 100);
     }
 
     return () => {
       document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = '';
+      document.removeEventListener('keydown', handleTabKey);
+      document.documentElement.style.overflow = '';
       window.removeEventListener('resize', handleResize);
       setIsVisible(false);
     };
   }, [open, onClose]);
-
-  // Применение размера шрифта при открытии меню
-  useEffect(() => {
-    if (open && fontSize) {
-      const menuElements = document.querySelectorAll('.mobile-nav, .mobile-nav *');
-      menuElements.forEach(el => {
-        (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
-      });
-    }
-  }, [open, fontSize]);
 
   // Обработчик закрытия с анимацией
   const handleClose = () => {
@@ -72,9 +98,13 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   };
 
   // Обработчик клика на ссылку
-  const handleLinkClick = () => (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (href: string) => (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    onClose();
+    handleClose();
+    // Небольшая задержка для завершения анимации закрытия
+    setTimeout(() => {
+      router.push(href);
+    }, 150);
   };
 
   // Если меню закрыто и идёт анимация закрытия, не рендерим
@@ -95,6 +125,10 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           'transition-transform duration-300 ease-out',
           isVisible && !isClosing ? 'translate-x-0' : 'translate-x-full'
         )}
+        style={{
+          height: '100vh',
+          maxHeight: '100vh',
+        }}
       >
         {/* Header мобильного меню */}
         <div className="flex items-center justify-between border-b p-4 shrink-0">
@@ -103,6 +137,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             <span className="text-foreground">Олимпиец</span>
           </span>
           <button
+            ref={closeButtonRef}
             onClick={handleClose}
             className="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
             aria-label="Закрыть меню"
@@ -112,29 +147,41 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         </div>
 
         {/* Навигация */}
-        <nav className="flex-1 overflow-y-auto py-4 scrollbar-hide min-h-0">
-          <ul className="flex flex-col">
-            {mainNavigation.map((item) => (
-              <li
-                key={item.href}
-                className="border-b border-border/50 shrink-0"
-              >
-                <a
-                  href={item.href}
-                  onClick={handleLinkClick(item.href)}
-                  className="flex flex-col gap-1 p-4 text-foreground hover:bg-accent/50 transition-colors min-h-[60px]"
+        <div
+          ref={firstLinkRef}
+          tabIndex={-1}
+          className="flex-1 overflow-y-auto"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overflowY: 'auto' as const,
+            minHeight: '0',
+            outline: 'none',
+          }}
+        >
+          <nav className="py-4">
+            <ul className="flex flex-col">
+              {mainNavigation.map((item) => (
+                <li
+                  key={item.href}
+                  className="border-b border-border/50"
                 >
-                  <span className="text-base font-medium">{item.label}</span>
-                  {item.description && (
-                    <span className="text-sm text-muted-foreground line-clamp-2">
-                      {item.description}
-                    </span>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+                  <a
+                    href={item.href}
+                    onClick={handleLinkClick(item.href)}
+                    className="flex flex-col gap-1 p-4 text-foreground hover:bg-accent/50 transition-colors min-h-[60px]"
+                  >
+                    <span className="text-base font-medium">{item.label}</span>
+                    {item.description && (
+                      <span className="text-sm text-muted-foreground line-clamp-2">
+                        {item.description}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   );

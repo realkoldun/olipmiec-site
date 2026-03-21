@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AccessibilityProvider } from '@/providers/accessibility-provider';
 import { SearchProvider } from '@/providers/search-provider';
-import { ApplyAccessibilitySettings } from '@/components/apply-accessibility-settings';
 
 const inter = Inter({
   subsets: ['cyrillic', 'latin'],
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
-        <ApplyAccessibilitySettings />
         <AccessibilityProvider>
           <SearchProvider>
             {children}

@@ -10,7 +10,7 @@ export type ContrastMode = 'normal' | 'high' | 'dark';
  * Состояние настроек доступности
  */
 export interface AccessibilityState {
-  /** Размер шрифта (12-24px) */
+  /** Размер шрифта (12-24px, по умолчанию 14px для мобильных) */
   fontSize: number;
   /** Масштаб текста (0.8-2.0) */
   fontScale: number;
@@ -43,7 +43,7 @@ export interface AccessibilityState {
  * Значения по умолчанию
  */
 const defaultState: Omit<AccessibilityState, AccessibilityActions> = {
-  fontSize: 16,
+  fontSize: 14, // Базовый размер для мобильных
   fontScale: 1,
   contrast: 'normal',
   zoom: 1,

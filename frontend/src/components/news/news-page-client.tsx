@@ -2,41 +2,35 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import type { NewsItem } from '@/types/news';
 import { NewsList } from '@/components/news/news-list';
-import { getNews } from '@/mocks/news.mock';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { Button } from '@/components/ui/button/button';
 
+export interface NewsPageClientProps {
+  initialNews: NewsItem[];
+  total: number;
+  totalPages: number;
+  initialPage: number;
+  initialCategory?: string;
+}
+
 /**
- * NewsPageContent — компонент страницы новостей
- *
- * Использует layout компоненты:
- * - Header
- * - Footer
- * - Breadcrumbs
- *
- * И UI компоненты:
- * - Button
+ * NewsPageClient — клиентский компонент страницы новостей
+ * Получает данные с сервера и управляет интерактивностью
  */
-export function NewsPageContent() {
+export function NewsPageClient({
+  initialNews,
+  total,
+  totalPages,
+  initialPage,
+  initialCategory,
+}: NewsPageClientProps) {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
-
-  const itemsPerPage = 6;
-
-  // Получение новостей
-  const {
-    items: news,
-    total,
-    totalPages,
-  } = getNews({
-    page: currentPage,
-    limit: itemsPerPage,
-    category: selectedCategory,
-  });
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(initialCategory);
 
   // Обработчик клика на новость
   const handleNewsClick = (id: string) => {
@@ -64,6 +58,9 @@ export function NewsPageContent() {
     { label: 'Новости', href: '/news' },
   ];
 
+  // Счетчик
+  const displayedTotal = selectedCategory ? initialNews.length : total;
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
@@ -86,7 +83,7 @@ export function NewsPageContent() {
             {categories.map((category) => (
               <Button
                 key={String(category.value)}
-                variant={selectedCategory === category.value ? 'default' : 'outline'}
+                variant={selectedCategory === category.value ? 'primary' : 'outline'}
                 size="sm"
                 onClick={() => {
                   setSelectedCategory(category.value);
@@ -99,11 +96,13 @@ export function NewsPageContent() {
           </div>
 
           {/* Счетчик */}
-          <div className="mb-4 text-sm text-muted-foreground">Найдено: {total} новостей</div>
+          <div className="mb-4 text-sm text-muted-foreground">
+            Найдено: {displayedTotal} новостей
+          </div>
 
           {/* Список новостей */}
           <NewsList
-            news={news}
+            news={initialNews}
             onNewsClick={handleNewsClick}
             page={currentPage}
             totalPages={totalPages}

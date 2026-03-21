@@ -122,8 +122,8 @@ export const HighlightTest: Story = {
   render: () => (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <h1>Тест подсветки совпадений</h1>
-      
-      <div style={{ marginTop: '24px', spaceY: '16px' }}>
+
+      <div style={{ marginTop: '24px' }}>
         <div style={{ marginBottom: '16px' }}>
           <h3>Оригинальный текст:</h3>
           <p>

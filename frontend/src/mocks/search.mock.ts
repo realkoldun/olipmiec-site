@@ -22,10 +22,10 @@ function convertNewsToSearchItems() {
  * Моковые данные для поиска
  * Пока только новости (остальные типы будут добавлены позже)
  */
-const mockNews = convertNewsToSearchItems();
-const mockSections: SearchIndexItem[] = [];
-const mockTrainers: SearchIndexItem[] = [];
-const mockDocuments: SearchIndexItem[] = [];
+export const mockNews = convertNewsToSearchItems();
+export const mockSections: SearchIndexItem[] = [];
+export const mockTrainers: SearchIndexItem[] = [];
+export const mockDocuments: SearchIndexItem[] = [];
 
 /**
  * Инициализация поискового индекса

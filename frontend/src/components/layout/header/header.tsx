@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Menu, Search, Accessibility } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -8,8 +9,22 @@ import { mainNavigation } from '../navigation';
 import { MobileNav } from '../mobile-nav/mobile-nav';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { AccessibilityPanel } from '@/components/accessibility';
-import { SearchModal } from '@/components/search';
 import { useSearch } from '@/hooks/use-search';
+
+// Динамический импорт SearchModal для уменьшения начального бандла
+const SearchModal = dynamic(
+  () => import('@/components/search').then((mod) => mod.SearchModal),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="rounded-lg bg-background p-6 shadow-lg">
+          <div className="animate-pulse text-muted-foreground">Загрузка поиска...</div>
+        </div>
+      </div>
+    ),
+  }
+);
 
 export interface HeaderProps {
   /** Показывать поиск */
@@ -34,15 +49,8 @@ export function Header({
   showAccessibilityPanel = true,
   fixed = true,
 }: HeaderProps) {
-  const router = useRouter();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { isSearchOpen, openSearch, closeSearch } = useSearch();
-
-  // Обработчик клика на ссылку навигации
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    router.push(href);
-  };
 
   // Обработчик открытия мобильного меню
   const openMobileNav = () => {
@@ -64,9 +72,8 @@ export function Header({
       >
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-[1400px]">
           {/* Логотип */}
-          <a
+          <Link
             href="/"
-            onClick={(e) => handleNavClick(e, '/')}
             className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
           >
             <span className="text-2xl">🏆</span>
@@ -74,21 +81,20 @@ export function Header({
               <span className="text-lg font-bold leading-none">Олимпиец</span>
               <span className="text-xs text-muted-foreground leading-none mt-0.5">СДЮШОР</span>
             </span>
-          </a>
+          </Link>
 
           {/* Десктопная навигация */}
           <nav className="hidden lg:block">
             <ul className="flex items-center gap-6">
               {mainNavigation.map((item) => (
                 <li key={item.href} className="relative">
-                  <a
+                  <Link
                     href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
                     className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary after:transition-all hover:after:w-full"
                     title={item.description}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 export interface SidebarItem {
   label: string;
   href: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   children?: SidebarItem[];
   badge?: string | number;
 }
@@ -31,7 +32,7 @@ export function Sidebar({
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
   // Обработчик клика на ссылку
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
   };
 

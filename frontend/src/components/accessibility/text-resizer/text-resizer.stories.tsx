@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { fn } from '@storybook/test';
 import { TextResizer } from './text-resizer';
 
 const meta = {
@@ -32,9 +31,6 @@ const meta = {
     },
   },
   tags: ['autodocs'],
-  args: {
-    onFontSizeChange: fn(),
-  },
 } satisfies Meta<typeof TextResizer>;
 
 export default meta;

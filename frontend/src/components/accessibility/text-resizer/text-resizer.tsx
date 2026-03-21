@@ -42,8 +42,7 @@ export function TextResizer({ className }: TextResizerProps) {
 
   // Сброс к значению по умолчанию
   const handleReset = () => {
-    setFontSize(16);
-    setFontScale(1);
+    setFontSize(14);
   };
 
   // Получение текстовой метки

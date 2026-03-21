@@ -19,6 +19,12 @@ export interface NewsCardProps {
   showTags?: boolean;
   /** Размер карточки */
   size?: 'sm' | 'md' | 'lg';
+  /** Показывать категорию */
+  showCategory?: boolean;
+  /** Показывать автора */
+  showAuthor?: boolean;
+  /** Показывать просмотры */
+  showViews?: boolean;
 }
 
 /**
@@ -36,7 +42,10 @@ export function NewsCard({
   onClick,
   showImage = true,
   showMeta = true,
-  showTags = true,
+  showTags = false, // Скрыто по умолчанию
+  showCategory = true,
+  showAuthor = false, // Скрыто по умолчанию
+  showViews = false, // Скрыто по умолчанию
   size = 'md',
 }: NewsCardProps) {
   const handleClick = () => {
@@ -81,7 +90,7 @@ export function NewsCard({
             unoptimized
           />
           {/* Категория */}
-          {news.category && (
+          {showCategory && news.category && (
             <span className="absolute left-2 top-2 rounded bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
               {getCategoryLabel(news.category)}
             </span>
@@ -113,7 +122,7 @@ export function NewsCard({
             </div>
 
             {/* Автор */}
-            {news.author && (
+            {showAuthor && news.author && (
               <div className="flex items-center gap-1">
                 <User className="h-3 w-3" />
                 <span>{news.author}</span>
@@ -121,7 +130,7 @@ export function NewsCard({
             )}
 
             {/* Просмотры */}
-            {news.views !== undefined && (
+            {showViews && news.views !== undefined && (
               <div className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
                 <span>{news.views}</span>
@@ -130,7 +139,7 @@ export function NewsCard({
           </div>
         )}
 
-        {/* Теги */}
+        {/* Теги (скрыто по умолчанию) */}
         {showTags && news.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {news.tags.slice(0, 3).map((tag) => (

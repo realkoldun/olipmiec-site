@@ -1,60 +1,24 @@
 'use client';
 
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, User, Eye, ArrowLeft } from 'lucide-react';
-import { getNewsById } from '@/mocks/news.mock';
+import type { NewsItem } from '@/types/news';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 
+export interface NewsDetailPageClientProps {
+  news: NewsItem;
+}
+
 /**
- * NewsDetailPageContent — компонент детальной страницы новости
- *
- * Использует layout компоненты:
- * - Header
- * - Footer
- * - Breadcrumbs
- *
- * И UI компоненты:
- * - Button
+ * NewsDetailPageClient — клиентский компонент детальной страницы новости
  */
-export function NewsDetailPageContent() {
-  const params = useParams();
-  const pathname = usePathname();
+export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const router = useRouter();
-  
-  // Получаем ID из pathname если params пустой (для Storybook)
-  const newsId = params?.id || pathname?.split('/').pop() || '';
-
-  // Получение новости
-  const news = getNewsById(newsId);
-
-  // Если новость не найдена
-  if (!news) {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1">
-          <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
-            <div className="flex flex-col items-center justify-center py-12">
-              <h1 className="text-2xl font-bold mb-2">Новость не найдена</h1>
-              <p className="text-muted-foreground mb-4">
-                К сожалению, такая новость не найдена
-              </p>
-              <Button onClick={() => router.back()}>
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Назад
-              </Button>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   // Хлебные крошки
   const breadcrumbItems = [
@@ -125,9 +89,9 @@ export function NewsDetailPageContent() {
                     src={news.image}
                     alt={news.title}
                     fill
-                    sizes="(max-width: 1400px) 100vw, 1200px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
                     className="rounded-lg object-cover"
-                    priority
+                    loading="lazy"
                     unoptimized
                   />
                 </div>

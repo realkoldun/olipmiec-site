@@ -17,9 +17,10 @@ const meta = {
 
 ## Особенности
 - Отображение изображения
-- Мета-информация (автор, дата, просмотры)
-- Теги
-- Категория
+- Дата публикации (всегда показывается)
+- Категория (отображается на изображении)
+- Автор и просмотры (скрыты по умолчанию)
+- Теги (скрыты по умолчанию)
 - Адаптивный размер
 
 ## Использование
@@ -50,7 +51,19 @@ const meta = {
     },
     showTags: {
       control: 'boolean',
-      description: 'Показывать теги',
+      description: 'Показывать теги (скрыты по умолчанию)',
+    },
+    showCategory: {
+      control: 'boolean',
+      description: 'Показывать категорию',
+    },
+    showAuthor: {
+      control: 'boolean',
+      description: 'Показывать автора (скрыт по умолчанию)',
+    },
+    showViews: {
+      control: 'boolean',
+      description: 'Показывать просмотры (скрыты по умолчанию)',
     },
   },
 } satisfies Meta<typeof NewsCard>;
@@ -249,20 +262,16 @@ export const TestTags: Story = {
   },
 };
 
-// Интерактивный тест: Проверка мета-информации
+// Интерактивный тест: Проверка мета-информации (дата)
 export const TestMeta: Story = {
   args: {
     news: sampleNews,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
-    // Проверяем дату
+
+    // Проверяем дату (единственный элемент мета-информации по умолчанию)
     const dateElement = canvas.getByText(/март 2025/i);
     await expect(dateElement).toBeInTheDocument();
-    
-    // Проверяем просмотры
-    const viewsElement = canvas.getByText('1250');
-    await expect(viewsElement).toBeInTheDocument();
   },
 };

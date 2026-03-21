@@ -15,14 +15,14 @@ import type {
  * - Индексация будет на стороне сервера
  */
 export class SearchIndexService implements SearchService {
-  private index: Map<string, SearchIndexItem> = new Map();
+  private searchIndex: Map<string, SearchIndexItem> = new Map();
 
   /**
    * Индексировать элемент
    */
   index(item: SearchIndexItem): void {
     const key = `${item.type}:${item.id}`;
-    this.index.set(key, item);
+    this.searchIndex.set(key, item);
   }
 
   /**
@@ -31,7 +31,7 @@ export class SearchIndexService implements SearchService {
   indexMany(items: SearchIndexItem[]): void {
     items.forEach((item) => {
       const key = `${item.type}:${item.id}`;
-      this.index.set(key, item);
+      this.searchIndex.set(key, item);
     });
   }
 
@@ -50,7 +50,7 @@ export class SearchIndexService implements SearchService {
     const queryWords = normalizedQuery.split(/\s+/).filter(Boolean);
 
     // Фильтруем по типу
-    let items = Array.from(this.index.values());
+    let items = Array.from(this.searchIndex.values());
     if (query.type && query.type !== 'all') {
       items = items.filter((item) => item.type === query.type);
     }
@@ -95,7 +95,7 @@ export class SearchIndexService implements SearchService {
    * Очистить индекс
    */
   clear(): void {
-    this.index.clear();
+    this.searchIndex.clear();
   }
 
   /**
@@ -103,7 +103,7 @@ export class SearchIndexService implements SearchService {
    */
   getStats(): SearchIndexStats {
     const stats: SearchIndexStats = {
-      total: this.index.size,
+      total: this.searchIndex.size,
       byType: {
         news: 0,
         section: 0,
@@ -113,7 +113,7 @@ export class SearchIndexService implements SearchService {
       },
     };
 
-    this.index.forEach((item) => {
+    this.searchIndex.forEach((item) => {
       if (item.type !== 'all') {
         stats.byType[item.type]++;
       }

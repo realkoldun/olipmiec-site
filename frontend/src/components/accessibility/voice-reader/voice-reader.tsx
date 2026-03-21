@@ -142,7 +142,7 @@ export function VoiceReader({
       <div className="flex items-center gap-2">
         {/* Кнопка играть/пауза */}
         <Button
-          variant={isSpeaking ? 'default' : 'outline'}
+          variant={isSpeaking ? 'primary' : 'outline'}
           size="icon"
           className="h-10 w-10"
           onClick={handleToggleSpeak}

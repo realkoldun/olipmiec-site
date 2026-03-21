@@ -48,7 +48,7 @@ export function NotFoundPage() {
           {/* Кнопки навигации */}
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button
-              variant="default"
+              variant="primary"
               size="lg"
               onClick={() => router.push('/')}
               className="gap-2"

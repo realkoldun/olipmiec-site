@@ -73,7 +73,7 @@ export function NewsList({
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onPageChange?: (page: number) => void;
 }
 
 function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
@@ -86,7 +86,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <Button
         variant="outline"
         size="sm"
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => onPageChange?.(currentPage - 1)}
         disabled={currentPage === 1}
         aria-label="Предыдущая страница"
       >
@@ -105,9 +105,9 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         ) : (
           <Button
             key={page}
-            variant={page === currentPage ? 'default' : 'outline'}
+            variant={page === currentPage ? 'primary' : 'outline'}
             size="sm"
-            onClick={() => onPageChange(page)}
+            onClick={() => onPageChange?.(page)}
             aria-label={`Страница ${page}`}
             aria-current={page === currentPage ? 'page' : undefined}
           >
@@ -120,7 +120,7 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <Button
         variant="outline"
         size="sm"
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => onPageChange?.(currentPage + 1)}
         disabled={currentPage === totalPages}
         aria-label="Следующая страница"
       >

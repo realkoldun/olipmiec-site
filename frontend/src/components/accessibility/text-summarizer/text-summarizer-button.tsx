@@ -80,7 +80,7 @@ export function TextSummarizerButton({
     return null;
   }
 
-  const isCompleted = status === 'success' && result;
+  const isCompleted = status === 'success' && !!result;
 
   return (
     <div className={cn('relative inline-block', className)}>

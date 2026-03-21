@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { useSearch } from '@/hooks/use-search';
 import { Search, X, Loader2, Keyboard } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -69,13 +70,13 @@ export function SearchBar({
   }, [query]);
 
   // Обработчик изменения
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setLocalValue(e.target.value);
     setQuery(e.target.value);
   }, [setQuery]);
 
   // Обработчик отправки формы
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
     search(localValue);
   }, [search, localValue]);

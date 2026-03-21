@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ChevronRight, Home } from 'lucide-react';
+import type { MouseEvent } from 'react';
 import { cn } from '@/utils/cn';
 
 export interface BreadcrumbItem {
@@ -28,7 +29,7 @@ export function Breadcrumbs({
   className,
 }: BreadcrumbsProps) {
   // Обработчик клика на ссылку
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
   };
 

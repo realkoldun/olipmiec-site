@@ -38,7 +38,7 @@ interface SearchResponse {
  * SearchResults — результаты поиска
  */
 export function SearchResults({ className, onItemClick }: SearchResultsProps) {
-  const { results, status, error, selectedType, setSelectedType } = useSearch();
+  const { results, status, error, selectedType, setSelectedType, isSearching } = useSearch();
 
   // Типы для фильтра
   const types = [
@@ -82,7 +82,7 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
           return (
             <Button
               key={type.value}
-              variant={isActive ? 'default' : 'outline'}
+              variant={isActive ? 'primary' : 'outline'}
               size="sm"
               onClick={() => setSelectedType(type.value)}
               className="gap-2"
@@ -95,12 +95,12 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
       </div>
 
       {/* Загрузка */}
-      {status === 'searching' && (
+      {isSearching && (
         <SearchResultsSkeleton />
       )}
 
       {/* Ошибка */}
-      {status === 'error' && (
+      {error && (
         <div className={cn('p-8 text-center', className)}>
           <AlertCircle className="mx-auto h-12 w-12 text-destructive" />
           <h3 className="mt-4 text-lg font-semibold">Ошибка поиска</h3>
@@ -109,7 +109,7 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
       )}
 
       {/* Пустой результат */}
-      {(!searchResults || searchResults.total === 0) && status !== 'searching' && status !== 'error' && (
+      {(!searchResults || searchResults.total === 0) && !isSearching && !error && (
         <div className={cn('p-8 text-center', className)}>
           <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">Ничего не найдено</h3>
@@ -120,7 +120,7 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
       )}
 
       {/* Результаты */}
-      {searchResults && searchResults.total > 0 && status !== 'searching' && status !== 'error' && (
+      {searchResults && searchResults.total > 0 && !isSearching && !error && (
         <>
           {/* Статистика */}
           <div className="text-sm text-muted-foreground">

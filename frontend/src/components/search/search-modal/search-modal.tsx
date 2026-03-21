@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
+import type { MouseEvent } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { SearchBar } from '@/components/search';
@@ -33,7 +34,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   // Закрытие при клике вне области
   const handleBackdropClick = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent<HTMLDivElement>) => {
       if (e.target === e.currentTarget) {
         onClose();
         closeSearch();

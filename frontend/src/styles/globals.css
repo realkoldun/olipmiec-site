@@ -56,6 +56,13 @@
     --user-zoom: 1;
   }
 
+  /* Мобильная версия - шрифт меньше */
+  @media (max-width: 640px) {
+    :root {
+      --user-font-size: 14px;
+    }
+  }
+
   /* Тёмная тема */
   .dark {
     /* Фон и текст */
@@ -225,6 +232,30 @@ body.contrast-dark * {
   body input,
   body textarea {
     font-size: var(--user-font-size, 16px) !important;
+  }
+
+  /* Мобильная версия - уменьшенный шрифт */
+  @media (max-width: 640px) {
+    body,
+    body p,
+    body span,
+    body div,
+    body h1,
+    body h2,
+    body h3,
+    body h4,
+    body h5,
+    body h6,
+    body a,
+    body button,
+    body li,
+    body td,
+    body th,
+    body label,
+    body input,
+    body textarea {
+      font-size: var(--user-font-size, 14px) !important;
+    }
   }
 
   /* Плавные переходы для темизации */
