@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import type { NewsItem } from '@/types/news';
 import { NewsList } from '@/components/news/news-list';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
@@ -32,7 +32,6 @@ export function NewsPageClient({
   category,
 }: NewsPageClientProps) {
   const router = useRouter();
-  const pathname = usePathname();
 
   // Обработчик клика на новость
   const handleNewsClick = (id: string) => {
@@ -44,7 +43,7 @@ export function NewsPageClient({
     const params = new URLSearchParams();
     params.set('page', newPage.toString());
     if (category) params.set('category', category);
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`/news?${params.toString()}`);
   };
 
   // Обработчик изменения категории — переход на сервер с новым category
@@ -52,7 +51,7 @@ export function NewsPageClient({
     const params = new URLSearchParams();
     params.set('page', '1'); // Сброс на первую страницу
     if (newCategory) params.set('category', newCategory);
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`/news?${params.toString()}`);
   };
 
   // Категории для фильтра
