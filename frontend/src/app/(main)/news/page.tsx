@@ -1,17 +1,42 @@
 import { NewsPageClient } from '@/components/news/news-page-client';
-import { mockNews } from '@/mocks/news.mock';
+import { getNews } from '@/mocks/news.mock';
 
 /**
  * Страница новостей — серверный компонент
- * Передаём все новости на клиент для фильтрации и пагинации
+ * Пагинация и фильтрация на сервере через URL параметры
  */
-export default async function NewsPage() {
-  // Получаем все новости на сервере
-  const allNews = mockNews.filter((news) => news.published);
+export interface NewsPageProps {
+  searchParams: Promise<{
+    page?: string;
+    category?: string;
+  }>;
+}
+
+export default async function NewsPage({ searchParams }: NewsPageProps) {
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const category = params.category;
+
+  const itemsPerPage = 6;
+
+  // Получение новостей на сервере с пагинацией
+  const {
+    items: news,
+    total,
+    totalPages,
+  } = getNews({
+    page,
+    limit: itemsPerPage,
+    category,
+  });
 
   return (
     <NewsPageClient
-      allNews={allNews}
+      news={news}
+      page={page}
+      total={total}
+      totalPages={totalPages}
+      category={category}
     />
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import type { NewsItem } from '@/types/news';
 import { NewsList } from '@/components/news/news-list';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
@@ -9,52 +8,51 @@ import { Button } from '@/components/ui/button/button';
 import { SiteLayout } from '@/components/layout/site-layout';
 
 export interface NewsPageClientProps {
-  /** Все новости для фильтрации на клиенте */
-  allNews: NewsItem[];
+  /** Новости для текущей страницы */
+  news: NewsItem[];
+  /** Текущая страница */
+  page: number;
+  /** Общее количество новостей */
+  total: number;
+  /** Общее количество страниц */
+  totalPages: number;
+  /** Текущая категория */
+  category?: string;
 }
 
 /**
  * NewsPageClient — клиентский компонент страницы новостей
- * Фильтрация и пагинация на клиенте
+ * Пагинация на сервере через URL параметры
  */
-export function NewsPageClient({ allNews }: NewsPageClientProps) {
+export function NewsPageClient({
+  news,
+  page,
+  total,
+  totalPages,
+  category,
+}: NewsPageClientProps) {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
-
-  const itemsPerPage = 6;
-
-  // Фильтрация новостей по категории
-  const filteredNews = useMemo(() => {
-    if (!selectedCategory) return allNews;
-    return allNews.filter((news) => news.category === selectedCategory);
-  }, [allNews, selectedCategory]);
-
-  // Пагинация
-  const paginatedNews = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredNews.slice(start, end);
-  }, [filteredNews, currentPage]);
-
-  // Общее количество страниц для текущей категории
-  const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
+  const pathname = usePathname();
 
   // Обработчик клика на новость
   const handleNewsClick = (id: string) => {
     router.push(`/news/${id}`);
   };
 
-  // Обработчик изменения страницы
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Обработчик изменения страницы — переход на сервер с новым page
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams();
+    params.set('page', newPage.toString());
+    if (category) params.set('category', category);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
-  // Обработчик изменения категории
-  const handleCategoryChange = (category: string | undefined) => {
-    setSelectedCategory(category);
-    setCurrentPage(1); // Сброс на первую страницу при смене категории
+  // Обработчик изменения категории — переход на сервер с новым category
+  const handleCategoryChange = (newCategory: string | undefined) => {
+    const params = new URLSearchParams();
+    params.set('page', '1'); // Сброс на первую страницу
+    if (newCategory) params.set('category', newCategory);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   // Категории для фильтра
@@ -86,28 +84,28 @@ export function NewsPageClient({ allNews }: NewsPageClientProps) {
 
         {/* Фильтры по категории */}
         <div className="mb-6 flex flex-wrap gap-2">
-          {categories.map((category) => (
+          {categories.map((cat) => (
             <Button
-              key={String(category.value)}
-              variant={selectedCategory === category.value ? 'primary' : 'outline'}
+              key={String(cat.value)}
+              variant={category === cat.value ? 'primary' : 'outline'}
               size="sm"
-              onClick={() => handleCategoryChange(category.value)}
+              onClick={() => handleCategoryChange(cat.value)}
             >
-              {category.label}
+              {cat.label}
             </Button>
           ))}
         </div>
 
         {/* Счетчик */}
         <div className="mb-4 text-sm text-muted-foreground">
-          Найдено: {filteredNews.length} новостей
+          Найдено: {total} новостей
         </div>
 
         {/* Список новостей */}
         <NewsList
-          news={paginatedNews}
+          news={news}
           onNewsClick={handleNewsClick}
-          page={currentPage}
+          page={page}
           totalPages={totalPages}
           onPageChange={handlePageChange}
           showPagination={totalPages > 1}
