@@ -6,9 +6,8 @@ import { Calendar, User, Eye, ArrowLeft } from 'lucide-react';
 import type { NewsItem } from '@/types/news';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
-import { Header } from '@/components/layout/header/header';
-import { Footer } from '@/components/layout/footer/footer';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
+import { SiteLayout } from '@/components/layout/site-layout';
 
 export interface NewsDetailPageClientProps {
   news: NewsItem;
@@ -28,123 +27,114 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <Header />
+    <SiteLayout>
+      <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
+        {/* Хлебные крошки */}
+        <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
-      {/* Основной контент */}
-      <main className="flex-1 pt-16">
-        <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
-          {/* Хлебные крошки */}
-          <Breadcrumbs items={breadcrumbItems} className="mb-6" />
+        {/* Кнопка назад */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+          className="mb-6"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Назад
+        </Button>
 
-          {/* Кнопка назад */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="mb-6"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Назад
-          </Button>
+        {/* Контент новости */}
+        <article className="mx-auto max-w-3xl">
+          {/* Заголовок */}
+          <h1 className="mb-4 text-3xl font-bold leading-tight md:text-4xl">
+            {news.title}
+          </h1>
 
-          {/* Контент новости */}
-          <article className="mx-auto max-w-3xl">
-            {/* Заголовок */}
-            <h1 className="mb-4 text-3xl font-bold leading-tight md:text-4xl">
-              {news.title}
-            </h1>
-
-            {/* Мета-информация */}
-            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {/* Дата */}
-              <div className="flex items-center gap-1.5">
-                <Calendar className="h-4 w-4" />
-                <span>{formatDate(news.createdAt)}</span>
-              </div>
-
-              {/* Автор */}
-              {news.author && (
-                <div className="flex items-center gap-1.5">
-                  <User className="h-4 w-4" />
-                  <span>{news.author}</span>
-                </div>
-              )}
-
-              {/* Просмотры */}
-              {news.views !== undefined && (
-                <div className="flex items-center gap-1.5">
-                  <Eye className="h-4 w-4" />
-                  <span>{news.views} просмотров</span>
-                </div>
-              )}
+          {/* Мета-информация */}
+          <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            {/* Дата */}
+            <div className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
+              <span>{formatDate(news.createdAt)}</span>
             </div>
 
-            {/* Изображение */}
-            {news.image && (
-              <figure className="mb-8">
-                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                  <Image
-                    src={news.image}
-                    alt={news.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
-                    className="rounded-lg object-cover"
-                    loading="lazy"
-                    unoptimized
-                  />
-                </div>
-                {news.excerpt && (
-                  <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-                    {news.excerpt}
-                  </figcaption>
-                )}
-              </figure>
+            {/* Автор */}
+            {news.author && (
+              <div className="flex items-center gap-1.5">
+                <User className="h-4 w-4" />
+                <span>{news.author}</span>
+              </div>
             )}
 
-            {/* Содержимое */}
-            <div className="prose prose-slate dark:prose-invert max-w-none">
-              {news.content.split('\n').map((paragraph, index) => (
-                <p key={index} className="mb-4 text-base leading-relaxed">
-                  {paragraph}
-                </p>
+            {/* Просмотры */}
+            {news.views !== undefined && (
+              <div className="flex items-center gap-1.5">
+                <Eye className="h-4 w-4" />
+                <span>{news.views} просмотров</span>
+              </div>
+            )}
+          </div>
+
+          {/* Изображение */}
+          {news.image && (
+            <figure className="mb-8">
+              <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                <Image
+                  src={news.image}
+                  alt={news.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
+                  className="rounded-lg object-cover"
+                  loading="lazy"
+                  unoptimized
+                />
+              </div>
+              {news.excerpt && (
+                <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+                  {news.excerpt}
+                </figcaption>
+              )}
+            </figure>
+          )}
+
+          {/* Содержимое */}
+          <div className="prose prose-slate dark:prose-invert max-w-none">
+            {news.content.split('\n').map((paragraph, index) => (
+              <p key={index} className="mb-4 text-base leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+
+          {/* Теги */}
+          {news.tags.length > 0 && (
+            <div className="mt-8 flex flex-wrap gap-2 border-t pt-6">
+              {news.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
+                >
+                  #{tag}
+                </span>
               ))}
             </div>
+          )}
 
-            {/* Теги */}
-            {news.tags.length > 0 && (
-              <div className="mt-8 flex flex-wrap gap-2 border-t pt-6">
-                {news.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Категория */}
-            {news.category && (
-              <div className={cn(
-                'mt-4 inline-flex items-center rounded bg-primary px-3 py-1 text-sm font-medium text-primary-foreground',
-                news.category === 'sport' && 'bg-blue-600',
-                news.category === 'announcement' && 'bg-orange-600',
-                news.category === 'event' && 'bg-green-600',
-                news.category === 'news' && 'bg-slate-600',
-              )}>
-                {getCategoryLabel(news.category)}
-              </div>
-            )}
-          </article>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
+          {/* Категория */}
+          {news.category && (
+            <div className={cn(
+              'mt-4 inline-flex items-center rounded bg-primary px-3 py-1 text-sm font-medium text-primary-foreground',
+              news.category === 'sport' && 'bg-blue-600',
+              news.category === 'announcement' && 'bg-orange-600',
+              news.category === 'event' && 'bg-green-600',
+              news.category === 'news' && 'bg-slate-600',
+            )}>
+              {getCategoryLabel(news.category)}
+            </div>
+          )}
+        </article>
+      </div>
+    </SiteLayout>
   );
 }
 

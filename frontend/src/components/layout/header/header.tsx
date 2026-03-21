@@ -12,17 +12,13 @@ import { AccessibilityPanel } from '@/components/accessibility';
 import { useSearch } from '@/hooks/use-search';
 
 // Динамический импорт SearchModal для уменьшения начального бандла
+// Загружается при первом взаимодействии с поиском
 const SearchModal = dynamic(
   () => import('@/components/search').then((mod) => mod.SearchModal),
   {
     ssr: false,
-    loading: () => (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div className="rounded-lg bg-background p-6 shadow-lg">
-          <div className="animate-pulse text-muted-foreground">Загрузка поиска...</div>
-        </div>
-      </div>
-    ),
+    // Не показываем loading state чтобы избежать мелькания
+    loading: () => null,
   }
 );
 
