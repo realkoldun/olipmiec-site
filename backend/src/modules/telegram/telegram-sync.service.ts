@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { TelegramService } from './telegram.service';
+import { TelegramScraperService } from './telegram-scraper.service';
 import { NewsService } from '../news/news.service';
 import { CreateNewsDto } from '../news/dto/news.dto';
 
 /**
  * TelegramSyncService - сервис для синхронизации новостей из Telegram
- * Автоматически получает новые сообщения и сохраняет их в БД
+ * Автоматически получает новые сообщения через скрапинг и сохраняет их в БД
  */
 @Injectable()
 export class TelegramSyncService {
@@ -14,7 +14,7 @@ export class TelegramSyncService {
   private lastSyncedMessageId: number | null = null;
 
   constructor(
-    private readonly telegramService: TelegramService,
+    private readonly telegramScraper: TelegramScraperService,
     private readonly newsService: NewsService,
   ) {}
 
@@ -24,13 +24,13 @@ export class TelegramSyncService {
    */
   async onModuleInit() {
     this.logger.log('TelegramSyncService initialized');
-    
-    // Проверка доступности бота
-    if (this.telegramService.getIsConfigured()) {
-      const isAvailable = await this.telegramService.checkBotAvailability();
+
+    // Проверка доступности канала
+    if (this.telegramScraper.getIsConfigured()) {
+      const isAvailable = await this.telegramScraper.checkChannelAvailability();
       if (isAvailable) {
-        this.logger.log('Telegram bot is available');
-        
+        this.logger.log('Telegram channel is available');
+
         // Получение последнего сохраненного сообщения
         try {
           const latestNews = await this.newsService.getLatest(1);
@@ -42,7 +42,7 @@ export class TelegramSyncService {
           this.logger.warn('Could not fetch latest news (table may not exist yet):', error.message);
         }
       } else {
-        this.logger.warn('Telegram bot is not available. Check TELEGRAM_BOT_TOKEN');
+        this.logger.warn('Telegram channel is not available. Check TELEGRAM_CHANNEL_ID');
       }
     } else {
       this.logger.log('Telegram not configured. Application works in API mode only.');
@@ -54,10 +54,10 @@ export class TelegramSyncService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
-    if (!this.telegramService.getIsConfigured()) {
+    if (!this.telegramScraper.getIsConfigured()) {
       return; // Пропускаем если Telegram не настроен
     }
-    
+
     this.logger.debug('Running scheduled sync...');
     await this.sync();
   }
@@ -67,17 +67,17 @@ export class TelegramSyncService {
    * Может быть вызвана через API
    */
   async sync(): Promise<number> {
-    if (!this.telegramService.getIsConfigured()) {
+    if (!this.telegramScraper.getIsConfigured()) {
       this.logger.log('Telegram not configured, skipping sync');
       return 0;
     }
-    
+
     this.logger.log('Starting Telegram sync...');
 
     try {
-      // Получаем последние сообщения
-      const messages = await this.telegramService.getChannelPosts(20);
-      
+      // Получаем последние сообщения через скрапинг
+      const messages = await this.telegramScraper.getChannelPosts(20);
+
       if (messages.length === 0) {
         this.logger.log('No new messages found');
         return 0;
@@ -92,11 +92,6 @@ export class TelegramSyncService {
           continue;
         }
 
-        // Пропускаем сообщения без текста
-        if (!message.text) {
-          continue;
-        }
-
         try {
           // Проверяем существует ли уже
           const exists = await this.newsService.existsByTelegramId(message.message_id);
@@ -105,37 +100,35 @@ export class TelegramSyncService {
           }
 
           // Парсим текст
-          const { title, content } = this.telegramService.parseMessageText(message);
-
-          // Извлекаем медиа
-          const media = await this.telegramService.extractMedia(message);
+          const { title, content } = this.telegramScraper.parseMessageText(message);
 
           // Создаем DTO
           const createNewsDto: CreateNewsDto = {
             telegramId: message.message_id,
             title,
             content,
-            postDate: new Date(message.date * 1000).toISOString(),
+            postDate: message.date.toISOString(),
             views: message.views || 0,
-            ...media,
+            imageUrl: message.imageUrl,
+            hasMedia: message.hasMedia,
           };
 
           // Сохраняем в БД
           await this.newsService.create(createNewsDto);
-          
+
           newCount++;
           this.lastSyncedMessageId = message.message_id;
-          
+
           this.logger.log(`Saved news #${message.message_id}: ${title}`);
         } catch (error) {
-          this.logger.error(`Error processing message ${message.message_id}:`, error);
+          this.logger.error(`Error processing message ${message.message_id}:`, error.message);
         }
       }
 
       this.logger.log(`Sync completed. New messages: ${newCount}`);
       return newCount;
     } catch (error) {
-      this.logger.error('Sync failed:', error);
+      this.logger.error('Sync failed:', error.message);
       throw error;
     }
   }
@@ -146,7 +139,7 @@ export class TelegramSyncService {
   getSyncStatus() {
     return {
       lastSyncedMessageId: this.lastSyncedMessageId,
-      isConfigured: !!process.env.TELEGRAM_BOT_TOKEN,
+      isConfigured: this.telegramScraper.getIsConfigured(),
     };
   }
 }

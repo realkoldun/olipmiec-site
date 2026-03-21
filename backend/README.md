@@ -73,29 +73,30 @@ docker-compose up --build
 | POST | `/api/telegram/sync` | Запустить синхронизацию |
 | GET | `/api/telegram/channel` | Информация о канале |
 
-## 🔧 Настройка Telegram
+## 🔧 Настройка Telegram (без бота!)
 
-### 1. Создание бота
+### 1. Узнать ID канала
 
-1. Откройте [@BotFather](https://t.me/botfather)
-2. Отправьте `/newbot`
-3. Следуйте инструкциям
-4. Скопируйте токен
+1. Откройте ваш канал в Telegram
+2. Скопируйте название канала из URL (без `@` и `https://t.me/`)
+   - Пример: `https://t.me/olimpiyec` → `olimpiyec`
 
-### 2. Добавление бота в канал
-
-1. Откройте ваш канал
-2. Добавьте бота как администратора (только чтение)
-3. Узнайте ID канала:
-   - Отправьте любое сообщение в канал
-   - Перешлите сообщение в бот [@userinfobot](https://t.me/userinfobot)
-   - Скопируйте ID (начинается с `-100`)
-
-### 3. Настройка .env
+### 2. Настройка .env
 
 ```env
-TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
-TELEGRAM_CHANNEL_ID=-1001234567890
+TELEGRAM_CHANNEL_ID=olimpiyec
+```
+
+**Важно:** Канал должен быть **публичным**!
+
+### 3. Проверка
+
+```bash
+# Запустить синхронизацию
+curl -X POST http://localhost:3000/api/telegram/sync
+
+# Проверить статус
+curl http://localhost:3000/api/telegram/health
 ```
 
 ## 🗄️ База данных

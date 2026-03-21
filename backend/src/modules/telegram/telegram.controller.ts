@@ -5,29 +5,30 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { TelegramService } from './telegram.service';
+import { TelegramScraperService } from './telegram-scraper.service';
 import { TelegramSyncService } from './telegram-sync.service';
 
 /**
- * TelegramController - API для управления Telegram интеграцией
+ * TelegramController - API для управления Telegram интеграцией (scraper)
  */
 @Controller('api/telegram')
 export class TelegramController {
   constructor(
-    private readonly telegramService: TelegramService,
+    private readonly telegramScraper: TelegramScraperService,
     private readonly telegramSyncService: TelegramSyncService,
   ) {}
 
   /**
-   * Проверка доступности бота
+   * Проверка доступности канала
    * GET /api/telegram/health
    */
   @Get('health')
   async checkHealth() {
-    const isAvailable = await this.telegramService.checkBotAvailability();
+    const isAvailable = await this.telegramScraper.checkChannelAvailability();
     return {
       ok: isAvailable,
-      message: isAvailable ? 'Bot is available' : 'Bot is not available',
+      message: isAvailable ? 'Channel is available' : 'Channel is not available',
+      isConfigured: this.telegramScraper.getIsConfigured(),
     };
   }
 
@@ -61,7 +62,7 @@ export class TelegramController {
    */
   @Get('channel')
   async getChannelInfo() {
-    const info = await this.telegramService.getChannelInfo();
+    const info = await this.telegramScraper.getChannelInfo();
     return {
       ok: !!info,
       data: info,
