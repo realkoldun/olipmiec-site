@@ -14,20 +14,20 @@ export interface ThemeToggleProps {
  */
 export function ThemeToggle({ className }: ThemeToggleProps) {
   const [isDark, setIsDark] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const { contrast } = useAccessibilityStore();
   const [showWarning, setShowWarning] = useState(false);
+  const { contrast } = useAccessibilityStore();
 
   // Инициализация темы при монтировании
   useEffect(() => {
     const isDarkMode = document.documentElement.classList.contains('dark');
-    if (isDarkMode) {
+    setIsDark(isDarkMode);
+
+    // Применяем сохранённую тему
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' && !isDarkMode) {
+      document.documentElement.classList.add('dark');
       setIsDark(true);
     }
-  }, []);
-
-  useEffect(() => {
-    setIsMounted(true);
   }, []);
 
   // Переключение темы
@@ -41,31 +41,18 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
 
     const newIsDark = !isDark;
     setIsDark(newIsDark);
-    
+
     if (newIsDark) {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    
+
     // Сохранение в localStorage
     localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
   };
 
-  // Применение сохранённой темы
-  useEffect(() => {
-    if (!isMounted) return;
-    
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    }
-  }, [isMounted]);
-
-  if (!isMounted) {
-    return null;
-  }
-
+  // Рендерим кнопку всегда, чтобы избежать сдвигов UI
   return (
     <div className="relative">
       <button
