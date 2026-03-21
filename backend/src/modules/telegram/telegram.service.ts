@@ -12,10 +12,15 @@ export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
   private readonly config: TelegramServiceConfig;
   private readonly httpClient: AxiosInstance;
+  private readonly isConfigured: boolean;
 
   constructor(private readonly configService: ConfigService) {
+    const botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN', '');
+    
+    this.isConfigured = !!botToken && botToken !== '';
+    
     this.config = {
-      botToken: this.configService.get<string>('TELEGRAM_BOT_TOKEN', ''),
+      botToken: botToken,
       channelId: this.configService.get<string>('TELEGRAM_CHANNEL_ID', ''),
       baseUrl: 'https://api.telegram.org/bot',
     };
@@ -24,12 +29,28 @@ export class TelegramService {
       baseURL: `${this.config.baseUrl}${this.config.botToken}`,
       timeout: 10000,
     });
+    
+    if (!this.isConfigured) {
+      this.logger.warn('Telegram is not configured. Set TELEGRAM_BOT_TOKEN in .env');
+    }
+  }
+
+  /**
+   * Проверить настроен ли Telegram
+   */
+  getIsConfigured(): boolean {
+    return this.isConfigured;
   }
 
   /**
    * Получить последние сообщения из канала
    */
   async getChannelPosts(limit = 10): Promise<TelegramMessage[]> {
+    if (!this.isConfigured) {
+      this.logger.debug('Telegram not configured, returning empty posts');
+      return [];
+    }
+    
     try {
       const response = await this.httpClient.get('/getUpdates', {
         params: {
@@ -108,6 +129,10 @@ export class TelegramService {
    * Проверить доступность бота
    */
   async checkBotAvailability(): Promise<boolean> {
+    if (!this.isConfigured) {
+      return false;
+    }
+    
     try {
       const response = await this.httpClient.get('/getMe');
       return response.data.ok;

@@ -26,23 +26,26 @@ export class TelegramSyncService {
     this.logger.log('TelegramSyncService initialized');
     
     // Проверка доступности бота
-    const isAvailable = await this.telegramService.checkBotAvailability();
-    if (isAvailable) {
-      this.logger.log('Telegram bot is available');
-      
-      // Получение последнего сохраненного сообщения
-      try {
-        const latestNews = await this.newsService.getLatest(1);
-        if (latestNews.length > 0) {
-          this.lastSyncedMessageId = latestNews[0].telegramId;
-          this.logger.log(`Last synced message ID: ${this.lastSyncedMessageId}`);
+    if (this.telegramService.getIsConfigured()) {
+      const isAvailable = await this.telegramService.checkBotAvailability();
+      if (isAvailable) {
+        this.logger.log('Telegram bot is available');
+        
+        // Получение последнего сохраненного сообщения
+        try {
+          const latestNews = await this.newsService.getLatest(1);
+          if (latestNews.length > 0) {
+            this.lastSyncedMessageId = latestNews[0].telegramId;
+            this.logger.log(`Last synced message ID: ${this.lastSyncedMessageId}`);
+          }
+        } catch (error) {
+          this.logger.warn('Could not fetch latest news (table may not exist yet):', error.message);
         }
-      } catch (error) {
-        this.logger.warn('Could not fetch latest news (table may not exist yet):', error.message);
+      } else {
+        this.logger.warn('Telegram bot is not available. Check TELEGRAM_BOT_TOKEN');
       }
     } else {
-      this.logger.warn('Telegram bot is not available. Check TELEGRAM_BOT_TOKEN');
-      this.logger.warn('Application will work in API mode only (no auto-sync)');
+      this.logger.log('Telegram not configured. Application works in API mode only.');
     }
   }
 
@@ -51,6 +54,10 @@ export class TelegramSyncService {
    */
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
+    if (!this.telegramService.getIsConfigured()) {
+      return; // Пропускаем если Telegram не настроен
+    }
+    
     this.logger.debug('Running scheduled sync...');
     await this.sync();
   }
@@ -60,6 +67,11 @@ export class TelegramSyncService {
    * Может быть вызвана через API
    */
   async sync(): Promise<number> {
+    if (!this.telegramService.getIsConfigured()) {
+      this.logger.log('Telegram not configured, skipping sync');
+      return 0;
+    }
+    
     this.logger.log('Starting Telegram sync...');
 
     try {
