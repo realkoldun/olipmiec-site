@@ -30,7 +30,8 @@ import { News } from './modules/news/entities/news.entity';
         password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_NAME', 'olimpiyec'),
         entities: [News],
-        synchronize: configService.get<string>('NODE_ENV') === 'development',
+        // Автоматическое создание таблиц (только для development!)
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
       }),
     }),

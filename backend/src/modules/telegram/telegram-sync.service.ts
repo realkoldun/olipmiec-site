@@ -29,15 +29,20 @@ export class TelegramSyncService {
     const isAvailable = await this.telegramService.checkBotAvailability();
     if (isAvailable) {
       this.logger.log('Telegram bot is available');
+      
+      // Получение последнего сохраненного сообщения
+      try {
+        const latestNews = await this.newsService.getLatest(1);
+        if (latestNews.length > 0) {
+          this.lastSyncedMessageId = latestNews[0].telegramId;
+          this.logger.log(`Last synced message ID: ${this.lastSyncedMessageId}`);
+        }
+      } catch (error) {
+        this.logger.warn('Could not fetch latest news (table may not exist yet):', error.message);
+      }
     } else {
       this.logger.warn('Telegram bot is not available. Check TELEGRAM_BOT_TOKEN');
-    }
-
-    // Получение последнего сохраненного сообщения
-    const latestNews = await this.newsService.getLatest(1);
-    if (latestNews.length > 0) {
-      this.lastSyncedMessageId = latestNews[0].telegramId;
-      this.logger.log(`Last synced message ID: ${this.lastSyncedMessageId}`);
+      this.logger.warn('Application will work in API mode only (no auto-sync)');
     }
   }
 
