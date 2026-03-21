@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { AccessibilityProvider } from '@/providers/accessibility-provider';
 import { SearchProvider } from '@/providers/search-provider';
+import { ReactQueryProvider } from '@/providers/react-query-provider';
 
 const inter = Inter({
   subsets: ['cyrillic', 'latin'],
@@ -22,11 +23,13 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
-        <AccessibilityProvider>
-          <SearchProvider>
-            {children}
-          </SearchProvider>
-        </AccessibilityProvider>
+        <ReactQueryProvider>
+          <AccessibilityProvider>
+            <SearchProvider>
+              {children}
+            </SearchProvider>
+          </AccessibilityProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );
