@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import type { NewsItem } from '@/types/news';
 import { NewsList } from '@/components/news/news-list';
@@ -9,27 +9,36 @@ import { Button } from '@/components/ui/button/button';
 import { SiteLayout } from '@/components/layout/site-layout';
 
 export interface NewsPageClientProps {
-  initialNews: NewsItem[];
-  total: number;
-  totalPages: number;
-  initialPage: number;
-  initialCategory?: string;
+  /** Все новости для фильтрации на клиенте */
+  allNews: NewsItem[];
 }
 
 /**
  * NewsPageClient — клиентский компонент страницы новостей
- * Получает данные с сервера и управляет интерактивностью
+ * Фильтрация и пагинация на клиенте
  */
-export function NewsPageClient({
-  initialNews,
-  total,
-  totalPages,
-  initialPage,
-  initialCategory,
-}: NewsPageClientProps) {
+export function NewsPageClient({ allNews }: NewsPageClientProps) {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(initialCategory);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
+
+  const itemsPerPage = 6;
+
+  // Фильтрация новостей по категории
+  const filteredNews = useMemo(() => {
+    if (!selectedCategory) return allNews;
+    return allNews.filter((news) => news.category === selectedCategory);
+  }, [allNews, selectedCategory]);
+
+  // Пагинация
+  const paginatedNews = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredNews.slice(start, end);
+  }, [filteredNews, currentPage]);
+
+  // Общее количество страниц для текущей категории
+  const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
 
   // Обработчик клика на новость
   const handleNewsClick = (id: string) => {
@@ -40,6 +49,12 @@ export function NewsPageClient({
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Обработчик изменения категории
+  const handleCategoryChange = (category: string | undefined) => {
+    setSelectedCategory(category);
+    setCurrentPage(1); // Сброс на первую страницу при смене категории
   };
 
   // Категории для фильтра
@@ -56,9 +71,6 @@ export function NewsPageClient({
     { label: 'Главная', href: '/' },
     { label: 'Новости', href: '/news' },
   ];
-
-  // Счетчик
-  const displayedTotal = selectedCategory ? initialNews.length : total;
 
   return (
     <SiteLayout>
@@ -79,10 +91,7 @@ export function NewsPageClient({
               key={String(category.value)}
               variant={selectedCategory === category.value ? 'primary' : 'outline'}
               size="sm"
-              onClick={() => {
-                setSelectedCategory(category.value);
-                setCurrentPage(1);
-              }}
+              onClick={() => handleCategoryChange(category.value)}
             >
               {category.label}
             </Button>
@@ -91,17 +100,17 @@ export function NewsPageClient({
 
         {/* Счетчик */}
         <div className="mb-4 text-sm text-muted-foreground">
-          Найдено: {displayedTotal} новостей
+          Найдено: {filteredNews.length} новостей
         </div>
 
         {/* Список новостей */}
         <NewsList
-          news={initialNews}
+          news={paginatedNews}
           onNewsClick={handleNewsClick}
           page={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
-          showPagination={true}
+          showPagination={totalPages > 1}
         />
       </div>
     </SiteLayout>
