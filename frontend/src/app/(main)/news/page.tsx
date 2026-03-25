@@ -14,7 +14,7 @@ export interface NewsPageProps {
 }
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
-  const { page = '1', limit = '10' } = await searchParams;
+  const { page = '1', limit = '3' } = await searchParams;
   const category = (await searchParams).category;
 
   // Получаем новости на сервере
