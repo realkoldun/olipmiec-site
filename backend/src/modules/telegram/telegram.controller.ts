@@ -29,7 +29,41 @@ export class TelegramController {
       ok: isAvailable,
       message: isAvailable ? 'Channel is available' : 'Channel is not available',
       isConfigured: this.telegramScraper.getIsConfigured(),
+      type: 'scraper', // Указываем, что используется скрапер, а не бот
     };
+  }
+
+  /**
+   * Получить последние посты из канала (тест скрапера)
+   * GET /api/telegram/test-scraper
+   */
+  @Get('test-scraper')
+  async testScraper() {
+    if (!this.telegramScraper.getIsConfigured()) {
+      return {
+        ok: false,
+        message: 'Telegram scraper not configured. Check TELEGRAM_CHANNEL_ID in .env',
+      };
+    }
+
+    try {
+      const posts = await this.telegramScraper.getChannelPosts(5);
+      return {
+        ok: true,
+        count: posts.length,
+        posts: posts.map(p => ({
+          id: p.message_id,
+          date: p.date,
+          title: p.text.substring(0, 100) + (p.text.length > 100 ? '...' : ''),
+          hasMedia: p.hasMedia,
+        })),
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
   }
 
   /**
