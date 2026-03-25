@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { NewsPageClient } from '@/components/news/news-page-client';
 import { newsApi } from '@/services/api/news.api';
+import type { NewsItem } from '@/types/news';
 
 /**
  * Страница новостей — серверный компонент с пагинацией через URL
@@ -13,6 +14,17 @@ export interface NewsPageProps {
   }>;
 }
 
+// Адаптация данных с бэкенда к типу NewsItem
+function adaptNews(data: any): NewsItem[] {
+  return data.data.map((item: any) => ({
+    ...item,
+    image: item.imageUrl || item.image,
+    excerpt: item.excerpt || item.content?.substring(0, 200) + '...',
+    tags: item.tags || [],
+    published: item.published ?? true,
+  }));
+}
+
 export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { page = '1', limit = '3' } = await searchParams;
   const category = (await searchParams).category;
@@ -22,6 +34,9 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     page: parseInt(page),
     limit: parseInt(limit),
   });
+
+  // Адаптируем данные
+  const adaptedNews = adaptNews(data);
 
   return (
     <Suspense fallback={
@@ -38,7 +53,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
       </div>
     }>
       <NewsPageClient
-        news={data.data}
+        news={adaptedNews}
         page={data.page}
         total={data.total}
         totalPages={data.totalPages}
