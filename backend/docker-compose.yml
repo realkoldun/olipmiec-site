@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: olimpiyec
+      POSTGRES_DB: root
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
@@ -22,28 +22,6 @@ services:
       retries: 5
 
   # Backend Application
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: olimpiyec_backend
-    restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USERNAME: root
-      DB_PASSWORD: password
-      DB_NAME: olimpiyec
-      TELEGRAM_CHANNEL_ID: olimpiets2013
-    ports:
-      - "3000:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - olimpiyec_network
-    command: npm run start:prod
 
 networks:
   olimpiyec_network:

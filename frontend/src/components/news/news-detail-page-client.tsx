@@ -10,7 +10,13 @@ import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { SiteLayout } from '@/components/layout/site-layout';
 
 export interface NewsDetailPageClientProps {
-  news: NewsItem;
+  news: NewsItem & {
+    // Поля с бэкенда
+    imageUrl?: string;
+    telegramId?: number;
+    hasMedia?: boolean;
+    postDate?: string;
+  };
 }
 
 /**
@@ -19,11 +25,21 @@ export interface NewsDetailPageClientProps {
 export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const router = useRouter();
 
+  // Адаптируем данные с бэкенда
+  const adaptedNews = {
+    ...news,
+    image: news.imageUrl || news.image,
+    excerpt: news.excerpt || news.content?.substring(0, 200) + '...',
+    tags: news.tags || [],
+    category: news.category,
+    published: news.published ?? true,
+  };
+
   // Хлебные крошки
   const breadcrumbItems = [
     { label: 'Главная', href: '/' },
     { label: 'Новости', href: '/news' },
-    { label: news.title, href: `/news/${news.id}` },
+    { label: adaptedNews.title, href: `/news/${adaptedNews.id}` },
   ];
 
   return (
@@ -47,7 +63,7 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
         <article className="mx-auto max-w-3xl">
           {/* Заголовок */}
           <h1 className="mb-4 text-3xl font-bold leading-tight md:text-4xl">
-            {news.title}
+            {adaptedNews.title}
           </h1>
 
           {/* Мета-информация */}
@@ -55,33 +71,25 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
             {/* Дата */}
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <span>{formatDate(news.createdAt)}</span>
+              <span>{formatDate(adaptedNews.postDate || adaptedNews.createdAt)}</span>
             </div>
 
-            {/* Автор */}
-            {news.author && (
-              <div className="flex items-center gap-1.5">
-                <User className="h-4 w-4" />
-                <span>{news.author}</span>
-              </div>
-            )}
-
             {/* Просмотры */}
-            {news.views !== undefined && (
+            {adaptedNews.views !== undefined && (
               <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
-                <span>{news.views} просмотров</span>
+                <span>{adaptedNews.views} просмотров</span>
               </div>
             )}
           </div>
 
           {/* Изображение */}
-          {news.image && (
+          {adaptedNews.image && (
             <figure className="mb-8">
               <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                 <Image
-                  src={news.image}
-                  alt={news.title}
+                  src={adaptedNews.image}
+                  alt={adaptedNews.title}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
                   className="rounded-lg object-cover"
@@ -89,17 +97,12 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
                   unoptimized
                 />
               </div>
-              {news.excerpt && (
-                <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-                  {news.excerpt}
-                </figcaption>
-              )}
             </figure>
           )}
 
           {/* Содержимое */}
           <div className="prose prose-slate dark:prose-invert max-w-none">
-            {news.content.split('\n').map((paragraph, index) => (
+            {adaptedNews.content?.split('\n').map((paragraph, index) => (
               <p key={index} className="mb-4 text-base leading-relaxed">
                 {paragraph}
               </p>
@@ -107,9 +110,9 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
           </div>
 
           {/* Теги */}
-          {news.tags.length > 0 && (
+          {adaptedNews.tags && adaptedNews.tags.length > 0 && (
             <div className="mt-8 flex flex-wrap gap-2 border-t pt-6">
-              {news.tags.map((tag) => (
+              {adaptedNews.tags.map((tag) => (
                 <span
                   key={tag}
                   className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
@@ -119,36 +122,10 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
               ))}
             </div>
           )}
-
-          {/* Категория */}
-          {news.category && (
-            <div className={cn(
-              'mt-4 inline-flex items-center rounded bg-primary px-3 py-1 text-sm font-medium text-primary-foreground',
-              news.category === 'sport' && 'bg-blue-600',
-              news.category === 'announcement' && 'bg-orange-600',
-              news.category === 'event' && 'bg-green-600',
-              news.category === 'news' && 'bg-slate-600',
-            )}>
-              {getCategoryLabel(news.category)}
-            </div>
-          )}
         </article>
       </div>
     </SiteLayout>
   );
-}
-
-/**
- * Получить название категории
- */
-function getCategoryLabel(category: string): string {
-  const labels: Record<string, string> = {
-    sport: 'Спорт',
-    announcement: 'Объявление',
-    event: 'Мероприятие',
-    news: 'Новости',
-  };
-  return labels[category] || category;
 }
 
 /**

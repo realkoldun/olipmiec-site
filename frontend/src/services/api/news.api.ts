@@ -48,7 +48,15 @@ export const newsApi = {
    * Получить новость по ID
    */
   async getNewsById(id: string): Promise<NewsItem> {
-    const response = await apiClient.get<NewsItem>(`/api/news/${id}`);
-    return response.data;
+    try {
+      const response = await apiClient.get<NewsItem>(`/api/news/${id}`);
+      return response.data;
+    } catch (error: any) {
+      // Пробрасываем ошибку дальше для обработки в странице
+      if (error.response?.status === 404) {
+        throw new Error('News not found');
+      }
+      throw error;
+    }
   },
 };
