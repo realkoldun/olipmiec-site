@@ -1,5 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
+export enum NewsCategory {
+  SPORT = 'sport',
+  ANNOUNCEMENT = 'announcement',
+  EVENT = 'event',
+  NEWS = 'news',
+}
+
 @Entity('news')
 export class News {
   @PrimaryGeneratedColumn('uuid')
@@ -33,6 +40,9 @@ export class News {
 
   @Column({ type: 'text', array: true, default: '{}' })
   tags: string[];
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  category?: NewsCategory;
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   @Index()

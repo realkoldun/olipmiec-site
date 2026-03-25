@@ -31,6 +31,7 @@ export class NewsController {
         postDate: news.postDate,
         views: news.views,
         tags: news.tags || [],
+        category: news.category || null,
         createdAt: news.createdAt,
         updatedAt: news.updatedAt,
       })),
@@ -59,6 +60,7 @@ export class NewsController {
       postDate: n.postDate,
       views: n.views,
       tags: n.tags || [],
+      category: n.category || null,
       createdAt: n.createdAt,
       updatedAt: n.updatedAt,
     }));
@@ -83,6 +85,7 @@ export class NewsController {
       postDate: news.postDate,
       views: news.views,
       tags: news.tags || [],
+      category: news.category || null,
       createdAt: news.createdAt,
       updatedAt: news.updatedAt,
     };

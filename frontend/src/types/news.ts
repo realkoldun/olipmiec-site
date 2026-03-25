@@ -3,6 +3,11 @@
  */
 
 /**
+ * Категория новости
+ */
+export type NewsCategory = 'sport' | 'announcement' | 'event' | 'news';
+
+/**
  * Новость
  */
 export interface NewsItem {
@@ -25,7 +30,7 @@ export interface NewsItem {
   /** Теги */
   tags: string[];
   /** Категория */
-  category?: string;
+  category?: NewsCategory;
   /** Опубликовано */
   published: boolean;
   /** Количество просмотров */

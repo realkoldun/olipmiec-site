@@ -21,6 +21,7 @@ function adaptNews(data: any): NewsItem[] {
     image: item.imageUrl || item.image,
     excerpt: item.excerpt || item.content?.substring(0, 200) + '...',
     tags: item.tags || [],
+    category: item.category || undefined,
     published: item.published ?? true,
   }));
 }

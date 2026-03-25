@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsNumber, IsDateString, IsBoolean, IsArray } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, IsBoolean, IsArray, IsEnum } from 'class-validator';
+import { NewsCategory } from '../entities/news.entity';
 
 export class CreateNewsDto {
   @IsNumber()
@@ -33,6 +34,10 @@ export class CreateNewsDto {
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
+
+  @IsOptional()
+  @IsEnum(NewsCategory)
+  category?: NewsCategory;
 }
 
 export class UpdateNewsDto {
@@ -64,6 +69,10 @@ export class UpdateNewsDto {
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
+
+  @IsOptional()
+  @IsEnum(NewsCategory)
+  category?: NewsCategory;
 }
 
 export class NewsResponseDto {
@@ -77,6 +86,7 @@ export class NewsResponseDto {
   postDate: Date;
   views: number;
   tags: string[];
+  category?: NewsCategory;
   createdAt: Date;
   updatedAt: Date;
 }

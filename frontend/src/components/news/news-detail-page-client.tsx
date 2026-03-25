@@ -31,7 +31,7 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
     image: news.imageUrl || news.image,
     excerpt: news.excerpt || news.content?.substring(0, 200) + '...',
     tags: news.tags || [],
-    category: news.category,
+    category: news.category || undefined,
     published: news.published ?? true,
   };
 
