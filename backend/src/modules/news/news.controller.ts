@@ -1,15 +1,15 @@
-import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
-import { TelegramScraperService } from '../telegram/telegram-scraper.service';
+import { Controller, Get, Query, ParseIntPipe, Param } from '@nestjs/common';
+import { NewsService } from './news.service';
 
 /**
- * NewsController - REST API для получения новостей напрямую из Telegram
+ * NewsController - REST API для получения новостей из БД
  */
 @Controller('api/news')
 export class NewsController {
-  constructor(private readonly telegramScraper: TelegramScraperService) {}
+  constructor(private readonly newsService: NewsService) {}
 
   /**
-   * Получить новости напрямую из Telegram
+   * Получить новости из БД
    * GET /api/news?page=1&limit=10
    */
   @Get()
@@ -17,80 +17,71 @@ export class NewsController {
     @Query('page', new ParseIntPipe({ optional: true })) page = 1,
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
   ) {
-    // Получаем новости напрямую из Telegram
-    const messages = await this.telegramScraper.getChannelPosts(limit * 3); // Берём с запасом
-
-    // Преобразуем в формат NewsItem
-    const news = messages.map((message) => {
-      const { title, content } = this.telegramScraper.parseMessageText(message);
-      
-      return {
-        id: message.message_id.toString(),
-        telegramId: message.message_id,
-        title,
-        content,
-        imageUrl: message.imageUrl,
-        videoUrl: message.videoUrl,
-        hasMedia: message.hasMedia,
-        postDate: message.date,
-        views: message.views || 0,
-        createdAt: message.date,
-        updatedAt: message.date,
-      };
-    });
-
-    // Пагинация
-    const total = news.length;
-    const totalPages = Math.ceil(total / limit);
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const paginatedNews = news.slice(start, end);
+    const result = await this.newsService.findAll(page, limit);
 
     return {
-      data: paginatedNews,
-      total,
-      page,
-      totalPages,
+      data: result.data.map((news) => ({
+        id: news.id,
+        telegramId: news.telegramId,
+        title: news.title,
+        content: news.content,
+        imageUrl: news.imageUrl,
+        videoUrl: news.videoUrl,
+        hasMedia: news.hasMedia,
+        postDate: news.postDate,
+        views: news.views,
+        createdAt: news.createdAt,
+        updatedAt: news.updatedAt,
+      })),
+      total: result.total,
+      page: result.page,
+      totalPages: result.totalPages,
     };
   }
 
   /**
-   * Получить последние новости напрямую из Telegram
+   * Получить последние новости из БД
    * GET /api/news/latest?limit=5
    */
   @Get('latest')
   async getLatestNews(@Query('limit', new ParseIntPipe({ optional: true })) limit = 5) {
-    const messages = await this.telegramScraper.getChannelPosts(limit);
+    const news = await this.newsService.getLatest(limit);
 
-    return messages.map((message) => {
-      const { title, content } = this.telegramScraper.parseMessageText(message);
-      
-      return {
-        id: message.message_id.toString(),
-        telegramId: message.message_id,
-        title,
-        content,
-        imageUrl: message.imageUrl,
-        videoUrl: message.videoUrl,
-        hasMedia: message.hasMedia,
-        postDate: message.date,
-        views: message.views || 0,
-        createdAt: message.date,
-        updatedAt: message.date,
-      };
-    });
+    return news.map((n) => ({
+      id: n.id,
+      telegramId: n.telegramId,
+      title: n.title,
+      content: n.content,
+      imageUrl: n.imageUrl,
+      videoUrl: n.videoUrl,
+      hasMedia: n.hasMedia,
+      postDate: n.postDate,
+      views: n.views,
+      createdAt: n.createdAt,
+      updatedAt: n.updatedAt,
+    }));
   }
 
   /**
-   * Получить новость по ID напрямую из Telegram
+   * Получить новость по ID из БД
    * GET /api/news/:id
    */
   @Get(':id')
-  async getNewsById() {
-    // Для получения конкретной новости нужно парсить весь канал
-    // Это неэффективно, поэтому возвращаем ошибку
+  async getNewsById(@Param('id') id: string) {
+    const news = await this.newsService.findOne(id);
+
     return {
-      error: 'Direct news fetch by ID is not supported. Use /api/news endpoint.',
+      id: news.id,
+      telegramId: news.telegramId,
+      title: news.title,
+      content: news.content,
+      imageUrl: news.imageUrl,
+      videoUrl: news.videoUrl,
+      hasMedia: news.hasMedia,
+      postDate: news.postDate,
+      views: news.views,
+      createdAt: news.createdAt,
+      updatedAt: news.updatedAt,
     };
   }
 }
