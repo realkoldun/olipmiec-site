@@ -129,9 +129,16 @@ export class TelegramScraperService {
       });
 
       this.logger.log(`Parsed ${messages.length} messages from ${this.channelUrl}`);
+      
+      // Логирование первых сообщений для отладки
+      messages.slice(0, 3).forEach((msg, idx) => {
+        this.logger.debug(`Message ${idx + 1}: ID=${msg.message_id}, Date=${msg.date}, Text="${msg.text.substring(0, 50)}..."`);
+      });
+      
       return messages;
     } catch (error) {
       this.logger.error('Error parsing Telegram channel:', error.message);
+      this.logger.error('Stack:', error.stack);
       throw error;
     }
   }
