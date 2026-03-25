@@ -20,7 +20,8 @@ import { News } from './modules/news/entities/news.entity';
 
     // Database
     TypeOrmModule.forRootAsync({
-      inject: [ConfigModule],
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST', 'localhost'),
