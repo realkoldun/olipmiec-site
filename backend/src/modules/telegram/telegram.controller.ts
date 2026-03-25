@@ -56,6 +56,9 @@ export class TelegramController {
           date: p.date,
           title: p.text.substring(0, 100) + (p.text.length > 100 ? '...' : ''),
           hasMedia: p.hasMedia,
+          imageUrl: p.imageUrl || null,
+          videoUrl: p.videoUrl || null,
+          views: p.views,
         })),
       };
     } catch (error) {
