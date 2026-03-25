@@ -106,6 +106,9 @@ export class TelegramSyncService {
           // Парсим текст
           const { title, content } = this.telegramScraper.parseMessageText(message);
 
+          // Извлекаем хештеги
+          const tags = this.telegramScraper.extractHashtags(message.text);
+
           // Создаем DTO
           const createNewsDto: CreateNewsDto = {
             telegramId: message.message_id,
@@ -115,6 +118,7 @@ export class TelegramSyncService {
             views: message.views || 0,
             imageUrl: message.imageUrl,
             hasMedia: message.hasMedia,
+            tags,
           };
 
           // Сохраняем в БД

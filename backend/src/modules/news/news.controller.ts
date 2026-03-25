@@ -30,6 +30,7 @@ export class NewsController {
         hasMedia: news.hasMedia,
         postDate: news.postDate,
         views: news.views,
+        tags: news.tags || [],
         createdAt: news.createdAt,
         updatedAt: news.updatedAt,
       })),
@@ -57,6 +58,7 @@ export class NewsController {
       hasMedia: n.hasMedia,
       postDate: n.postDate,
       views: n.views,
+      tags: n.tags || [],
       createdAt: n.createdAt,
       updatedAt: n.updatedAt,
     }));
@@ -80,6 +82,7 @@ export class NewsController {
       hasMedia: news.hasMedia,
       postDate: news.postDate,
       views: news.views,
+      tags: news.tags || [],
       createdAt: news.createdAt,
       updatedAt: news.updatedAt,
     };

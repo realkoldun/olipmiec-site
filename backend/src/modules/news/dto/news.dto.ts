@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsDateString, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, IsBoolean, IsArray } from 'class-validator';
 
 export class CreateNewsDto {
   @IsNumber()
@@ -28,6 +28,11 @@ export class CreateNewsDto {
   @IsOptional()
   @IsNumber()
   views?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }
 
 export class UpdateNewsDto {
@@ -54,6 +59,11 @@ export class UpdateNewsDto {
   @IsOptional()
   @IsNumber()
   views?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }
 
 export class NewsResponseDto {
@@ -66,6 +76,7 @@ export class NewsResponseDto {
   hasMedia: boolean;
   postDate: Date;
   views: number;
+  tags: string[];
   createdAt: Date;
   updatedAt: Date;
 }

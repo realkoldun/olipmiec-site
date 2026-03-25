@@ -31,6 +31,9 @@ export class News {
   @Column({ default: 0 })
   views: number;
 
+  @Column({ type: 'text', array: true, default: '{}' })
+  tags: string[];
+
   @CreateDateColumn({ type: 'timestamp with time zone' })
   @Index()
   createdAt: Date;

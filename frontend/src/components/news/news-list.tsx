@@ -54,6 +54,7 @@ export function NewsList({
             news={item}
             onClick={onNewsClick}
             size="md"
+            showTags={true}
           />
         ))}
       </div>

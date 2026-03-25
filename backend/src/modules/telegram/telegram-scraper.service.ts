@@ -173,6 +173,18 @@ export class TelegramScraperService {
   }
 
   /**
+   * Извлечь хештеги из текста
+   * Возвращает массив тегов без символа #
+   */
+  extractHashtags(text: string): string[] {
+    // Находим все хештеги (поддерживаем кириллицу, латиницу, цифры и подчёркивание)
+    const matches = text.match(/#[\wа-яА-ЯёЁ_]+/g) || [];
+    
+    // Удаляем символ # и приводим к нижнему регистру, убираем дубликаты
+    return [...new Set(matches.map(tag => tag.substring(1).toLowerCase()))];
+  }
+
+  /**
    * Проверить доступность канала
    */
   async checkChannelAvailability(): Promise<boolean> {
