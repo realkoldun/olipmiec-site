@@ -11,6 +11,7 @@ export interface NewsPageProps {
     page?: string;
     limit?: string;
     category?: string;
+    tags?: string;
   }>;
 }
 
@@ -29,15 +30,22 @@ function adaptNews(data: any): NewsItem[] {
 export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { page = '1', limit = '3' } = await searchParams;
   const category = (await searchParams).category;
+  const tagsParam = (await searchParams).tags;
+  const tags = tagsParam ? tagsParam.split(',').filter(Boolean) : [];
 
   // Получаем новости на сервере
   const data = await newsApi.getNews({
     page: parseInt(page),
     limit: parseInt(limit),
+    category,
+    tags: tags.length > 0 ? tags : undefined,
   });
 
   // Адаптируем данные
   const adaptedNews = adaptNews(data);
+
+  // Получаем все уникальные теги для фильтра
+  const allTags = Array.from(new Set(data.data.flatMap((n: any) => n.tags || []))).sort();
 
   return (
     <Suspense fallback={
@@ -59,6 +67,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         total={data.total}
         totalPages={data.totalPages}
         category={category}
+        tags={tags}
+        allTags={allTags}
       />
     </Suspense>
   );

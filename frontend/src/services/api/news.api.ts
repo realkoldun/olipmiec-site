@@ -18,6 +18,7 @@ export interface GetNewsParams {
   page?: number;
   limit?: number;
   category?: string;
+  tags?: string[];
 }
 
 /**
@@ -27,9 +28,9 @@ export const newsApi = {
   /**
    * Получить все новости с пагинацией
    */
-  async getNews({ page = 1, limit = 10 }: GetNewsParams = {}): Promise<NewsApiResponse> {
+  async getNews({ page = 1, limit = 10, category, tags }: GetNewsParams = {}): Promise<NewsApiResponse> {
     const response = await apiClient.get<NewsApiResponse>('/api/news', {
-      params: { page, limit },
+      params: { page, limit, category, tags: tags?.join(',') },
     });
     return response.data;
   },

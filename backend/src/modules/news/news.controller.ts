@@ -16,8 +16,14 @@ export class NewsController {
   async getNews(
     @Query('page', new ParseIntPipe({ optional: true })) page = 1,
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('category') category?: string,
+    @Query('tags') tags?: string,
   ) {
-    const result = await this.newsService.findAll(page, limit);
+    const tagsArray = tags ? tags.split(',').filter(Boolean) : [];
+    const result = await this.newsService.findAll(page, limit, {
+      category: category || undefined,
+      tags: tagsArray.length > 0 ? tagsArray : undefined,
+    });
 
     return {
       data: result.data.map((news) => ({

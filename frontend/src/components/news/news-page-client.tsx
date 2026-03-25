@@ -18,6 +18,10 @@ export interface NewsPageClientProps {
   totalPages: number;
   /** Текущая категория */
   category?: string;
+  /** Выбранные теги */
+  tags?: string[];
+  /** Все доступные теги */
+  allTags?: string[];
 }
 
 /**
@@ -30,6 +34,8 @@ export function NewsPageClient({
   total,
   totalPages,
   category,
+  tags = [],
+  allTags = [],
 }: NewsPageClientProps) {
   const router = useRouter();
 
@@ -43,6 +49,7 @@ export function NewsPageClient({
     const params = new URLSearchParams();
     params.set('page', newPage.toString());
     if (category) params.set('category', category);
+    if (tags.length > 0) params.set('tags', tags.join(','));
     router.push(`/news?${params.toString()}`);
   };
 
@@ -51,6 +58,30 @@ export function NewsPageClient({
     const params = new URLSearchParams();
     params.set('page', '1'); // Сброс на первую страницу
     if (newCategory) params.set('category', newCategory);
+    if (tags.length > 0) params.set('tags', tags.join(','));
+    router.push(`/news?${params.toString()}`);
+  };
+
+  // Обработчик изменения тега — переключение тега
+  const handleTagToggle = (tag: string) => {
+    const params = new URLSearchParams();
+    params.set('page', '1'); // Сброс на первую страницу
+    if (category) params.set('category', category);
+    
+    // Если тег уже выбран - убираем его
+    const newTags = tags.includes(tag)
+      ? tags.filter(t => t !== tag)
+      : [...tags, tag];
+    
+    if (newTags.length > 0) params.set('tags', newTags.join(','));
+    router.push(`/news?${params.toString()}`);
+  };
+
+  // Обработчик сброса всех тегов
+  const handleClearTags = () => {
+    const params = new URLSearchParams();
+    params.set('page', '1');
+    if (category) params.set('category', category);
     router.push(`/news?${params.toString()}`);
   };
 
@@ -94,6 +125,36 @@ export function NewsPageClient({
             </Button>
           ))}
         </div>
+
+        {/* Фильтры по тегам */}
+        {allTags.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-sm font-medium mb-2">Фильтр по тегам:</h3>
+            <div className="flex flex-wrap gap-2">
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => handleTagToggle(tag)}
+                  className={`px-3 py-1 text-xs rounded-full border transition-colors ${
+                    tags.includes(tag)
+                      ? 'bg-primary text-primary-foreground border-primary'
+                      : 'bg-background hover:bg-muted border-border'
+                  }`}
+                >
+                  #{tag}
+                </button>
+              ))}
+            </div>
+            {tags.length > 0 && (
+              <button
+                onClick={handleClearTags}
+                className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                ✕ Сбросить теги
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Счетчик */}
         <div className="mb-4 text-sm text-muted-foreground">

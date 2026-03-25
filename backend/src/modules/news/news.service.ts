@@ -58,10 +58,23 @@ export class NewsService {
   }
 
   /**
-   * Получить все новости с пагинацией
+   * Получить все новости с пагинацией и фильтрацией
    */
-  async findAll(page = 1, limit = 10): Promise<{ data: News[]; total: number; page: number; totalPages: number }> {
+  async findAll(page = 1, limit = 10, filters?: { category?: string; tags?: string[] }): Promise<{ data: News[]; total: number; page: number; totalPages: number }> {
+    const where: any = {};
+
+    // Фильтр по категории
+    if (filters?.category) {
+      where.category = filters.category;
+    }
+
+    // Фильтр по тегам (contains - массив содержит все указанные теги)
+    if (filters?.tags && filters.tags.length > 0) {
+      where.tags = { type: 'contains', value: filters.tags };
+    }
+
     const [data, total] = await this.newsRepository.findAndCount({
+      where,
       order: { postDate: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
