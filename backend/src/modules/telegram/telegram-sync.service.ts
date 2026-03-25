@@ -41,6 +41,10 @@ export class TelegramSyncService {
         } catch (error) {
           this.logger.warn('Could not fetch latest news (table may not exist yet):', error.message);
         }
+
+        // Запуск синхронизации при старте
+        this.logger.log('Running initial sync...');
+        await this.sync();
       } else {
         this.logger.warn('Telegram channel is not available. Check TELEGRAM_CHANNEL_ID');
       }
