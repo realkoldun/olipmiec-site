@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 
 /**
@@ -9,9 +9,13 @@ import { useAccessibilityStore } from '@/stores/accessibility-store';
  */
 export function AccessibilityProvider({ children }: { children: React.ReactNode }) {
   const { contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom } = useAccessibilityStore();
+  const [isMounted, setIsMounted] = useState(false);
 
   // Применение настроек доступности при изменении
   useEffect(() => {
+    // Применяем только после монтирования (избегаем гидратации)
+    if (!isMounted) return;
+
     const applySettings = () => {
       const body = document.body;
 
@@ -19,15 +23,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');
       body.classList.add(`contrast-${contrast}`);
 
-      // Размер шрифта - применяем напрямую к body и всем элементам
-      body.style.setProperty('font-size', `${fontSize}px`, 'important');
-
-      const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
-      textElements.forEach(el => {
-        // Пропускаем элементы внутри мобильного меню, чтобы не ломать его layout
-        if (el.closest('.mobile-nav')) return;
-        (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
-      });
+      // Размер шрифта - применяем только к body, не ко всем элементам
+      body.style.setProperty('font-size', `${fontSize}px`);
 
       // Масштаб страницы
       document.documentElement.style.setProperty('--user-zoom', zoom.toString());
@@ -42,7 +39,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       document.documentElement.style.setProperty('--magnifier-zoom', magnifierZoom.toString());
     };
 
-    // Применяем сразу
     applySettings();
 
     // Подписываемся на изменения store
@@ -51,10 +47,13 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     });
 
     return unsubscribe;
-  }, [contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom]);
+  }, [contrast, fontSize, fontScale, zoom, magnifierEnabled, magnifierZoom, isMounted]);
 
-  // Инициализация настроек из localStorage при первом запуске (для SSR гидратации)
+  // Помечаем как смонтированный после первой отрисовки
   useEffect(() => {
+    setIsMounted(true);
+    
+    // Инициализация настроек из localStorage
     try {
       const stored = localStorage.getItem('accessibility-settings');
       if (stored) {
@@ -63,7 +62,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         const storedContrast = settings.state?.contrast;
 
         if (storedFontSize) {
-          document.body.style.setProperty('font-size', `${storedFontSize}px`, 'important');
+          document.body.style.setProperty('font-size', `${storedFontSize}px`);
         }
         if (storedContrast) {
           document.body.classList.remove('contrast-normal', 'contrast-high', 'contrast-dark');

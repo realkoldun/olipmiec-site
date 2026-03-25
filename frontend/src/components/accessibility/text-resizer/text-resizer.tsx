@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccessibilityStore } from '@/stores/accessibility-store';
 import { Minus, Plus, RotateCcw } from 'lucide-react';
 import { cn } from '@/utils/cn';
@@ -15,20 +15,20 @@ export interface TextResizerProps {
  */
 export function TextResizer({ className }: TextResizerProps) {
   const { fontSize, setFontSize } = useAccessibilityStore();
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Применение размера шрифта при изменении (дублируется с Provider для Storybook)
+  // Применение размера шрифта при изменении - только после монтирования
   useEffect(() => {
+    if (!isMounted) return;
+
     const body = document.body;
-    
-    // Применяем к body с !important
-    body.style.setProperty('font-size', `${fontSize}px`, 'important');
-    
-    // Применяем ко всем текстовым элементам с !important
-    const textElements = body.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, a, button, li, td, th, label, div, input, textarea');
-    textElements.forEach(el => {
-      (el as HTMLElement).style.setProperty('font-size', `${fontSize}px`, 'important');
-    });
-  }, [fontSize]);
+    body.style.setProperty('font-size', `${fontSize}px`);
+  }, [fontSize, isMounted]);
+
+  // Помечаем как смонтированный
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Уменьшение размера
   const handleDecrease = () => {
