@@ -223,7 +223,7 @@ export class TelegramScraperService {
   /**
    * Извлечь полный текст с сохранением переносов строк
    */
-  private extractFullText($post: cheerio.Cheerio, $: cheerio.CheerioAPI): string {
+  private extractFullText($post: cheerio.Cheerio<any>, $: cheerio.CheerioAPI): string {
     const textParts: string[] = [];
     
     $post.find('.tgme_widget_message_text').contents().each((_, elem) => {
