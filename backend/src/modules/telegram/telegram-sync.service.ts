@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { TelegramScraperService } from './telegram-scraper.service';
 import { NewsService } from '../news/news.service';
 import { CreateNewsDto } from '../news/dto/news.dto';
+import { NewsProcessorService } from '../ai/news-processor.service';
 
 /**
  * TelegramSyncService - сервис для синхронизации новостей из Telegram
@@ -16,6 +17,7 @@ export class TelegramSyncService {
   constructor(
     private readonly telegramScraper: TelegramScraperService,
     private readonly newsService: NewsService,
+    private readonly newsProcessor: NewsProcessorService,
   ) {}
 
   /**
@@ -103,22 +105,19 @@ export class TelegramSyncService {
             continue;
           }
 
-          // Парсим текст
-          const { title, content } = this.telegramScraper.parseMessageText(message);
-
-          // Извлекаем хештеги
-          const tags = this.telegramScraper.extractHashtags(message.text);
+          // AI обработка новости
+          const analysis = await this.newsProcessor.analyzeNews(message.text);
 
           // Создаем DTO
           const createNewsDto: CreateNewsDto = {
             telegramId: message.message_id,
-            title,
-            content,
+            title: analysis.title,
+            content: analysis.content,
             postDate: message.date.toISOString(),
             views: message.views || 0,
             imageUrl: message.imageUrl,
             hasMedia: message.hasMedia,
-            tags,
+            tags: analysis.tags,
           };
 
           // Сохраняем в БД
@@ -149,5 +148,13 @@ export class TelegramSyncService {
       lastSyncedMessageId: this.lastSyncedMessageId,
       isConfigured: this.telegramScraper.getIsConfigured(),
     };
+  }
+
+  /**
+   * Сбросить lastSyncedMessageId для полной синхронизации
+   */
+  resetLastSyncedId() {
+    this.lastSyncedMessageId = null;
+    this.logger.log('Last synced message ID reset');
   }
 }

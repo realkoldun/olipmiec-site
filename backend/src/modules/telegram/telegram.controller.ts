@@ -49,7 +49,7 @@ export class TelegramController {
     }
 
     try {
-      const posts = await this.telegramScraper.getChannelPosts(5);
+      const posts = await this.telegramScraper.getChannelPosts(50); // Увеличили лимит
       return {
         ok: true,
         count: posts.length,
@@ -91,6 +91,22 @@ export class TelegramController {
     return {
       ok: true,
       message: `Synchronized ${count} new messages`,
+      count,
+    };
+  }
+
+  /**
+   * Запустить полную синхронизацию (сбросить lastSyncedMessageId)
+   * POST /api/telegram/sync/full
+   */
+  @Post('sync/full')
+  @HttpCode(HttpStatus.OK)
+  async syncFull() {
+    await this.telegramSyncService.resetLastSyncedId();
+    const count = await this.telegramSyncService.sync();
+    return {
+      ok: true,
+      message: `Full sync completed. Synchronized ${count} new messages`,
       count,
     };
   }
