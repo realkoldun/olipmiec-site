@@ -25,7 +25,7 @@ export class AIController {
       ok: isAvailable,
       isConfigured: this.ollama.isConfigured,
       models,
-      defaultModel: this.ollama.defaultModel,
+      defaultModel: this.ollama.getDefaultModel(),
     };
   }
 
@@ -70,7 +70,7 @@ export class AIController {
     return {
       ok: true,
       response,
-      model: model || this.ollama.defaultModel,
+      model: model || this.ollama.getDefaultModel(),
     };
   }
 }

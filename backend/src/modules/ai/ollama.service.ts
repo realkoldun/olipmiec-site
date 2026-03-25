@@ -35,7 +35,7 @@ export class OllamaService {
   private readonly httpClient: AxiosInstance;
   private readonly baseUrl: string;
   private readonly defaultModel: string;
-  public isConfigured = false;
+  public readonly isConfigured: boolean;
 
   constructor(private readonly configService: ConfigService) {
     this.baseUrl = this.configService.get<string>('OLLAMA_BASE_URL', 'http://localhost:11434');
@@ -51,6 +51,13 @@ export class OllamaService {
 
     this.isConfigured = true;
     this.logger.log(`Ollama configured: ${this.baseUrl}, model: ${this.defaultModel}`);
+  }
+
+  /**
+   * Получить модель по умолчанию
+   */
+  getDefaultModel(): string {
+    return this.defaultModel;
   }
 
   /**

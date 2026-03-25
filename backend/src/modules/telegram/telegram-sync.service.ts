@@ -126,7 +126,7 @@ export class TelegramSyncService {
           newCount++;
           this.lastSyncedMessageId = message.message_id;
 
-          this.logger.log(`Saved news #${message.message_id}: ${title}`);
+          this.logger.log(`Saved news #${message.message_id}: ${analysis.title}`);
         } catch (error) {
           this.logger.error(`Error processing message ${message.message_id}:`, error.message);
         }
