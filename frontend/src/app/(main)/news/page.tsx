@@ -28,9 +28,12 @@ function adaptNews(data: any): NewsItem[] {
 }
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
-  const { page = '1', limit = '3' } = await searchParams;
-  const category = (await searchParams).category;
-  const tagsParam = (await searchParams).tags;
+  // Безопасное получение параметров
+  const params = await searchParams;
+  const page = params?.page || '1';
+  const limit = params?.limit || '3';
+  const category = params?.category;
+  const tagsParam = params?.tags;
   const tags = tagsParam ? tagsParam.split(',').filter(Boolean) : [];
 
   // Получаем новости на сервере
