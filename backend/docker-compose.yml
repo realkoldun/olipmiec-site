@@ -21,7 +21,35 @@ services:
       timeout: 5s
       retries: 5
 
-  # Backend Application
+  # Ollama AI (Local LLM)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: olimpiyec_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - olimpiyec_network
+    # Раскомментируй для GPU (NVIDIA)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    command: >
+      sh -c "ollama serve &
+      sleep 5 &&
+      ollama pull gemma3:4b"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/api/tags || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
 networks:
   olimpiyec_network:
@@ -29,4 +57,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  ollama_data:
     driver: local
