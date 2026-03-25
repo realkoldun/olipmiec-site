@@ -4,6 +4,8 @@ import {
   Post,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TelegramScraperService } from './telegram-scraper.service';
 import { TelegramSyncService } from './telegram-sync.service';
@@ -103,6 +105,46 @@ export class TelegramController {
     return {
       ok: !!info,
       data: info,
+    };
+  }
+
+  /**
+   * Получить сообщение по ID с полным текстом
+   * GET /api/telegram/message/:id
+   */
+  @Get('message/:id')
+  async getMessageById(@Param('id', ParseIntPipe) id: number) {
+    if (!this.telegramScraper.getIsConfigured()) {
+      return {
+        ok: false,
+        message: 'Telegram scraper not configured',
+      };
+    }
+
+    const message = await this.telegramScraper.getMessageById(id);
+
+    if (!message) {
+      return {
+        ok: false,
+        message: `Message ${id} not found`,
+      };
+    }
+
+    const { title, content } = this.telegramScraper.parseMessageText(message);
+
+    return {
+      ok: true,
+      data: {
+        id: message.message_id,
+        date: message.date,
+        title,
+        content,
+        fullText: message.text,
+        imageUrl: message.imageUrl,
+        videoUrl: message.videoUrl,
+        hasMedia: message.hasMedia,
+        views: message.views,
+      },
     };
   }
 }

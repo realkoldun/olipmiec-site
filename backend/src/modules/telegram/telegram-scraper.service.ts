@@ -92,8 +92,13 @@ export class TelegramScraperService {
         const date = dateStr ? new Date(dateStr) : new Date();
 
         // Текст (включая заголовок)
+        // Используем html() вместо text() для сохранения структуры
+        const textHtml = $post.find('.tgme_widget_message_text').html() || '';
         const text = $post.find('.tgme_widget_message_text').text().trim();
         if (!text) return; // Пропускаем посты без текста
+
+        // Извлекаем полный текст с переносами строк
+        const fullText = this.extractFullText($post, $);
 
         // Изображения
         let imageUrl: string | undefined;
@@ -120,7 +125,7 @@ export class TelegramScraperService {
         messages.push({
           message_id: messageId,
           date,
-          text,
+          text: fullText,
           imageUrl: imageUrl || videoUrl,
           videoUrl: undefined,
           hasMedia: !!(imageUrl || videoUrl),
@@ -213,5 +218,103 @@ export class TelegramScraperService {
    */
   getIsConfigured(): boolean {
     return this.isConfigured;
+  }
+
+  /**
+   * Извлечь полный текст с сохранением переносов строк
+   */
+  private extractFullText($post: cheerio.Cheerio, $: cheerio.CheerioAPI): string {
+    const textParts: string[] = [];
+    
+    $post.find('.tgme_widget_message_text').contents().each((_, elem) => {
+      if (elem.type === 'text') {
+        const text = $(elem).text();
+        if (text.trim()) {
+          textParts.push(text);
+        }
+      } else if (elem.type === 'tag' && elem.name === 'br') {
+        textParts.push('\n');
+      } else {
+        const text = $(elem).text();
+        if (text.trim()) {
+          textParts.push(text);
+        }
+      }
+    });
+
+    return textParts.join('').trim();
+  }
+
+  /**
+   * Получить одно сообщение по ID с полным текстом
+   * Парсит конкретный пост через URL вида t.me/s/channel/message_id
+   */
+  async getMessageById(messageId: number): Promise<TelegramMessage | null> {
+    if (!this.isConfigured) {
+      return null;
+    }
+
+    try {
+      // URL для конкретного сообщения
+      const messageUrl = `${this.channelUrl}/${messageId}`;
+      const response = await this.httpClient.get(messageUrl);
+      const $ = cheerio.load(response.data);
+
+      // Ищем конкретное сообщение
+      const $post = $(`[data-post*="/${messageId}"]`).first();
+      
+      if ($post.length === 0) {
+        this.logger.warn(`Message ${messageId} not found`);
+        return null;
+      }
+
+      const dataPost = $post.attr('data-post');
+      const parsedId = parseInt(dataPost?.split('/').pop() || '0');
+      
+      // Дата
+      const dateStr = $post.find('.tgme_widget_message_date time').attr('datetime');
+      const date = dateStr ? new Date(dateStr) : new Date();
+
+      // Полный текст
+      const text = this.extractFullText($post, $);
+      if (!text) {
+        return null;
+      }
+
+      // Изображения
+      let imageUrl: string | undefined;
+      const image = $post.find('.tgme_widget_message_photo_wrap').first();
+      if (image.length > 0) {
+        const style = image.attr('style') || '';
+        const match = style.match(/url\(['"]?([^'")]+)['"]?\)/);
+        if (match) {
+          imageUrl = match[1];
+        }
+      }
+
+      // Видео
+      let videoUrl: string | undefined;
+      const video = $post.find('.tgme_widget_message_video_wrap img').first();
+      if (video.length > 0) {
+        videoUrl = video.attr('src');
+      }
+
+      // Просмотры
+      const viewsText = $post.find('.tgme_widget_message_views').text().trim();
+      const views = viewsText ? parseInt(viewsText.replace(/\s/g, '')) : undefined;
+
+      return {
+        message_id: parsedId,
+        date,
+        text,
+        imageUrl: imageUrl || videoUrl,
+        videoUrl: undefined,
+        hasMedia: !!(imageUrl || videoUrl),
+        views,
+      };
+    } catch (error) {
+      this.logger.error(`Error fetching message ${messageId}:`, error.message);
+      return null;
+    }
   }
 }
