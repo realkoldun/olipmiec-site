@@ -2,7 +2,7 @@ import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
 import { NewsService } from '../news/news.service';
 
 /**
- * Результат поиска
+ * Результат поиска (возвращается напрямую, без обёртки item)
  */
 interface SearchResult {
   id: string;
@@ -14,6 +14,9 @@ interface SearchResult {
   image?: string;
   createdAt?: string;
   tags: string[];
+  relevance: number;
+  highlighted?: string;
+  matchedFields?: string[];
 }
 
 /**
@@ -70,7 +73,7 @@ export class SearchController {
       }
     }
 
-    // Рассчитываем релевантность
+    // Рассчитываем релевантность и формируем результаты
     const results = items
       .map((news) => {
         const title = news.title.toLowerCase().replace(/ё/g, 'е');
@@ -78,11 +81,15 @@ export class SearchController {
         const tags = news.tags.map(t => t.toLowerCase().replace(/ё/g, 'е'));
 
         let relevance = 0;
+        const matchedFields: string[] = [];
 
         // Проверка по заголовку
         for (const word of queryWords) {
           if (title.includes(word)) {
             relevance += 30;
+            if (!matchedFields.includes('title')) {
+              matchedFields.push('title');
+            }
           }
         }
 
@@ -90,6 +97,9 @@ export class SearchController {
         for (const word of queryWords) {
           if (content.includes(word)) {
             relevance += 10;
+            if (!matchedFields.includes('content')) {
+              matchedFields.push('content');
+            }
           }
         }
 
@@ -97,6 +107,9 @@ export class SearchController {
         for (const word of queryWords) {
           if (tags.some(tag => tag.includes(word))) {
             relevance += 20;
+            if (!matchedFields.includes('tags')) {
+              matchedFields.push('tags');
+            }
           }
         }
 
@@ -105,31 +118,32 @@ export class SearchController {
           relevance += 50;
         }
 
+        // Создаем highlighted текст
+        const excerpt = news.content.substring(0, 200) + '...';
+        const highlighted = highlightMatches(excerpt, queryWords);
+
         return {
-          item: news,
-          relevance,
+          id: news.id,
+          type: 'news' as const,
+          title: news.title,
+          content: news.content,
+          excerpt,
+          url: `/news/${news.id}`,
+          image: news.imageUrl || undefined,
+          createdAt: news.createdAt.toISOString(),
+          tags: news.tags,
+          relevance: Math.min(100, relevance),
+          highlighted,
+          matchedFields,
         };
       })
       .filter((r) => r.relevance > 0)
       .sort((a, b) => b.relevance - a.relevance);
 
-    // Форматируем результаты
-    const formattedResults: SearchResult[] = results.map(({ item }) => ({
-      id: item.id,
-      type: 'news' as const,
-      title: item.title,
-      content: item.content,
-      excerpt: item.content.substring(0, 200) + '...',
-      url: `/news/${item.id}`,
-      image: item.imageUrl || undefined,
-      createdAt: item.createdAt.toISOString(),
-      tags: item.tags,
-    }));
-
     // Пагинация
-    const total = formattedResults.length;
+    const total = results.length;
     const totalPages = Math.ceil(total / limit);
-    const paginatedResults = formattedResults.slice(
+    const paginatedResults = results.slice(
       (page - 1) * limit,
       page * limit,
     );
@@ -145,4 +159,29 @@ export class SearchController {
       processingTime: Math.round(endTime - startTime),
     };
   }
+}
+
+/**
+ * Подсветка совпадений в тексте
+ */
+function highlightMatches(text: string, words: string[]): string {
+  if (!text || words.length === 0) return text;
+
+  const normalizedText = text.toLowerCase().replace(/ё/g, 'е');
+  let context = text;
+
+  // Подсвечиваем совпадения
+  for (const word of words) {
+    const regex = new RegExp(`(${escapeRegex(word)})`, 'gi');
+    context = context.replace(regex, '<mark>$1</mark>');
+  }
+
+  return context;
+}
+
+/**
+ * Экранирование специальных символов для regex
+ */
+function escapeRegex(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

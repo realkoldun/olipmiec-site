@@ -14,16 +14,18 @@ export interface SearchResultsProps {
 }
 
 interface SearchResultItem {
-  item: {
-    id: string;
-    type: SearchItemType;
-    title: string;
-    url: string;
-    createdAt?: string;
-  };
+  id: string;
+  type: SearchItemType;
+  title: string;
+  content: string;
+  excerpt: string;
+  url: string;
+  image?: string;
+  createdAt?: string;
+  tags: string[];
   relevance: number;
-  highlighted: string;
-  matchedFields: string[];
+  highlighted?: string;
+  matchedFields?: string[];
 }
 
 interface SearchResponse {
@@ -130,9 +132,9 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
           <div className="space-y-3">
             {searchResults.results.map((result) => (
               <SearchResultItem
-                key={result.item.id}
+                key={result.id}
                 result={result}
-                onClick={() => onItemClick?.(result.item.url)}
+                onClick={() => onItemClick?.(result.url)}
               />
             ))}
           </div>
@@ -171,7 +173,7 @@ interface SearchResultItemProps {
 }
 
 function SearchResultItem({ result, onClick }: SearchResultItemProps) {
-  const { item, relevance } = result;
+  const { id, type, title, relevance, highlighted, createdAt } = result;
 
   const typeIcons: Record<string, JSX.ElementType> = {
     news: FileText,
@@ -180,7 +182,7 @@ function SearchResultItem({ result, onClick }: SearchResultItemProps) {
     document: FileText,
   };
 
-  const Icon = typeIcons[item.type] || FileText;
+  const Icon = typeIcons[type] || FileText;
 
   return (
     <button
@@ -198,23 +200,23 @@ function SearchResultItem({ result, onClick }: SearchResultItemProps) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h4 className="font-semibold truncate">{item.title}</h4>
+            <h4 className="font-semibold truncate">{title}</h4>
             <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-muted">
-              {getTypeLabel(item.type)}
+              {getTypeLabel(type)}
             </span>
           </div>
 
-          {result.highlighted && (
+          {highlighted && (
             <p
               className="text-sm text-muted-foreground line-clamp-2"
-              dangerouslySetInnerHTML={{ __html: result.highlighted }}
+              dangerouslySetInnerHTML={{ __html: highlighted }}
             />
           )}
 
           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
             <span>Релевантность: {relevance}%</span>
-            {item.createdAt && (
-              <span>{formatDate(item.createdAt)}</span>
+            {createdAt && (
+              <span>{formatDate(createdAt)}</span>
             )}
           </div>
         </div>
