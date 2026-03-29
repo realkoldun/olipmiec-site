@@ -5,31 +5,18 @@ import type {
   TextSummarizationService,
 } from '@/types/text-summarization';
 
-/**
- * Конфигурация сервиса
- */
 export interface OllamaConfig {
-  /** URL Ollama API */
   baseUrl: string;
-  /** Модель для использования */
   model: string;
-  /** Таймаут запроса (мс) */
   timeout: number;
 }
 
-/**
- * Конфигурация по умолчанию
- * Можно переопределить через env переменные
- */
 const DEFAULT_CONFIG: OllamaConfig = {
-  baseUrl: 'http://localhost:11434',
-  model: 'gemma3:4b', // или llama3, mistral, etc.
-  timeout: 30000, // 30 секунд
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  model: 'gemma3:4b',
+  timeout: 60000,
 };
 
-/**
- * Промпт для сокращения текста
- */
 function createSummarizationPrompt(
   text: string,
   options: SummarizationOptions
@@ -57,14 +44,6 @@ ${text}
 Пересказ:`;
 }
 
-/**
- * Ollama Service
- * Сервис для работы с Ollama API
- * 
- * В будущем можно заменить на вызов API бэкенда:
- * - Изменить baseUrl на '/api/summarize'
- * - Изменить формат запроса/ответа
- */
 export class OllamaService implements TextSummarizationService {
   private config: OllamaConfig;
   private abortController: AbortController | null = null;
@@ -73,15 +52,12 @@ export class OllamaService implements TextSummarizationService {
     this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
-  /**
-   * Сократить текст
-   */
   async summarize(
     text: string,
     options?: SummarizationOptions
   ): Promise<SummarizationResult> {
     const startTime = performance.now();
-    
+
     this.abortController = new AbortController();
     const { signal } = this.abortController;
 
@@ -100,7 +76,7 @@ export class OllamaService implements TextSummarizationService {
             prompt,
             stream: false,
             options: {
-              temperature: 0.3, // Низкая температура для более точных ответов
+              temperature: 0.3,
               top_p: 0.9,
             },
           }),
@@ -146,9 +122,6 @@ export class OllamaService implements TextSummarizationService {
     }
   }
 
-  /**
-   * Проверить доступность сервиса
-   */
   async isAvailable(): Promise<boolean> {
     try {
       const controller = new AbortController();
@@ -165,9 +138,6 @@ export class OllamaService implements TextSummarizationService {
     }
   }
 
-  /**
-   * Отменить текущий запрос
-   */
   cancel(): void {
     if (this.abortController) {
       this.abortController.abort();
@@ -175,9 +145,6 @@ export class OllamaService implements TextSummarizationService {
     }
   }
 
-  /**
-   * Расчёт процента сокращения
-   */
   private calculateCompressionRatio(
     original: string,
     summarized: string
@@ -186,9 +153,6 @@ export class OllamaService implements TextSummarizationService {
     return Math.round((1 - summarized.length / original.length) * 100);
   }
 
-  /**
-   * Создание ошибки
-   */
   private createError(
     type: SummarizationError['type'],
     message: string
@@ -201,7 +165,4 @@ export class OllamaService implements TextSummarizationService {
   }
 }
 
-/**
- * Экспорт экземпляра сервиса по умолчанию
- */
 export const ollamaService = new OllamaService();

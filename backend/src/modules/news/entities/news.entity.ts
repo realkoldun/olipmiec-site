@@ -22,6 +22,9 @@ export class News {
   @Column({ type: 'text' })
   content: string;
 
+  @Column({ type: 'text', nullable: true })
+  summarizedContent?: string;
+
   @Column({ nullable: true })
   imageUrl?: string;
 

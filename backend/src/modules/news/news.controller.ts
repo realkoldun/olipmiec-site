@@ -1,17 +1,14 @@
-import { Controller, Get, Query, ParseIntPipe, Param } from '@nestjs/common';
+import { Controller, Get, Query, ParseIntPipe, Param, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { NewsService } from './news.service';
+import { NewsProcessorService } from '../ai/news-processor.service';
 
-/**
- * NewsController - REST API для получения новостей из БД
- */
 @Controller('api/news')
 export class NewsController {
-  constructor(private readonly newsService: NewsService) {}
+  constructor(
+    private readonly newsService: NewsService,
+    private readonly newsProcessor: NewsProcessorService,
+  ) {}
 
-  /**
-   * Получить новости из БД
-   * GET /api/news?page=1&limit=10
-   */
   @Get()
   async getNews(
     @Query('page', new ParseIntPipe({ optional: true })) page = 1,
@@ -31,6 +28,7 @@ export class NewsController {
         telegramId: news.telegramId,
         title: news.title,
         content: news.content,
+        summarizedContent: news.summarizedContent,
         imageUrl: news.imageUrl,
         videoUrl: news.videoUrl,
         hasMedia: news.hasMedia,
@@ -47,10 +45,6 @@ export class NewsController {
     };
   }
 
-  /**
-   * Получить последние новости из БД
-   * GET /api/news/latest?limit=5
-   */
   @Get('latest')
   async getLatestNews(@Query('limit', new ParseIntPipe({ optional: true })) limit = 5) {
     const news = await this.newsService.getLatest(limit);
@@ -60,6 +54,7 @@ export class NewsController {
       telegramId: n.telegramId,
       title: n.title,
       content: n.content,
+      summarizedContent: n.summarizedContent,
       imageUrl: n.imageUrl,
       videoUrl: n.videoUrl,
       hasMedia: n.hasMedia,
@@ -72,10 +67,6 @@ export class NewsController {
     }));
   }
 
-  /**
-   * Получить новость по ID из БД
-   * GET /api/news/:id
-   */
   @Get(':id')
   async getNewsById(@Param('id') id: string) {
     const news = await this.newsService.findOne(id);
@@ -85,6 +76,7 @@ export class NewsController {
       telegramId: news.telegramId,
       title: news.title,
       content: news.content,
+      summarizedContent: news.summarizedContent,
       imageUrl: news.imageUrl,
       videoUrl: news.videoUrl,
       hasMedia: news.hasMedia,
@@ -94,6 +86,30 @@ export class NewsController {
       category: news.category || null,
       createdAt: news.createdAt,
       updatedAt: news.updatedAt,
+    };
+  }
+
+  @Post(':id/summarize')
+  @HttpCode(HttpStatus.OK)
+  async summarizeNews(@Param('id') id: string, @Body('maxLength') maxLength?: number) {
+    const news = await this.newsService.findOne(id);
+
+    if (news.summarizedContent) {
+      return {
+        ok: true,
+        summarizedText: news.summarizedContent,
+        fromCache: true,
+      };
+    }
+
+    const result = await this.newsProcessor.summarizeNews(news.content, maxLength || 500);
+    await this.newsService.summarizeNews(id, result.summarizedText);
+
+    return {
+      ok: true,
+      summarizedText: result.summarizedText,
+      compressionRatio: result.compressionRatio,
+      fromCache: false,
     };
   }
 }

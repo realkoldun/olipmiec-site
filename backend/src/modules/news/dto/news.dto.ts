@@ -51,6 +51,10 @@ export class UpdateNewsDto {
 
   @IsOptional()
   @IsString()
+  summarizedContent?: string;
+
+  @IsOptional()
+  @IsString()
   imageUrl?: string;
 
   @IsOptional()
@@ -80,6 +84,7 @@ export class NewsResponseDto {
   telegramId: number;
   title: string;
   content: string;
+  summarizedContent?: string;
   imageUrl?: string;
   videoUrl?: string;
   hasMedia: boolean;
