@@ -25,6 +25,7 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const router = useRouter();
   const { result, isSummarizing, summarize } = useTextSummarizer();
   const [showSummarized, setShowSummarized] = useState(false);
+  const [hasUserToggled, setHasUserToggled] = useState(false);
 
   const adaptedNews = {
     ...news,
@@ -44,9 +45,9 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const handleSummarize = useCallback(() => {
     if (result?.summarizedText) {
       setShowSummarized(!showSummarized);
+      setHasUserToggled(true);
       return;
     }
-    setShowSummarized(false);
     summarize(adaptedNews.content);
   }, [adaptedNews.content, result, showSummarized, summarize]);
 
@@ -54,10 +55,10 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const hasSummarized = !!result?.summarizedText;
 
   useEffect(() => {
-    if (hasSummarized && !showSummarized) {
+    if (hasSummarized && !hasUserToggled) {
       setShowSummarized(true);
     }
-  }, [hasSummarized, showSummarized]);
+  }, [hasSummarized, hasUserToggled]);
 
   return (
     <SiteLayout>
