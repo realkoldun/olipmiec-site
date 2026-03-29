@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { SiteLayout } from '@/components/layout/site-layout';
-import { newsSummarizeApi } from '@/services/api/news-summarize.api';
+import { useTextSummarizer } from '@/hooks/use-text-summarizer';
 
 export interface NewsDetailPageClientProps {
   news: NewsItem & {
@@ -23,8 +23,7 @@ export interface NewsDetailPageClientProps {
 
 export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   const router = useRouter();
-  const [isSummarizing, setIsSummarizing] = useState(false);
-  const [summarizedText, setSummarizedText] = useState<string | null>(news.summarizedContent || null);
+  const { result, isSummarizing, summarize } = useTextSummarizer();
   const [showSummarized, setShowSummarized] = useState(false);
 
   const adaptedNews = {
@@ -42,26 +41,16 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
     { label: adaptedNews.title, href: `/news/${adaptedNews.id}` },
   ];
 
-  const handleSummarize = useCallback(async () => {
-    if (summarizedText) {
+  const handleSummarize = useCallback(() => {
+    if (result?.summarizedText) {
       setShowSummarized(!showSummarized);
       return;
     }
+    summarize(adaptedNews.content);
+  }, [adaptedNews.content, result, showSummarized, summarize]);
 
-    setIsSummarizing(true);
-    try {
-      const result = await newsSummarizeApi.summarize(adaptedNews.id);
-      setSummarizedText(result.summarizedText);
-      setShowSummarized(true);
-    } catch (error) {
-      console.error('Failed to summarize:', error);
-    } finally {
-      setIsSummarizing(false);
-    }
-  }, [adaptedNews.id, summarizedText, showSummarized]);
-
-  const displayContent = showSummarized && summarizedText ? summarizedText : adaptedNews.content;
-  const hasSummarized = !!summarizedText;
+  const displayContent = showSummarized && result?.summarizedText ? result.summarizedText : adaptedNews.content;
+  const hasSummarized = !!result?.summarizedText;
 
   return (
     <SiteLayout>

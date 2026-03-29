@@ -16,7 +16,9 @@
     "allow": [
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(yarn *)"
+      "Bash(yarn *)",
+      "Bash(rm *)",
+      "Bash(del *)"
     ]
   }
 }
