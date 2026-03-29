@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, Eye, ArrowLeft, Wand2, Check } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { NewsItem } from '@/types/news';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
@@ -46,11 +46,18 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
       setShowSummarized(!showSummarized);
       return;
     }
+    setShowSummarized(false);
     summarize(adaptedNews.content);
   }, [adaptedNews.content, result, showSummarized, summarize]);
 
   const displayContent = showSummarized && result?.summarizedText ? result.summarizedText : adaptedNews.content;
   const hasSummarized = !!result?.summarizedText;
+
+  useEffect(() => {
+    if (hasSummarized && !showSummarized) {
+      setShowSummarized(true);
+    }
+  }, [hasSummarized, showSummarized]);
 
   return (
     <SiteLayout>
