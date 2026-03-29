@@ -22,6 +22,26 @@ export interface GetNewsParams {
 }
 
 /**
+ * Маппинг ответа бэкенда в тип NewsItem
+ */
+function mapNewsToClient(news: any): NewsItem {
+  return {
+    id: news.id,
+    title: news.title,
+    content: news.content,
+    excerpt: news.excerpt || news.content?.substring(0, 200) + '...',
+    image: news.imageUrl || news.image,
+    author: news.author,
+    createdAt: news.createdAt || news.postDate,
+    updatedAt: news.updatedAt,
+    tags: news.tags || [],
+    category: news.category,
+    published: news.published ?? true,
+    views: news.views,
+  };
+}
+
+/**
  * NewsService - сервис для работы с новостями через API
  */
 export const newsApi = {
@@ -32,17 +52,20 @@ export const newsApi = {
     const response = await apiClient.get<NewsApiResponse>('/api/news', {
       params: { page, limit, category, tags: tags?.join(',') },
     });
-    return response.data;
+    return {
+      ...response.data,
+      data: response.data.data.map(mapNewsToClient),
+    };
   },
 
   /**
    * Получить последние новости
    */
   async getLatestNews(limit = 5): Promise<NewsItem[]> {
-    const response = await apiClient.get<NewsItem[]>('/api/news/latest', {
+    const response = await apiClient.get<any[]>('/api/news/latest', {
       params: { limit },
     });
-    return response.data;
+    return response.data.map(mapNewsToClient);
   },
 
   /**
@@ -50,8 +73,8 @@ export const newsApi = {
    */
   async getNewsById(id: string): Promise<NewsItem> {
     try {
-      const response = await apiClient.get<NewsItem>(`/api/news/${id}`);
-      return response.data;
+      const response = await apiClient.get<any>(`/api/news/${id}`);
+      return mapNewsToClient(response.data);
     } catch (error: any) {
       // Пробрасываем ошибку дальше для обработки в странице
       if (error.response?.status === 404) {
