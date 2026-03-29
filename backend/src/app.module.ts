@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TelegramModule } from './modules/telegram/telegram.module';
 import { NewsModule } from './modules/news/news.module';
 import { AIModule } from './modules/ai/ai.module';
+import { SearchModule } from './modules/search/search.module';
 
 // Entities
 import { News } from './modules/news/entities/news.entity';
@@ -43,6 +44,7 @@ import { News } from './modules/news/entities/news.entity';
     AIModule,
     TelegramModule,
     NewsModule,
+    SearchModule,
   ],
 })
 export class AppModule {}

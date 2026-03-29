@@ -15,7 +15,7 @@ export default function HomePage() {
   const router = useRouter();
 
   // Получаем последние новости с бэкенда
-  const { data: latestNews, isLoading: newsLoading } = useLatestNews(PAGINATION.homePageSize);
+  const { data: latestNews, isLoading: newsLoading } = useLatestNews(5);
   
   const upcomingEvents = mockEvents.slice(0, 3);
 
@@ -60,7 +60,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {newsLoading ? (
                 // Skeletons для новостей
-                Array.from({ length: PAGINATION.homePageSize }).map((_, i) => (
+                Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="rounded-lg border bg-card overflow-hidden">
                     <div className="aspect-video bg-muted animate-pulse" />
                     <div className="p-4 space-y-3">

@@ -6,7 +6,7 @@ import type {
   SearchHistoryItem,
   SearchItemType,
 } from '@/types/search';
-import { searchIndexService } from '@/services/search-index.service';
+import { searchApi } from '@/services/api/search.api';
 
 /**
  * Статус поиска
@@ -86,7 +86,7 @@ export const useSearchStore = create<SearchState>()(
             limit: 20,
           };
 
-          const response = searchIndexService.search(searchQuery);
+          const response = await searchApi.search(searchQuery);
 
           set({
             status: 'success',
@@ -95,7 +95,7 @@ export const useSearchStore = create<SearchState>()(
           });
 
           // Добавляем в историю если есть результаты
-          if (response.results.length > 0) {
+          if (response.total > 0) {
             get().addToHistory(query, response.total);
           }
         } catch (error) {
