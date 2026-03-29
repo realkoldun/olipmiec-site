@@ -1,10 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-/**
- * Режимы контраста
- */
-export type ContrastMode = 'normal' | 'high' | 'dark';
+import { ACCESSIBILITY_DEFAULTS, type ContrastMode } from '@/constants';
 
 /**
  * Состояние настроек доступности
@@ -26,7 +22,7 @@ export interface AccessibilityState {
   voiceEnabled: boolean;
   /** Скорость озвучки (0.5-2.0) */
   voiceRate: number;
-  
+
   // Actions
   setFontSize: (size: number) => void;
   setFontScale: (scale: number) => void;
@@ -39,21 +35,7 @@ export interface AccessibilityState {
   reset: () => void;
 }
 
-/**
- * Значения по умолчанию
- */
-const defaultState: Omit<AccessibilityState, AccessibilityActions> = {
-  fontSize: 14, // Базовый размер для мобильных
-  fontScale: 1,
-  contrast: 'normal',
-  zoom: 1,
-  magnifierEnabled: false,
-  magnifierZoom: 3,
-  voiceEnabled: false,
-  voiceRate: 1,
-};
-
-type AccessibilityActions = 
+type AccessibilityActions =
   | 'setFontSize'
   | 'setFontScale'
   | 'setContrast'
@@ -65,6 +47,20 @@ type AccessibilityActions =
   | 'reset';
 
 /**
+ * Значения по умолчанию
+ */
+const defaultState: Omit<AccessibilityState, AccessibilityActions> = {
+  fontSize: ACCESSIBILITY_DEFAULTS.fontSize,
+  fontScale: ACCESSIBILITY_DEFAULTS.fontScale,
+  contrast: ACCESSIBILITY_DEFAULTS.contrast,
+  zoom: ACCESSIBILITY_DEFAULTS.zoom,
+  magnifierEnabled: ACCESSIBILITY_DEFAULTS.magnifierEnabled,
+  magnifierZoom: ACCESSIBILITY_DEFAULTS.magnifierZoom,
+  voiceEnabled: ACCESSIBILITY_DEFAULTS.voiceEnabled,
+  voiceRate: ACCESSIBILITY_DEFAULTS.voiceRate,
+};
+
+/**
  * Accessibility Store
  * Хранит настройки доступности в localStorage
  */
@@ -72,15 +68,40 @@ export const useAccessibilityStore = create<AccessibilityState>()(
   persist(
     (set) => ({
       ...defaultState,
-      
-      setFontSize: (size) => set({ fontSize: Math.max(12, Math.min(24, size)) }),
-      setFontScale: (scale) => set({ fontScale: Math.max(0.8, Math.min(2, scale)) }),
+
+      setFontSize: (size) => set({ 
+        fontSize: Math.max(
+          ACCESSIBILITY_DEFAULTS.minFontSize, 
+          Math.min(ACCESSIBILITY_DEFAULTS.maxFontSize, size)
+        ) 
+      }),
+      setFontScale: (scale) => set({ 
+        fontScale: Math.max(
+          ACCESSIBILITY_DEFAULTS.minFontScale, 
+          Math.min(ACCESSIBILITY_DEFAULTS.maxFontScale, scale)
+        ) 
+      }),
       setContrast: (mode) => set({ contrast: mode }),
-      setZoom: (zoom) => set({ zoom: Math.max(1, Math.min(3, zoom)) }),
+      setZoom: (zoom) => set({ 
+        zoom: Math.max(
+          ACCESSIBILITY_DEFAULTS.minZoom, 
+          Math.min(ACCESSIBILITY_DEFAULTS.maxZoom, zoom)
+        ) 
+      }),
       setMagnifierEnabled: (enabled) => set({ magnifierEnabled: enabled }),
-      setMagnifierZoom: (zoom) => set({ magnifierZoom: Math.max(2, Math.min(10, zoom)) }),
+      setMagnifierZoom: (zoom) => set({ 
+        magnifierZoom: Math.max(
+          ACCESSIBILITY_DEFAULTS.minMagnifierZoom, 
+          Math.min(ACCESSIBILITY_DEFAULTS.maxMagnifierZoom, zoom)
+        ) 
+      }),
       setVoiceEnabled: (enabled) => set({ voiceEnabled: enabled }),
-      setVoiceRate: (rate) => set({ voiceRate: Math.max(0.5, Math.min(2, rate)) }),
+      setVoiceRate: (rate) => set({ 
+        voiceRate: Math.max(
+          ACCESSIBILITY_DEFAULTS.minVoiceRate, 
+          Math.min(ACCESSIBILITY_DEFAULTS.maxVoiceRate, rate)
+        ) 
+      }),
       reset: () => set(defaultState),
     }),
     {

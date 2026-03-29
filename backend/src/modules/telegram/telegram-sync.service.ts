@@ -81,8 +81,8 @@ export class TelegramSyncService {
     this.logger.log('Starting Telegram sync...');
 
     try {
-      // Получаем последние сообщения через скрапинг
-      const messages = await this.telegramScraper.getChannelPosts(20);
+      // Получаем последние сообщения через скрапинг (с пагинацией)
+      const messages = await this.telegramScraper.getChannelPosts(100);
 
       if (messages.length === 0) {
         this.logger.log('No new messages found');

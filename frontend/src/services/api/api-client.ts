@@ -1,19 +1,13 @@
 import axios from 'axios';
-
-/**
- * API конфигурация
- */
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { API_CONFIG, CACHE_CONFIG } from '@/constants';
 
 /**
  * Создание axios инстанса
  */
 export const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000,
+  baseURL: API_CONFIG.baseURL,
+  headers: API_CONFIG.headers,
+  timeout: API_CONFIG.timeout,
 });
 
 /**

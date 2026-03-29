@@ -61,85 +61,116 @@ export class TelegramScraperService {
 
   /**
    * Получить последние сообщения из канала
-   * Парсит веб-версию канала t.me/s/channel
+   * Парсит веб-версию канала t.me/s/channel с поддержкой пагинации
    */
-  async getChannelPosts(limit = 20): Promise<TelegramMessage[]> {
+  async getChannelPosts(limit = 50): Promise<TelegramMessage[]> {
     if (!this.isConfigured) {
       this.logger.debug('Telegram scraper not configured, returning empty posts');
       return [];
     }
 
     try {
-      const response = await this.httpClient.get(this.channelUrl);
-      const $ = cheerio.load(response.data);
-
       const messages: TelegramMessage[] = [];
+      let lastMessageId: number | null = null;
+      let hasMore = true;
+      let pageCount = 0;
+      const maxPages = 10; // Максимум 10 страниц для защиты от бесконечного цикла
 
-      // Ищем все посты
-      $('.tgme_widget_message').each((index, element) => {
-        if (messages.length >= limit) return;
-
-        const $post = $(element);
+      // Загружаем страницы пока не наберём нужное количество сообщений
+      while (messages.length < limit && hasMore && pageCount < maxPages) {
+        pageCount++;
         
-        // Извлекаем ID сообщения из data-post
-        const dataPost = $post.attr('data-post');
-        if (!dataPost) return;
+        // Формируем URL с пагинацией (before - загружает сообщения старше указанного ID)
+        const url = lastMessageId 
+          ? `${this.channelUrl}?before=${lastMessageId}`
+          : this.channelUrl;
+        
+        this.logger.debug(`Loading page ${pageCount}: ${url}`);
+        
+        const response = await this.httpClient.get(url);
+        const $ = cheerio.load(response.data);
 
-        const messageId = parseInt(dataPost.split('/').pop() || '0');
+        let pageMessagesCount = 0;
 
-        // Дата
-        const dateStr = $post.find('.tgme_widget_message_date time').attr('datetime');
-        const date = dateStr ? new Date(dateStr) : new Date();
+        // Ищем все посты на странице
+        $('.tgme_widget_message').each((index, element) => {
+          if (messages.length >= limit) return;
 
-        // Текст (включая заголовок)
-        // Используем html() вместо text() для сохранения структуры
-        const textHtml = $post.find('.tgme_widget_message_text').html() || '';
-        const text = $post.find('.tgme_widget_message_text').text().trim();
-        if (!text) return; // Пропускаем посты без текста
+          const $post = $(element);
 
-        // Извлекаем полный текст с переносами строк
-        const fullText = this.extractFullText($post, $);
+          // Извлекаем ID сообщения из data-post
+          const dataPost = $post.attr('data-post');
+          if (!dataPost) return;
 
-        // Изображения
-        let imageUrl: string | undefined;
-        const image = $post.find('.tgme_widget_message_photo_wrap').first();
-        if (image.length > 0) {
-          const style = image.attr('style') || '';
-          const match = style.match(/url\(['"]?([^'")]+)['"]?\)/);
-          if (match) {
-            imageUrl = match[1];
+          const messageId = parseInt(dataPost.split('/').pop() || '0');
+
+          // Пропускаем уже обработанные сообщения (защита от дубликатов)
+          if (lastMessageId && messageId >= lastMessageId) {
+            return;
           }
-        }
 
-        // Видео (превью)
-        let videoUrl: string | undefined;
-        const video = $post.find('.tgme_widget_message_video_wrap img').first();
-        if (video.length > 0) {
-          videoUrl = video.attr('src');
-        }
+          // Дата
+          const dateStr = $post.find('.tgme_widget_message_date time').attr('datetime');
+          const date = dateStr ? new Date(dateStr) : new Date();
 
-        // Просмотры
-        const viewsText = $post.find('.tgme_widget_message_views').text().trim();
-        const views = viewsText ? parseInt(viewsText.replace(/\s/g, '')) : undefined;
+          // Текст (включая заголовок)
+          const text = $post.find('.tgme_widget_message_text').text().trim();
+          if (!text) return; // Пропускаем посты без текста
 
-        messages.push({
-          message_id: messageId,
-          date,
-          text: fullText,
-          imageUrl: imageUrl || videoUrl,
-          videoUrl: undefined,
-          hasMedia: !!(imageUrl || videoUrl),
-          views,
+          // Извлекаем полный текст с переносами строк
+          const fullText = this.extractFullText($post, $);
+
+          // Изображения
+          let imageUrl: string | undefined;
+          const image = $post.find('.tgme_widget_message_photo_wrap').first();
+          if (image.length > 0) {
+            const style = image.attr('style') || '';
+            const match = style.match(/url\(['"]?([^'")]+)['"]?\)/);
+            if (match) {
+              imageUrl = match[1];
+            }
+          }
+
+          // Видео (превью)
+          let videoUrl: string | undefined;
+          const video = $post.find('.tgme_widget_message_video_wrap img').first();
+          if (video.length > 0) {
+            videoUrl = video.attr('src');
+          }
+
+          // Просмотры
+          const viewsText = $post.find('.tgme_widget_message_views').text().trim();
+          const views = viewsText ? parseInt(viewsText.replace(/\s/g, '')) : undefined;
+
+          messages.push({
+            message_id: messageId,
+            date,
+            text: fullText,
+            imageUrl: imageUrl || videoUrl,
+            videoUrl: undefined,
+            hasMedia: !!(imageUrl || videoUrl),
+            views,
+          });
+
+          pageMessagesCount++;
+          lastMessageId = messageId;
         });
-      });
 
-      this.logger.log(`Parsed ${messages.length} messages from ${this.channelUrl}`);
-      
+        this.logger.debug(`Page ${pageCount}: parsed ${pageMessagesCount} messages, total: ${messages.length}`);
+
+        // Если на странице не было сообщений или их меньше чем ожидалось - больше страниц нет
+        if (pageMessagesCount === 0) {
+          hasMore = false;
+        }
+      }
+
+      this.logger.log(`Parsed ${messages.length} messages from ${this.channelUrl} (${pageCount} pages)`);
+
       // Логирование первых сообщений для отладки
       messages.slice(0, 3).forEach((msg, idx) => {
         this.logger.debug(`Message ${idx + 1}: ID=${msg.message_id}, Date=${msg.date}, Text="${msg.text.substring(0, 50)}..."`);
       });
-      
+
       return messages;
     } catch (error) {
       this.logger.error('Error parsing Telegram channel:', error.message);

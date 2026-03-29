@@ -112,6 +112,21 @@ export class TelegramController {
   }
 
   /**
+   * Запустить полную синхронизацию через GET (для удобства)
+   * GET /api/telegram/sync/full
+   */
+  @Get('sync/full')
+  async syncFullGet() {
+    await this.telegramSyncService.resetLastSyncedId();
+    const count = await this.telegramSyncService.sync();
+    return {
+      ok: true,
+      message: `Full sync completed. Synchronized ${count} new messages`,
+      count,
+    };
+  }
+
+  /**
    * Получить информацию о канале
    * GET /api/telegram/channel
    */

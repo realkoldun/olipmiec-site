@@ -11,5 +11,10 @@
   "$version": 3,
   "mcp": {
     "excluded": []
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git add *)"
+    ]
   }
 }

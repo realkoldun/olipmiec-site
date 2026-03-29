@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
-import { footerSections, contactInfo } from '../navigation';
+import { FOOTER_SECTIONS, CONTACTS, getCurrentYear, getSchoolAge } from '@/constants';
 
 export interface FooterProps {
   className?: string;
@@ -10,7 +10,7 @@ export interface FooterProps {
  * Footer — подвал сайта с контактами и навигацией
  */
 export function Footer({ className }: FooterProps) {
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentYear();
 
   return (
     <footer className={className}>
@@ -29,13 +29,13 @@ export function Footer({ className }: FooterProps) {
               </Link>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Спортивная школа олимпийского резерва.
-                Воспитываем чемпионов с {currentYear - 50} года.
+                Воспитываем чемпионов с {currentYear - getSchoolAge()} года.
               </p>
             </div>
 
             {/* Навигация */}
             <div className="grid grid-cols-3 gap-6 lg:col-span-2">
-              {footerSections.map((section) => (
+              {FOOTER_SECTIONS.map((section) => (
                 <div key={section.title} className="flex flex-col gap-3">
                   <h3 className="text-base font-bold text-foreground">{section.title}</h3>
                   <ul className="flex flex-col gap-2">
@@ -61,31 +61,31 @@ export function Footer({ className }: FooterProps) {
                 <li className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                   <address className="text-sm text-muted-foreground not-italic">
-                    {contactInfo.address}
+                    {CONTACTS.address}
                   </address>
                 </li>
                 <li className="flex items-start gap-3">
                   <Phone className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                   <a
-                    href={`tel:${contactInfo.phone}`}
+                    href={`tel:${CONTACTS.phone}`}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {contactInfo.phone}
+                    {CONTACTS.phone}
                   </a>
                 </li>
                 <li className="flex items-start gap-3">
                   <Mail className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                   <a
-                    href={`mailto:${contactInfo.email}`}
+                    href={`mailto:${CONTACTS.email}`}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {contactInfo.email}
+                    {CONTACTS.email}
                   </a>
                 </li>
                 <li className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
                   <span className="text-sm text-muted-foreground">
-                    {contactInfo.hours}
+                    {CONTACTS.hours}
                   </span>
                 </li>
               </ul>

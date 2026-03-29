@@ -6,6 +6,7 @@ import type {
   SearchService,
   SearchIndexStats,
 } from '@/types/search';
+import { SEARCH_CONFIG } from '@/constants';
 
 /**
  * Сервис для индексации и поиска
@@ -41,7 +42,7 @@ export class SearchIndexService implements SearchService {
   search(query: SearchQuery): SearchResponse {
     const startTime = performance.now();
 
-    if (!query.query.trim()) {
+    if (!query.query.trim() || query.query.trim().length < SEARCH_CONFIG.minQueryLength) {
       return this.createEmptyResponse(query);
     }
 
@@ -63,13 +64,13 @@ export class SearchIndexService implements SearchService {
     // Ищем совпадения
     const results: SearchResult[] = items
       .map((item) => this.calculateRelevance(item, queryWords))
-      .filter((result): result is SearchResult & { relevance: number } => 
+      .filter((result): result is SearchResult & { relevance: number } =>
         result.relevance > 0
       )
       .sort((a, b) => b.relevance - a.relevance);
 
     // Пагинация
-    const limit = query.limit || 20;
+    const limit = query.limit || SEARCH_CONFIG.defaultLimit;
     const page = query.page || 1;
     const total = results.length;
     const totalPages = Math.ceil(total / limit);

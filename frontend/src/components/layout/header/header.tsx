@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import { Menu, Search, Accessibility } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { mainNavigation } from '../navigation';
+import { MAIN_NAVIGATION } from '@/constants';
 import { MobileNav } from '../mobile-nav/mobile-nav';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { AccessibilityPanel } from '@/components/accessibility';
@@ -82,7 +82,7 @@ export function Header({
           {/* Десктопная навигация */}
           <nav className="hidden lg:block">
             <ul className="flex items-center gap-6">
-              {mainNavigation.map((item) => (
+              {MAIN_NAVIGATION.map((item) => (
                 <li key={item.href} className="relative">
                   <Link
                     href={item.href}

@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 import { AccessibilityProvider } from '@/providers/accessibility-provider';
 import { SearchProvider } from '@/providers/search-provider';
 import { ReactQueryProvider } from '@/providers/react-query-provider';
+import { SITE_INFO } from '@/constants';
 
 const inter = Inter({
   subsets: ['cyrillic', 'latin'],
@@ -11,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'СДЮШОР "Олимпиец" - г. Витебск',
-  description: 'Спортивная школа олимпийского резерва',
+  title: SITE_INFO.name,
+  description: SITE_INFO.description,
 };
 
 export default function RootLayout({
