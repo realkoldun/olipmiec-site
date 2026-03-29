@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Calendar, User, Eye, ArrowLeft, Wand2, Check } from 'lucide-react';
+import { Calendar, Eye, ArrowLeft, Wand2, Check } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import type { NewsItem } from '@/types/news';
 import { Button } from '@/components/ui/button/button';
@@ -61,6 +61,7 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   }, [adaptedNews.id, summarizedText, showSummarized]);
 
   const displayContent = showSummarized && summarizedText ? summarizedText : adaptedNews.content;
+  const hasSummarized = !!summarizedText;
 
   return (
     <SiteLayout>
@@ -113,45 +114,32 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
           )}
 
           <div className="mb-4 flex items-center justify-between">
-            {summarizedText && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowSummarized(!showSummarized)}
-                className="text-sm"
-              >
-                {showSummarized ? (
-                  <>
-                    <ArrowLeft className="h-4 w-4 mr-2" />
-                    Показать оригинал
-                  </>
-                ) : (
-                  <>
-                    <Check className="h-4 w-4 mr-2 text-green-600" />
-                    Сокращённая версия
-                  </>
-                )}
-              </Button>
-            )}
-
             <Button
               variant="outline"
               size="sm"
               onClick={handleSummarize}
               disabled={isSummarizing}
               className={cn(
-                'ml-auto',
+                hasSummarized && 'border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-950',
                 isSummarizing && 'animate-pulse'
               )}
             >
               {isSummarizing ? (
-                <Wand2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : summarizedText ? (
-                <Check className="h-4 w-4 mr-2 text-green-600" />
+                <>
+                  <Wand2 className="h-4 w-4 mr-2 animate-spin" />
+                  Сокращаем...
+                </>
+              ) : hasSummarized ? (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  {showSummarized ? 'Показать оригинал' : 'Показать сокращённую версию'}
+                </>
               ) : (
-                <Wand2 className="h-4 w-4 mr-2" />
+                <>
+                  <Wand2 className="h-4 w-4 mr-2" />
+                  Сократить текст
+                </>
               )}
-              {summarizedText ? 'Повторить' : 'Сократить текст'}
             </Button>
           </div>
 
