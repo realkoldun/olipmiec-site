@@ -165,7 +165,7 @@ export function useTextSummarizer(cacheConfig?: Partial<CacheConfig>): UseTextSu
       startProgress();
 
       try {
-        const response = await apiClient.post('/api/summarize', {
+        const response = await apiClient.post('/api/ai/summarize', {
           text,
           options,
         });
