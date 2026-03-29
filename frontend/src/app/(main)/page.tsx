@@ -3,19 +3,20 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, MapPin, Trophy, Users, Target, ChevronRight, Clock } from 'lucide-react';
-import { mockNews } from '@/mocks/news.mock';
 import { mockEvents } from '@/mocks/events.mock';
 import { NewsCard } from '@/components/news/news-card';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
 import { SiteLayout } from '@/components/layout/site-layout';
-import { MAIN_NAVIGATION, CONTACTS, SITE_INFO, getSchoolAge } from '@/constants';
-import { PAGINATION } from '@/constants';
+import { MAIN_NAVIGATION, CONTACTS, SITE_INFO, getSchoolAge, PAGINATION } from '@/constants';
+import { useLatestNews } from '@/hooks/use-news';
 
 export default function HomePage() {
   const router = useRouter();
 
-  const latestNews = mockNews.slice(0, PAGINATION.homePageSize);
+  // Получаем последние новости с бэкенда
+  const { data: latestNews, isLoading: newsLoading } = useLatestNews(PAGINATION.homePageSize);
+  
   const upcomingEvents = mockEvents.slice(0, 3);
 
   const handleNewsClick = (id: string) => {
@@ -57,16 +58,38 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {latestNews.map((news) => (
-                <NewsCard
-                  key={news.id}
-                  news={news}
-                  onClick={handleNewsClick}
-                  size="md"
-                  showCategory
-                  showViews
-                />
-              ))}
+              {newsLoading ? (
+                // Skeletons для новостей
+                Array.from({ length: PAGINATION.homePageSize }).map((_, i) => (
+                  <div key={i} className="rounded-lg border bg-card overflow-hidden">
+                    <div className="aspect-video bg-muted animate-pulse" />
+                    <div className="p-4 space-y-3">
+                      <div className="h-5 bg-muted rounded animate-pulse w-3/4" />
+                      <div className="h-4 bg-muted rounded animate-pulse w-full" />
+                      <div className="h-4 bg-muted rounded animate-pulse w-2/3" />
+                      <div className="flex gap-2 pt-2">
+                        <div className="h-3 bg-muted rounded animate-pulse w-16" />
+                        <div className="h-3 bg-muted rounded animate-pulse w-16" />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : latestNews && latestNews.length > 0 ? (
+                latestNews.map((news) => (
+                  <NewsCard
+                    key={news.id}
+                    news={news}
+                    onClick={handleNewsClick}
+                    size="md"
+                    showCategory
+                    showViews
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12 text-muted-foreground">
+                  Новости временно отсутствуют
+                </div>
+              )}
             </div>
 
             <div className="mt-8 text-center md:hidden">
