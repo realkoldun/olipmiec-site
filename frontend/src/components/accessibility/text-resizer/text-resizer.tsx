@@ -21,8 +21,8 @@ export function TextResizer({ className }: TextResizerProps) {
   useEffect(() => {
     if (!isMounted) return;
 
-    const body = document.body;
-    body.style.setProperty('font-size', `${fontSize}px`);
+    // Используем CSS переменную вместо прямого стиля
+    document.documentElement.style.setProperty('--user-font-size', `${fontSize}px`);
   }, [fontSize, isMounted]);
 
   // Помечаем как смонтированный
