@@ -29,8 +29,8 @@ export const CONTACTS = {
   hours: 'Пн-Пт: 9:00 - 18:00',
   founder: 'Федерация профсоюзов Беларуси',
   coordinates: {
-    lat: 55.185774,
-    lon: 30.202961,
+    lat: 55.180037,
+    lon: 30.223348,
   },
 } as const;
 
