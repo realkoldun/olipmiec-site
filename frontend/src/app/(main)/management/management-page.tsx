@@ -27,8 +27,18 @@ export function ManagementPage() {
             className="rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-200"
           >
             {/* Изображение */}
-            <div className="aspect-square bg-muted flex items-center justify-center">
-              <User className="h-24 w-24 text-muted-foreground" />
+            <div className="aspect-square bg-muted overflow-hidden">
+              {person.image ? (
+                <img
+                  src={person.image}
+                  alt={person.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center">
+                  <User className="h-24 w-24 text-muted-foreground" />
+                </div>
+              )}
             </div>
 
             {/* Контент */}

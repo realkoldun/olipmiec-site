@@ -47,6 +47,7 @@ export interface LeadershipMember {
   reception?: string;
   address: string;
   room?: string;
+  image?: string;
 }
 
 export interface FooterLink {
@@ -95,6 +96,7 @@ export const LEADERSHIP_DATA: LeadershipMember[] = [
     reception: 'вторник 9.00-11.00, пятница 14.00-16.00',
     address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
     room: '6',
+    image: 'https://sportfpb.by/upload/iblock/281/o41eibjan0q4v3kbtnj95owhcgbrdlcg.jpg',
   },
   {
     name: 'Китаева Ирина Викторовна',
@@ -103,6 +105,7 @@ export const LEADERSHIP_DATA: LeadershipMember[] = [
     reception: 'понедельник 14.00-16.00, четверг 9.00-11.00',
     address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
     room: '6',
+    image: 'https://sportfpb.by/upload/iblock/dcf/ren4qyg00vmnvdzqpam01fjjfhtc5fwq.jpg',
   },
   {
     name: 'Вишнякова Ольга Алексеевна',
@@ -111,6 +114,7 @@ export const LEADERSHIP_DATA: LeadershipMember[] = [
     reception: '',
     address: 'г. Витебск, ул. Офицерская, д. 2',
     room: '',
+    image: 'https://sportfpb.by/upload/iblock/133/o0vm06qdl20z85ezl6somo41cnhdhk24.jpg',
   },
 ];
 
