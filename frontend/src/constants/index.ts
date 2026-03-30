@@ -298,3 +298,89 @@ export function getFoundingYear(): number {
 export function getSchoolAge(): number {
   return getCurrentYear() - SITE_INFO.foundingYear;
 }
+
+// ============================================================================
+// УСЛУГИ (СЕКЦИИ)
+// ============================================================================
+
+export interface PriceItem {
+  name: string;
+  description: string;
+  price: string;
+}
+
+export interface Service {
+  title: string;
+  description: string;
+  icon: 'truck' | 'timer';
+  prices: PriceItem[];
+}
+
+export const SERVICES_DATA: Service[] = [
+  {
+    title: 'Транспортные перевозки микроавтобусом МАЗ 281040',
+    description: '16 пассажирских мест',
+    icon: 'truck',
+    prices: [
+      {
+        name: 'Работа микроавтобуса с водителем',
+        description: '1 час',
+        price: '31,95 руб.',
+      },
+      {
+        name: 'Простой микроавтобуса с водителем',
+        description: '1 час',
+        price: '21,78 руб.',
+      },
+      {
+        name: '1 км затрат с заправкой топливом',
+        description: '1 км',
+        price: '0,59 руб.',
+      },
+      {
+        name: '1 км затрат без заправки топливом',
+        description: '1 км',
+        price: '0,06 руб.',
+      },
+    ],
+  },
+  {
+    title: 'Транспортные перевозки грузопассажирским автомобилем ГАЗ 330023',
+    description: 'Грузоподъемность 3,5 тонны, 4 пассажирских места',
+    icon: 'truck',
+    prices: [
+      {
+        name: 'Работа автомобиля с водителем',
+        description: '1 час',
+        price: '21,87 руб.',
+      },
+      {
+        name: 'Простой автомобиля с водителем',
+        description: '1 час',
+        price: '15,02 руб.',
+      },
+      {
+        name: '1 км с заправкой топливом',
+        description: '1 км',
+        price: '0,61 руб.',
+      },
+      {
+        name: '1 км без заправки топливом',
+        description: '1 км',
+        price: '0,03 руб.',
+      },
+    ],
+  },
+  {
+    title: 'Обеспечение хронометража соревнований',
+    description: 'Электронная система «Старт-финиш»',
+    icon: 'timer',
+    prices: [
+      {
+        name: 'Обеспечение хронометража соревнований',
+        description: 'по биатлону, лыжным гонкам, велоспорту, легкой атлетике',
+        price: '15 руб./час',
+      },
+    ],
+  },
+];
