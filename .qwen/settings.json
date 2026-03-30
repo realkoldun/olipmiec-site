@@ -19,7 +19,9 @@
       "Bash(yarn *)",
       "Bash(rm *)",
       "Bash(del *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(cd *)",
+      "Bash(move *)"
     ]
   }
 }

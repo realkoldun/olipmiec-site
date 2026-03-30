@@ -89,9 +89,9 @@ export function NotFoundPage() {
               <Button
                 variant="link"
                 size="sm"
-                onClick={() => router.push('/trainers')}
+                onClick={() => router.push('/management')}
               >
-                Тренеры
+                Руководство
               </Button>
             </div>
           </div>
