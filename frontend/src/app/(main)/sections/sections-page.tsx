@@ -1,94 +1,213 @@
 'use client';
 
-import Image from 'next/image';
-import { Users, Clock } from 'lucide-react';
+import { Phone, MapPin, Truck, Timer, Clock, Info } from 'lucide-react';
+import { CONTACTS } from '@/constants';
 
-const SECTIONS_DATA = [
+interface PriceItem {
+  name: string;
+  description: string;
+  price: string;
+}
+
+interface Service {
+  title: string;
+  description: string;
+  icon: 'truck' | 'timer';
+  prices: PriceItem[];
+}
+
+const SERVICES_DATA: Service[] = [
   {
-    name: 'Футбол',
-    image: 'https://placehold.co/400x300/10b981/ffffff?text=Football',
-    age: '7-17 лет',
-    trainer: 'Сергей Козлов',
-    schedule: 'Пн, Ср, Пт 17:00-19:00',
+    title: 'Транспортные перевозки микроавтобусом МАЗ 281040',
+    description: '16 пассажирских мест',
+    icon: 'truck',
+    prices: [
+      {
+        name: 'Работа микроавтобуса с водителем',
+        description: '1 час',
+        price: '31,95 руб.',
+      },
+      {
+        name: 'Простой микроавтобуса с водителем',
+        description: '1 час',
+        price: '21,78 руб.',
+      },
+      {
+        name: '1 км затрат с заправкой топливом',
+        description: '1 км',
+        price: '0,59 руб.',
+      },
+      {
+        name: '1 км затрат без заправки топливом',
+        description: '1 км',
+        price: '0,06 руб.',
+      },
+    ],
   },
   {
-    name: 'Баскетбол',
-    image: 'https://placehold.co/400x300/f59e0b/ffffff?text=Basketball',
-    age: '8-16 лет',
-    trainer: 'Александр Васильев',
-    schedule: 'Вт, Чт, Сб 16:00-18:00',
+    title: 'Транспортные перевозки грузопассажирским автомобилем ГАЗ 330023',
+    description: 'Грузоподъемность 3,5 тонны, 4 пассажирских места',
+    icon: 'truck',
+    prices: [
+      {
+        name: 'Работа автомобиля с водителем',
+        description: '1 час',
+        price: '21,87 руб.',
+      },
+      {
+        name: 'Простой автомобиля с водителем',
+        description: '1 час',
+        price: '15,02 руб.',
+      },
+      {
+        name: '1 км с заправкой топливом',
+        description: '1 км',
+        price: '0,61 руб.',
+      },
+      {
+        name: '1 км без заправки топливом',
+        description: '1 км',
+        price: '0,03 руб.',
+      },
+    ],
   },
   {
-    name: 'Плавание',
-    image: 'https://placehold.co/400x300/3b82f6/ffffff?text=Swimming',
-    age: '6-14 лет',
-    trainer: 'Елена Сидорова',
-    schedule: 'Пн-Пт 08:00-20:00',
-  },
-  {
-    name: 'Легкая атлетика',
-    image: 'https://placehold.co/400x300/ef4444/ffffff?text=Athletics',
-    age: '10-18 лет',
-    trainer: 'Иван Петров',
-    schedule: 'Вт, Чт, Сб 17:00-19:00',
+    title: 'Обеспечение хронометража соревнований',
+    description: 'Электронная система «Старт-финиш»',
+    icon: 'timer',
+    prices: [
+      {
+        name: 'Обеспечение хронометража соревнований',
+        description: 'по биатлону, лыжным гонкам, велоспорту, легкой атлетике',
+        price: '15 руб./час',
+      },
+    ],
   },
 ];
 
 /**
- * SectionsPage — страница услуг (секций)
+ * SectionsPage — страница услуг
  */
 export function SectionsPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-[1400px]">
       {/* Заголовок */}
-      <div className="mb-8">
+      <div className="mb-12 text-center">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">
           Наши услуги
         </h1>
-        <p className="text-muted-foreground text-lg">
-          Выберите направление по душе
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Предоставляем качественные услуги по доступным ценам
         </p>
       </div>
 
-      {/* Сетка услуг */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {SECTIONS_DATA.map((section, index) => (
-          <div
-            key={index}
-            className="group relative overflow-hidden rounded-lg border bg-card hover:shadow-lg transition-all duration-200"
-          >
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                src={section.image}
-                alt={section.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                unoptimized
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <h3 className="text-xl font-bold text-white mb-1">
-                  {section.name}
-                </h3>
-                <p className="text-sm text-white/80">{section.age}</p>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="space-y-2 text-sm">
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Users className="h-4 w-4" />
-                  <span>{section.trainer}</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>{section.schedule}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* Секции услуг */}
+      <div className="space-y-12">
+        {SERVICES_DATA.map((service, index) => (
+          <ServiceSection key={index} service={service} />
         ))}
       </div>
     </div>
+  );
+}
+
+interface ServiceSectionProps {
+  service: Service;
+}
+
+function ServiceSection({ service }: ServiceSectionProps) {
+  const IconComponent = service.icon === 'truck' ? Truck : Timer;
+
+  return (
+    <section className="rounded-xl border bg-card overflow-hidden shadow-sm">
+      {/* Заголовок услуги */}
+      <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-6 border-b">
+        <div className="flex items-start gap-4">
+          <div className="p-3 rounded-lg bg-primary/10">
+            <IconComponent className="h-8 w-8 text-primary" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold mb-2">
+              {service.title}
+            </h2>
+            <p className="text-muted-foreground">
+              {service.description}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Контакты */}
+      <div className="bg-muted/50 p-4 border-b">
+        <div className="flex flex-wrap gap-6">
+          <div className="flex items-center gap-2 text-sm">
+            <MapPin className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground">
+              {CONTACTS.address}
+            </span>
+          </div>
+          <a
+            href={`tel:${CONTACTS.phone.replace(/\s/g, '')}`}
+            className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
+          >
+            <Phone className="h-4 w-4 text-muted-foreground" />
+            <span className="text-muted-foreground">
+              {CONTACTS.phone}
+            </span>
+          </a>
+        </div>
+      </div>
+
+      {/* Таблица цен */}
+      <div className="p-6">
+        <div className="mb-4 flex items-center gap-2">
+          <Info className="h-5 w-5 text-primary" />
+          <h3 className="font-semibold text-lg">Прейскурант</h3>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b bg-muted/50">
+                <th className="text-left py-3 px-4 font-semibold">
+                  Наименование услуги
+                </th>
+                <th className="text-left py-3 px-4 font-semibold">
+                  Дополнительная информация
+                </th>
+                <th className="text-right py-3 px-4 font-semibold">
+                  Стоимость
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {service.prices.map((item, idx) => (
+                <tr
+                  key={idx}
+                  className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                >
+                  <td className="py-4 px-4">
+                    <div className="flex items-center gap-2">
+                      {service.icon === 'timer' && (
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <span className="font-medium">{item.name}</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-muted-foreground">
+                    {item.description}
+                  </td>
+                  <td className="py-4 px-4 text-right">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                      {item.price}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   );
 }
