@@ -2,8 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { FileWarning, ArrowLeft, Home } from 'lucide-react';
-import { Header } from '@/components/layout/header/header';
-import { Footer } from '@/components/layout/footer/footer';
 import { Button } from '@/components/ui/button/button';
 import { MAIN_NAVIGATION } from '@/constants';
 
@@ -17,10 +15,6 @@ const QUICK_LINKS = MAIN_NAVIGATION.filter(
 /**
  * NotFoundPage — страница ошибки 404
  *
- * Использует layout компоненты:
- * - Header
- * - Footer
- *
  * И UI компоненты:
  * - Button
  */
@@ -28,13 +22,7 @@ export function NotFoundPage() {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <Header />
-
-      {/* Основной контент */}
-      <main className="flex-1 pt-16">
-        <div className="container mx-auto flex flex-col items-center justify-center px-4 py-16 md:px-6 md:py-24 max-w-[1400px]">
+    <div className="container mx-auto flex flex-col items-center justify-center px-4 py-16 md:px-6 md:py-24 max-w-[1400px]">
           {/* Иконка ошибки */}
           <div className="mb-8 rounded-full bg-muted p-6">
             <FileWarning className="h-16 w-16 text-muted-foreground" data-testid="file-warning-icon" />
@@ -93,10 +81,5 @@ export function NotFoundPage() {
             </div>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <Footer />
-    </div>
   );
 }

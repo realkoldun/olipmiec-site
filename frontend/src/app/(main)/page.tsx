@@ -7,7 +7,6 @@ import { mockEvents } from '@/mocks/events.mock';
 import { NewsCard } from '@/components/news/news-card';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
-import { SiteLayout } from '@/components/layout/site-layout';
 import { MAIN_NAVIGATION, CONTACTS, SITE_INFO, getSchoolAge, PAGINATION } from '@/constants';
 import { useLatestNews } from '@/hooks/use-news';
 
@@ -29,10 +28,9 @@ export default function HomePage() {
   };
 
   return (
-    <SiteLayout>
-      <div className="min-h-screen">
-        {/* Hero секция */}
-        <HeroSection />
+    <div className="min-h-screen">
+      {/* Hero секция */}
+      <HeroSection />
 
         {/* Преимущества */}
         <FeaturesSection />
@@ -144,7 +142,6 @@ export default function HomePage() {
         {/* Статистика */}
         <StatsSection />
       </div>
-    </SiteLayout>
   );
 }
 
