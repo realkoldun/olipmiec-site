@@ -21,10 +21,17 @@ export const SITE_INFO = {
 
 export const CONTACTS = {
   name: 'СДЮШОР "Олимпиец"',
-  address: 'г. Витебск, ул. Спортивная, 1',
-  phone: '+375 (212) XX-XX-XX',
-  email: 'info@olimpiyec.by',
+  address: '210029, г. Витебск, ул. Офицерская, 2-6',
+  phone: '8 (0212) 66 93 96',
+  fax: '8(0212) 66 93 96',
+  email: 'olimpiets2013@yandex.by',
+  unp: '390417394',
   hours: 'Пн-Пт: 9:00 - 18:00',
+  founder: 'Федерация профсоюзов Беларуси',
+  coordinates: {
+    lat: 55.185774,
+    lon: 30.202961,
+  },
 } as const;
 
 // ============================================================================
