@@ -5,6 +5,14 @@ import { FileWarning, ArrowLeft, Home } from 'lucide-react';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
 import { Button } from '@/components/ui/button/button';
+import { MAIN_NAVIGATION } from '@/constants';
+
+/**
+ * Страницы для быстрых ссылок (исключая главную)
+ */
+const QUICK_LINKS = MAIN_NAVIGATION.filter(
+  (item) => item.href !== '/' && item.label !== 'Главная'
+).slice(0, 3);
 
 /**
  * NotFoundPage — страница ошибки 404
@@ -72,27 +80,16 @@ export function NotFoundPage() {
           <div className="mt-12 text-center text-sm text-muted-foreground">
             <p>Возможно, вы искали:</p>
             <div className="mt-4 flex flex-wrap justify-center gap-4">
-              <Button
-                variant="link"
-                size="sm"
-                onClick={() => router.push('/news')}
-              >
-                Новости
-              </Button>
-              <Button
-                variant="link"
-                size="sm"
-                onClick={() => router.push('/sections')}
-              >
-                Секции
-              </Button>
-              <Button
-                variant="link"
-                size="sm"
-                onClick={() => router.push('/management')}
-              >
-                Руководство
-              </Button>
+              {QUICK_LINKS.map((link) => (
+                <Button
+                  key={link.href}
+                  variant="link"
+                  size="sm"
+                  onClick={() => router.push(link.href)}
+                >
+                  {link.label}
+                </Button>
+              ))}
             </div>
           </div>
         </div>

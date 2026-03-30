@@ -37,6 +37,18 @@ export interface NavItem {
   description?: string;
 }
 
+/**
+ * Данные члена руководства
+ */
+export interface LeadershipMember {
+  name: string;
+  position: string;
+  phone?: string;
+  reception?: string;
+  address: string;
+  room?: string;
+}
+
 export interface FooterLink {
   label: string;
   href: string;
@@ -69,22 +81,36 @@ export const FOOTER_SECTIONS: FooterSection[] = [
       { label: 'Руководство', href: '/management' },
     ],
   },
+];
+
+// ============================================================================
+// РУКОВОДСТВО
+// ============================================================================
+
+export const LEADERSHIP_DATA: LeadershipMember[] = [
   {
-    title: 'Информация',
-    links: [
-      { label: 'Документы', href: '/documents' },
-      { label: 'Почётная доска', href: '/honor-board' },
-      { label: 'Контакты', href: '/contacts' },
-    ],
+    name: 'Безлюдов Дмитрий Альбертович',
+    position: 'Директор',
+    phone: '8 (0212) 66 93 96',
+    reception: 'вторник 9.00-11.00, пятница 14.00-16.00',
+    address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
+    room: '6',
   },
   {
-    title: 'Секции',
-    links: [
-      { label: 'Футбол', href: '/sections/football' },
-      { label: 'Баскетбол', href: '/sections/basketball' },
-      { label: 'Волейбол', href: '/sections/volleyball' },
-      { label: 'Плавание', href: '/sections/swimming' },
-    ],
+    name: 'Китаева Ирина Викторовна',
+    position: 'Заместитель директора по основной деятельности',
+    phone: '8 (0212) 66 93 96',
+    reception: 'понедельник 14.00-16.00, четверг 9.00-11.00',
+    address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
+    room: '6',
+  },
+  {
+    name: 'Вишнякова Ольга Алексеевна',
+    position: 'Главный бухгалтер',
+    phone: '',
+    reception: '',
+    address: 'г. Витебск, ул. Офицерская, д. 2',
+    room: '',
   },
 ];
 

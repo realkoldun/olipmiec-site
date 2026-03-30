@@ -1,36 +1,7 @@
 'use client';
 
 import { Phone, MapPin, Clock, User } from 'lucide-react';
-
-/**
- * Данные руководства
- */
-const leadershipData = [
-  {
-    name: 'Безлюдов Дмитрий Альбертович',
-    position: 'Директор',
-    phone: '8 (0212) 66 93 96',
-    reception: 'вторник 9.00-11.00, пятница 14.00-16.00',
-    address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
-    room: '6',
-  },
-  {
-    name: 'Китаева Ирина Викторовна',
-    position: 'Заместитель директора по основной деятельности',
-    phone: '8 (0212) 66 93 96',
-    reception: 'понедельник 14.00-16.00, четверг 9.00-11.00',
-    address: 'г. Витебск, ул. Офицерская, д. 2, ком. 6',
-    room: '6',
-  },
-  {
-    name: 'Вишнякова Ольга Алексеевна',
-    position: 'Главный бухгалтер',
-    phone: '',
-    reception: '',
-    address: 'г. Витебск, ул. Офицерская, д. 2',
-    room: '',
-  },
-];
+import { LEADERSHIP_DATA } from '@/constants';
 
 /**
  * ManagementPage — страница руководства
@@ -50,7 +21,7 @@ export function ManagementPage() {
 
       {/* Карточки руководства */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {leadershipData.map((person, index) => (
+        {LEADERSHIP_DATA.map((person, index) => (
           <div
             key={index}
             className="rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-200"
