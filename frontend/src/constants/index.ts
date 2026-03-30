@@ -71,7 +71,7 @@ export interface FooterSection {
 export const MAIN_NAVIGATION: NavItem[] = [
   { label: 'Главная', href: '/' },
   { label: 'Новости', href: '/news', description: 'Последние события школы' },
-  { label: 'Секции', href: '/sections', description: 'Спортивные секции' },
+  { label: 'Услуги', href: '/sections', description: 'Спортивные услуги' },
   { label: 'Руководство', href: '/management', description: 'Руководящий состав' },
   { label: 'Почётная доска', href: '/honor-board', description: 'Наши достижения' },
   { label: 'Документы', href: '/documents', description: 'Официальные документы' },
@@ -85,7 +85,7 @@ export const FOOTER_SECTIONS: FooterSection[] = [
     links: [
       { label: 'Главная', href: '/' },
       { label: 'Новости', href: '/news' },
-      { label: 'Секции', href: '/sections' },
+      { label: 'Услуги', href: '/sections' },
       { label: 'Руководство', href: '/management' },
     ],
   },

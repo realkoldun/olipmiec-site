@@ -133,7 +133,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Секции */}
+        {/* Услуги */}
         <SectionsSection />
 
         {/* CTA секция */}
@@ -312,7 +312,7 @@ function SectionsSection() {
       <div className="container mx-auto px-4 md:px-6 max-w-[1400px]">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Наши секции</h2>
+            <h2 className="text-3xl font-bold mb-2">Наши услуги</h2>
             <p className="text-muted-foreground">
               Выберите направление по душе
             </p>
@@ -322,7 +322,7 @@ function SectionsSection() {
             className="hidden md:flex items-center gap-2"
             onClick={() => window.location.href = '/sections'}
           >
-            Все секции
+            Все услуги
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -372,7 +372,7 @@ function SectionsSection() {
             className="w-full"
             onClick={() => window.location.href = '/sections'}
           >
-            Все секции
+            Все услуги
           </Button>
         </div>
       </div>

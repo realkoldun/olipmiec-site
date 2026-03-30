@@ -46,7 +46,7 @@ export function SearchResults({ className, onItemClick }: SearchResultsProps) {
   const types = [
     { value: 'all' as SearchItemType, label: 'Все', icon: FileText },
     { value: 'news' as SearchItemType, label: 'Новости', icon: FileText },
-    { value: 'section' as SearchItemType, label: 'Секции', icon: Folder },
+    { value: 'section' as SearchItemType, label: 'Услуги', icon: Folder },
     { value: 'trainer' as SearchItemType, label: 'Тренеры', icon: User },
     { value: 'document' as SearchItemType, label: 'Документы', icon: FileText },
   ];
