@@ -6,7 +6,6 @@ import type { NewsApiResponse } from '@/services/api';
 import { NewsList } from '@/components/news/news-list';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
 import { Button } from '@/components/ui/button/button';
-import { SiteLayout } from '@/components/layout/site-layout';
 
 export interface NewsPageContentProps {
   initialData?: NewsApiResponse;
@@ -54,8 +53,7 @@ export function NewsPageContent({ initialData }: NewsPageContentProps) {
   ];
 
   return (
-    <SiteLayout>
-      <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
+    <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
         {/* Хлебные крошки */}
         <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
@@ -97,6 +95,5 @@ export function NewsPageContent({ initialData }: NewsPageContentProps) {
           showPagination={totalPages > 1}
         />
       </div>
-    </SiteLayout>
   );
 }

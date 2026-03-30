@@ -8,7 +8,6 @@ import type { NewsItem } from '@/types/news';
 import { Button } from '@/components/ui/button/button';
 import { cn } from '@/utils/cn';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs/breadcrumbs';
-import { SiteLayout } from '@/components/layout/site-layout';
 import { useTextSummarizer } from '@/hooks/use-text-summarizer';
 
 export interface NewsDetailPageClientProps {
@@ -61,8 +60,7 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
   }, [hasSummarized, hasUserToggled]);
 
   return (
-    <SiteLayout>
-      <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
+    <div className="container mx-auto py-8 px-4 md:px-6 max-w-[1400px]">
         <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
         <Button
@@ -162,7 +160,6 @@ export function NewsDetailPageClient({ news }: NewsDetailPageClientProps) {
           )}
         </article>
       </div>
-    </SiteLayout>
   );
 }
 
