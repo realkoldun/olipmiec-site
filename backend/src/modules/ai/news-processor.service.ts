@@ -5,7 +5,7 @@ export interface NewsAnalysisResult {
   title: string;
   tags: string[];
   content: string;
-  category?: 'sport' | 'announcement' | 'event' | 'news';
+  category?: "sport" | "announcement" | "event" | "news";
 }
 
 export interface NewsSummarizationResult {
@@ -36,18 +36,24 @@ export class NewsProcessorService {
     }
   }
 
-  async summarizeNews(content: string, maxLength = 500): Promise<NewsSummarizationResult> {
+  async summarizeNews(
+    content: string,
+    maxLength = 500,
+  ): Promise<NewsSummarizationResult> {
     const originalLength = content.length;
-    
+
     const prompt = this.createSummarizationPrompt(content, maxLength);
 
     try {
       const response = await this.ollama.generate(prompt);
       const cleanedResponse = response.trim();
-      
-      const compressionRatio = originalLength > 0 
-        ? Math.round((1 - cleanedResponse.length / originalLength) * 100) 
-        : 0;
+
+      console.log("bebebeb", cleanedResponse);
+
+      const compressionRatio =
+        originalLength > 0
+          ? Math.round((1 - cleanedResponse.length / originalLength) * 100)
+          : 0;
 
       return {
         summarizedText: cleanedResponse,
@@ -59,7 +65,10 @@ export class NewsProcessorService {
     }
   }
 
-  private createSummarizationPrompt(content: string, maxLength: number): string {
+  private createSummarizationPrompt(
+    content: string,
+    maxLength: number,
+  ): string {
     return `Сократи этот текст до ${maxLength} символов, сохранив основную суть и важные детали:
 
 ${content}
@@ -116,36 +125,86 @@ ${text}
       tags: Array.isArray(parsed.tags)
         ? parsed.tags.map((t: string) => t.toLowerCase().trim())
         : [],
-      category: parsed.category || this.detectCategoryFallback(parsed.content || ""),
+      category:
+        parsed.category || this.detectCategoryFallback(parsed.content || ""),
       content: parsed.content?.trim() || "",
     };
   }
 
   private extractHashtagsFallback(text: string): string[] {
     const matches = text.match(/(?:^|\s)#([\wа-яА-ЯёЁ_]+)/g) || [];
-    return [...new Set(matches.map(tag => tag.replace(/[#\s]/g, "").toLowerCase()))];
+    return [
+      ...new Set(matches.map((tag) => tag.replace(/[#\s]/g, "").toLowerCase())),
+    ];
   }
 
   private removeHashtagsFallback(text: string): string {
     return text.replace(/(?:^|\s)#[\wа-яА-ЯёЁ_]+/g, "").trim();
   }
 
-  private detectCategoryFallback(text: string): 'sport' | 'announcement' | 'event' | 'news' {
+  private detectCategoryFallback(
+    text: string,
+  ): "sport" | "announcement" | "event" | "news" {
     const lowerText = text.toLowerCase();
 
-    const sportKeywords = ['соревнования', 'победа', 'чемпионат', 'матч', 'тренировка', 'спорт', 'биатлон', 'лыжи', 'шорт-трек', 'хоккей', 'футбол', 'баскетбол', 'волейбол', 'плавание', 'первенство', 'кубок', 'медаль', 'золото', 'серебро', 'бронза'];
-    const announcementKeywords = ['объявление', 'расписание', 'информация', 'график', 'родители', 'запись', 'набор', 'обучение'];
-    const eventKeywords = ['праздник', 'церемония', 'день рождения', 'концерт', 'мероприятие', 'торжество', 'юбилей', 'поздравляем'];
+    const sportKeywords = [
+      "соревнования",
+      "победа",
+      "чемпионат",
+      "матч",
+      "тренировка",
+      "спорт",
+      "биатлон",
+      "лыжи",
+      "шорт-трек",
+      "хоккей",
+      "футбол",
+      "баскетбол",
+      "волейбол",
+      "плавание",
+      "первенство",
+      "кубок",
+      "медаль",
+      "золото",
+      "серебро",
+      "бронза",
+    ];
+    const announcementKeywords = [
+      "объявление",
+      "расписание",
+      "информация",
+      "график",
+      "родители",
+      "запись",
+      "набор",
+      "обучение",
+    ];
+    const eventKeywords = [
+      "праздник",
+      "церемония",
+      "день рождения",
+      "концерт",
+      "мероприятие",
+      "торжество",
+      "юбилей",
+      "поздравляем",
+    ];
 
-    let sportScore = sportKeywords.filter(k => lowerText.includes(k)).length;
-    let announcementScore = announcementKeywords.filter(k => lowerText.includes(k)).length;
-    let eventScore = eventKeywords.filter(k => lowerText.includes(k)).length;
+    const sportScore = sportKeywords.filter((k) =>
+      lowerText.includes(k),
+    ).length;
+    const announcementScore = announcementKeywords.filter((k) =>
+      lowerText.includes(k),
+    ).length;
+    const eventScore = eventKeywords.filter((k) =>
+      lowerText.includes(k),
+    ).length;
 
     const scores = [
-      { category: 'sport' as const, score: sportScore },
-      { category: 'announcement' as const, score: announcementScore },
-      { category: 'event' as const, score: eventScore },
-      { category: 'news' as const, score: 0 },
+      { category: "sport" as const, score: sportScore },
+      { category: "announcement" as const, score: announcementScore },
+      { category: "event" as const, score: eventScore },
+      { category: "news" as const, score: 0 },
     ];
 
     return scores.sort((a, b) => b.score - a.score)[0].category;

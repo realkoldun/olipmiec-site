@@ -16,7 +16,13 @@ export const apiClient = axios.create({
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
+    const errorDetails = error.response?.data || error.message || 'Unknown error';
+    console.error('API Error:', errorDetails);
+    
+    if (error.code === 'ECONNABORTED') {
+      console.error('Request timeout - the request took too long to complete');
+    }
+    
     return Promise.reject(error);
   },
 );

@@ -41,22 +41,22 @@ export class NewsService {
   }
 
   async findAll(page = 1, limit = 10, filters?: { category?: string; tags?: string[] }): Promise<{ data: News[]; total: number; page: number; totalPages: number }> {
-    const where: any = {};
+    const queryBuilder = this.newsRepository.createQueryBuilder('news');
 
     if (filters?.category) {
-      where.category = filters.category;
+      queryBuilder.andWhere('news.category = :category', { category: filters.category });
     }
 
     if (filters?.tags && filters.tags.length > 0) {
-      where.tags = { type: 'contains', value: filters.tags };
+      // Для PostgreSQL массивов используем оператор '@>' (contains)
+      queryBuilder.andWhere('news.tags @> :tags', { tags: filters.tags });
     }
 
-    const [data, total] = await this.newsRepository.findAndCount({
-      where,
-      order: { postDate: 'DESC' },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
+    queryBuilder.orderBy('news.postDate', 'DESC');
+    queryBuilder.skip((page - 1) * limit);
+    queryBuilder.take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
 
     return {
       data,

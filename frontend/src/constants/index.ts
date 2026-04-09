@@ -134,6 +134,8 @@ export const LEADERSHIP_DATA: LeadershipMember[] = [
 export const API_CONFIG = {
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
   timeout: 10000,
+  /** Таймаут для AI-запросов (60 секунд) */
+  aiTimeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },

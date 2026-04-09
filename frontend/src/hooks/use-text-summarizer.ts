@@ -9,6 +9,7 @@ import {
   CacheEntry,
 } from '@/types/text-summarization';
 import apiClient from '@/services/api/api-client';
+import { API_CONFIG } from '@/constants';
 
 export interface UseTextSummarizerResult {
   status: SummarizationStatus;
@@ -168,6 +169,8 @@ export function useTextSummarizer(cacheConfig?: Partial<CacheConfig>): UseTextSu
         const response = await apiClient.post('/api/ai/summarize', {
           text,
           options,
+        }, {
+          timeout: API_CONFIG.aiTimeout,
         });
 
         const summarizationResult: SummarizationResult = {
