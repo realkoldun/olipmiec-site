@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { OllamaService } from "./ollama.service";
+import * as crypto from "crypto";
 
 export interface NewsAnalysisResult {
   title: string;
@@ -16,6 +17,9 @@ export interface NewsSummarizationResult {
 @Injectable()
 export class NewsProcessorService {
   private readonly logger = new Logger(NewsProcessorService.name);
+  private readonly cache = new Map<string, NewsSummarizationResult>();
+  private readonly cacheTimestamps = new Map<string, number>();
+  private readonly CACHE_TTL_MS = 30 * 60 * 1000; // 30 минут
 
   constructor(private readonly ollama: OllamaService) {}
 
@@ -40,6 +44,16 @@ export class NewsProcessorService {
     content: string,
     maxLength = 500,
   ): Promise<NewsSummarizationResult> {
+    // Вычисляем хэш содержимого для кэширования
+    const cacheKey = crypto.createHash("md5").update(`${content}:${maxLength}`).digest("hex");
+
+    // Проверяем кэш
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      this.logger.log(`Cache hit for summarization (key=${cacheKey.slice(0, 8)}...)`);
+      return cached;
+    }
+
     const originalLength = content.length;
 
     const prompt = this.createSummarizationPrompt(content, maxLength);
@@ -53,13 +67,45 @@ export class NewsProcessorService {
           ? Math.round((1 - cleanedResponse.length / originalLength) * 100)
           : 0;
 
-      return {
+      const result: NewsSummarizationResult = {
         summarizedText: cleanedResponse,
         compressionRatio,
       };
+
+      // Сохраняем в кэш
+      this.cache.set(cacheKey, result);
+      this.cacheTimestamps.set(cacheKey, Date.now());
+      this.logger.log(`Summarization cached (key=${cacheKey.slice(0, 8)}..., TTL=30min)`);
+
+      // Очистка просроченных записей (1 раз из 10 запросов)
+      if (Math.random() < 0.1) {
+        this.evictExpiredEntries();
+      }
+
+      return result;
     } catch (error: any) {
       this.logger.error(`Failed to summarize news: ${error.message}`);
       throw error;
+    }
+  }
+
+  /**
+   * Очищает просроченные записи из кэша
+   */
+  private evictExpiredEntries(): void {
+    const now = Date.now();
+    let evicted = 0;
+
+    for (const [key, cachedAt] of this.cacheTimestamps.entries()) {
+      if (now - cachedAt > this.CACHE_TTL_MS) {
+        this.cache.delete(key);
+        this.cacheTimestamps.delete(key);
+        evicted++;
+      }
+    }
+
+    if (evicted > 0) {
+      this.logger.log(`Evicted ${evicted} expired cache entries`);
     }
   }
 
