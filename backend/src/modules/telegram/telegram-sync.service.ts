@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { TelegramScraperService } from './telegram-scraper.service';
 import { NewsService } from '../news/news.service';
-import { CreateNewsDto } from '../news/dto/news.dto';
+import { ImageStorageService } from '../news/image-storage.service';
+import { CreateNewsDto, UpdateNewsDto } from '../news/dto/news.dto';
 import { NewsProcessorService } from '../ai/news-processor.service';
 
 /**
@@ -17,6 +18,7 @@ export class TelegramSyncService {
   constructor(
     private readonly telegramScraper: TelegramScraperService,
     private readonly newsService: NewsService,
+    private readonly imageStorage: ImageStorageService,
     private readonly newsProcessor: NewsProcessorService,
   ) {}
 
@@ -47,6 +49,10 @@ export class TelegramSyncService {
         // Запуск синхронизации при старте
         this.logger.log('Running initial sync...');
         await this.sync();
+
+        // Перезаписываем локальные изображения для существующих новостей
+        this.logger.log('Running image re-download for existing news...');
+        await this.reDownloadImages();
       } else {
         this.logger.warn('Telegram channel is not available. Check TELEGRAM_CHANNEL_ID');
       }
@@ -108,6 +114,12 @@ export class TelegramSyncService {
           // AI обработка новости
           const analysis = await this.newsProcessor.analyzeNews(message.text);
 
+          // Скачиваем изображение локально, если есть
+          let localImagePath: string | null = null;
+          if (message.imageUrl) {
+            localImagePath = await this.imageStorage.downloadAndSave(message.imageUrl);
+          }
+
           // Создаем DTO
           const createNewsDto: CreateNewsDto = {
             telegramId: message.message_id,
@@ -116,6 +128,7 @@ export class TelegramSyncService {
             postDate: message.date.toISOString(),
             views: message.views || 0,
             imageUrl: message.imageUrl,
+            localImagePath: localImagePath || undefined,
             hasMedia: message.hasMedia,
             tags: analysis.tags,
           };
@@ -156,5 +169,64 @@ export class TelegramSyncService {
   resetLastSyncedId() {
     this.lastSyncedMessageId = null;
     this.logger.log('Last synced message ID reset');
+  }
+
+  /**
+   * Перезаписать локальные изображения для существующих новостей.
+   * Получает СВЕЖИЕ ссылки из скрапера (старые Telegram CDN ссылки могут быть мертвыми),
+   * скачивает и сохраняет локально.
+   */
+  async reDownloadImages(): Promise<number> {
+    if (!this.telegramScraper.getIsConfigured()) {
+      this.logger.log('Telegram not configured, skipping re-download');
+      return 0;
+    }
+
+    this.logger.log('Starting re-download of images for existing news...');
+    const newsWithoutLocal = await this.newsService.findAllWithoutLocalImage();
+    let updatedCount = 0;
+
+    // Скрапер уже загрузил посты — берём их из кэша (или перезапрашиваем)
+    let scrapedMessages: Map<number, string> = new Map();
+    try {
+      const messages = await this.telegramScraper.getChannelPosts(100);
+      for (const msg of messages) {
+        if (msg.imageUrl) {
+          scrapedMessages.set(msg.message_id, msg.imageUrl);
+        }
+      }
+    } catch (error) {
+      this.logger.warn(`Could not scrape channel for fresh URLs: ${error.message}`);
+    }
+
+    for (const news of newsWithoutLocal) {
+      try {
+        // Используем СВЕЖУЮ ссылку из скрапера, а не старую из БД
+        const freshUrl = scrapedMessages.get(news.telegramId) || news.imageUrl;
+        if (!freshUrl) continue;
+
+        // Удаляем старый локальный файл, если он есть
+        if (news.localImagePath) {
+          await this.imageStorage.delete(news.localImagePath);
+        }
+
+        // Скачиваем новое изображение
+        const localImagePath = await this.imageStorage.downloadAndSave(freshUrl);
+        if (localImagePath) {
+          const updateDto: UpdateNewsDto = {
+            localImagePath,
+            imageUrl: freshUrl, // Обновляем и ссылку на свежую
+          };
+          await this.newsService.update(news.id, updateDto);
+          updatedCount++;
+          this.logger.log(`Updated image for news #${news.telegramId}: ${localImagePath}`);
+        }
+      } catch (error) {
+        this.logger.error(`Error re-downloading image for news ${news.id}: ${error.message}`);
+      }
+    }
+
+    this.logger.log(`Re-download completed. Updated images: ${updatedCount}/${newsWithoutLocal.length}`);
+    return updatedCount;
   }
 }

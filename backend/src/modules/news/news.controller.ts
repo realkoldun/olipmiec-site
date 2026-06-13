@@ -1,11 +1,13 @@
 import { Controller, Get, Query, ParseIntPipe, Param, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { NewsService } from './news.service';
+import { ImageStorageService } from './image-storage.service';
 import { NewsProcessorService } from '../ai/news-processor.service';
 
 @Controller('api/news')
 export class NewsController {
   constructor(
     private readonly newsService: NewsService,
+    private readonly imageStorage: ImageStorageService,
     private readonly newsProcessor: NewsProcessorService,
   ) {}
 
@@ -29,7 +31,7 @@ export class NewsController {
         title: news.title,
         content: news.content,
         summarizedContent: news.summarizedContent,
-        imageUrl: news.imageUrl,
+        imageUrl: this.resolveImageUrl(news),
         videoUrl: news.videoUrl,
         hasMedia: news.hasMedia,
         postDate: news.postDate,
@@ -55,7 +57,7 @@ export class NewsController {
       title: n.title,
       content: n.content,
       summarizedContent: n.summarizedContent,
-      imageUrl: n.imageUrl,
+      imageUrl: this.resolveImageUrl(n),
       videoUrl: n.videoUrl,
       hasMedia: n.hasMedia,
       postDate: n.postDate,
@@ -77,7 +79,7 @@ export class NewsController {
       title: news.title,
       content: news.content,
       summarizedContent: news.summarizedContent,
-      imageUrl: news.imageUrl,
+      imageUrl: this.resolveImageUrl(news),
       videoUrl: news.videoUrl,
       hasMedia: news.hasMedia,
       postDate: news.postDate,
@@ -87,6 +89,20 @@ export class NewsController {
       createdAt: news.createdAt,
       updatedAt: news.updatedAt,
     };
+  }
+
+  /**
+   * Если есть локальный путь к изображению — возвращаем публичный URL,
+   * иначе возвращаем оригинальный imageUrl из Telegram.
+   */
+  private resolveImageUrl(news: {
+    localImagePath?: string;
+    imageUrl?: string;
+  }): string | undefined {
+    if (news.localImagePath) {
+      return this.imageStorage.getPublicUrl(news.localImagePath);
+    }
+    return news.imageUrl;
   }
 
   @Post(':id/summarize')

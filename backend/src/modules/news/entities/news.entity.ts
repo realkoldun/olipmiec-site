@@ -29,6 +29,9 @@ export class News {
   imageUrl?: string;
 
   @Column({ nullable: true })
+  localImagePath?: string;
+
+  @Column({ nullable: true })
   videoUrl?: string;
 
   @Column({ default: false })

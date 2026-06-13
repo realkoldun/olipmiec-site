@@ -17,6 +17,10 @@ export class CreateNewsDto {
 
   @IsOptional()
   @IsString()
+  localImagePath?: string;
+
+  @IsOptional()
+  @IsString()
   videoUrl?: string;
 
   @IsOptional()
@@ -56,6 +60,10 @@ export class UpdateNewsDto {
   @IsOptional()
   @IsString()
   imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  localImagePath?: string;
 
   @IsOptional()
   @IsString()

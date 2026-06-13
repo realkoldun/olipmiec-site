@@ -31,6 +31,9 @@ RUN yarn install --production --frozen-lockfile
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
 
+# Create uploads directory for images
+RUN mkdir -p /app/uploads/news
+
 # Expose port
 EXPOSE 3000
 

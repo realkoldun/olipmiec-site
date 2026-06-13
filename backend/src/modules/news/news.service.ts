@@ -84,6 +84,23 @@ export class NewsService {
     });
   }
 
+  async findAllWithImageUrl(): Promise<News[]> {
+    return await this.newsRepository
+      .createQueryBuilder('news')
+      .where('news.imageUrl IS NOT NULL')
+      .orderBy('news.postDate', 'DESC')
+      .getMany();
+  }
+
+  async findAllWithoutLocalImage(): Promise<News[]> {
+    return await this.newsRepository
+      .createQueryBuilder('news')
+      .where('news."localImagePath" IS NULL')
+      .andWhere('news."imageUrl" IS NOT NULL')
+      .orderBy('news.postDate', 'DESC')
+      .getMany();
+  }
+
   async incrementViews(id: string): Promise<News> {
     const news = await this.findOne(id);
     news.views += 1;

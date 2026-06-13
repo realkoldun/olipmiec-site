@@ -140,6 +140,35 @@ export class TelegramController {
   }
 
   /**
+   * Перезаписать локальные изображения для существующих новостей
+   * POST /api/telegram/re-download-images
+   */
+  @Post('re-download-images')
+  @HttpCode(HttpStatus.OK)
+  async reDownloadImages() {
+    const count = await this.telegramSyncService.reDownloadImages();
+    return {
+      ok: true,
+      message: `Re-downloaded images for ${count} news`,
+      count,
+    };
+  }
+
+  /**
+   * Перезаписать локальные изображения для существующих новостей (GET для удобства)
+   * GET /api/telegram/re-download-images
+   */
+  @Get('re-download-images')
+  async reDownloadImagesGet() {
+    const count = await this.telegramSyncService.reDownloadImages();
+    return {
+      ok: true,
+      message: `Re-downloaded images for ${count} news`,
+      count,
+    };
+  }
+
+  /**
    * Получить сообщение по ID с полным текстом
    * GET /api/telegram/message/:id
    */
