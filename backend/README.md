@@ -204,3 +204,7 @@ backend/
 ## 📄 Лицензия
 
 MIT
+
+
+docker compose --profile init up -d      
+

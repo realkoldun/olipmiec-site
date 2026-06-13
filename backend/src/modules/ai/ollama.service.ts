@@ -43,7 +43,7 @@ export class OllamaService {
 
     this.httpClient = axios.create({
       baseURL: this.baseUrl,
-      timeout: 60000, // 60 секунд на генерацию
+      timeout: 300000, // 5 минут на генерацию (CPU работает медленно)
       headers: {
         'Content-Type': 'application/json',
       },

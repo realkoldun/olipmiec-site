@@ -3,8 +3,8 @@
 
 echo "🦙 Ожидание запуска Ollama..."
 
-# Ждём пока Ollama запустится
-until curl -s http://ollama:11434/api/tags > /dev/null 2>&1; do
+# Ждём пока Ollama запустится (проверяем через ollama list)
+until ollama list > /dev/null 2>&1; do
   echo "  → Ollama ещё не готова..."
   sleep 5
 done
@@ -15,7 +15,7 @@ echo "✅ Ollama запущена!"
 MODEL="gemma3:4b"
 echo "📥 Проверка модели $MODEL..."
 
-if ollama list | grep -q "$MODEL"; then
+if ollama list 2>/dev/null | grep -q "$MODEL"; then
   echo "✅ Модель $MODEL уже установлена"
 else
   echo "⬇️  Загрузка модели $MODEL..."

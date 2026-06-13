@@ -48,8 +48,6 @@ export class NewsProcessorService {
       const response = await this.ollama.generate(prompt);
       const cleanedResponse = response.trim();
 
-      console.log("bebebeb", cleanedResponse);
-
       const compressionRatio =
         originalLength > 0
           ? Math.round((1 - cleanedResponse.length / originalLength) * 100)
